@@ -1,0 +1,21 @@
+EKOS ANTİVİRÜS MOTORU YAZILIM LİSANS SÖZLEŞMESİ (EULA)
+
+Telif Hakkı Sahibi: Eren Can Uçar
+Telif Hakkı (c) 2026 Eren Can Uçar. Tüm Hakları Saklıdır.
+
+Bu yazılım ("EKOS Antivirüs Motoru"), münhasıran Eren Can Uçar tarafından geliştirilmiştir ve ulusal/uluslararası telif hakkı yasaları ile fikri mülkiyet kanunları kapsamında tam koruma altındadır.
+
+İşbu Lisans Sözleşmesi koşulları uyarınca:
+
+1. MÜLKİYET VE TELİF HAKLARI:
+Yazılımın tüm fikri mülkiyet, telif, kaynak kod, algoritma, görsel tasarım, ikili dosyalar ve marka hakları münhasıran Eren Can Uçar'a aittir.
+
+2. KULLANIM VE DAĞITIM KISITLAMALARI:
+- DEĞİŞTİRME VE TERSİNE MÜHENDİSLİK YASAĞI: Yazılımın kaynak kodları, derlenmiş ikili (binary) dosyaları, veritabanı veya arayüz bileşenleri üzerinde hiçbir şekilde değişiklik yapılamaz, kodlar sökülemez, tersine mühendislik (reverse engineering), decompile veya disassemble işlemleri uygulanamaz.
+- TİCARİ KULLANIM YASAĞI: Yazılım veya herhangi bir parçası doğrudan ya da dolaylı olarak ticari amaçlarla satılamaz, kiralanamaz, lisanslanamaz veya ücret karşılığı üçüncü şahıslara sunulamaz.
+- YAYIMLAMA VE ÜÇÜNCÜ TARAF DAĞITIM YASAĞI: Yazılımın orijinal sahibi (Eren Can Uçar) dışında hiçbir üçüncü taraf, kurum, kuruluş veya şahıs yazılımı değiştiremez, değiştürerek veya değiştirmeden yeniden yayımlayamaz, dağıtamaz veya kendi adına sunamaz.
+
+3. YETKİLİ DAĞITIM:
+İşbu yazılım sadece orijinal hak sahibi Eren Can Uçar tarafından belirlenen resmi kanallar aracılığıyla dağıtılabilir.
+
+Telif Hakkı (c) 2026 Eren Can Uçar. Tüm Hakları Saklıdır.

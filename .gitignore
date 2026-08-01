@@ -1,0 +1,14 @@
+# Build & Output Artifacts
+build/
+bin/
+gui/dist/
+gui/node_modules/
+node_modules/
+quarantine/
+test_samples/
+.vs/
+*.user
+*.suo
+*.sln.docstates
+*.exe.blockmap
+*.vir

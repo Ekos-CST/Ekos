@@ -12,3 +12,8 @@ test_samples/
 *.sln.docstates
 *.exe.blockmap
 *.vir
+*.exe
+*.obj
+*.o
+scan_report.*
+gui/scan_report.*

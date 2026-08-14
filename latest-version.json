@@ -1,5 +1,5 @@
 {
-  "version": "4.0.0",
-  "releaseNotes": "EKOS Antivirüs v4.0.0 - Derin Web Kod & Arayüz Analiz Motoru, www vs non-www Domain Normalizasyonu, Yönlendirilen Hedef Bağlantı Taraması, Canlı Pano (Clipboard) Virüs & Shell Payload Kalkanı ve Sadeleştirilmiş Emojisiz Arayüz.",
-  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v4.0.0/EKOS_Antivirus_v4.0.0_Setup.zip"
+  "version": "4.1.0",
+  "releaseNotes": "EKOS Antivirüs v4.1.0 - Bildirimler Merkezi (Tek tıkla okundu işaretleme ve tümünü silme), Doğrudan Bildirime Tıklayarak Okundu İşaretleme, Gerçek Zamanlı İndirme Kalkanı Optimizasyonu (Arşiv & Klasör Filtreleme), Gelişmiş Abonelik Durum Paneli ve Farklı E-posta ile Patreon Eşleme Desteği.",
+  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v4.1.0/EKOS_Antivirus_v4.1.0_Setup.zip"
 }

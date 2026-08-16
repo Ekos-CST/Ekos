@@ -4246,26 +4246,82 @@ function fetchWebpageDeepContent(targetUrl) {
     });
 }
 
-const brandKeywords = [
-    { name: 'Ziraat Bankası', pattern: /(ziraat|ziraatbank|zraat)/i, validDomains: ['ziraatbank.com.tr', 'ziraatbankasi.com.tr', 'ziraatkatilim.com.tr'] },
-    { name: 'Garanti BBVA', pattern: /(garanti|garantibbva|garanti-bbva)/i, validDomains: ['garantibbva.com.tr', 'garanti.com.tr'] },
-    { name: 'İş Bankası', pattern: /(isbank|isbankasi|is-bankasi)/i, validDomains: ['isbank.com.tr'] },
-    { name: 'Akbank', pattern: /(akbank|ak-bank)/i, validDomains: ['akbank.com', 'akbank.com.tr'] },
-    { name: 'Yapı Kredi', pattern: /(yapikredi|yapi-kredi)/i, validDomains: ['yapikredi.com.tr'] },
-    { name: 'Halkbank', pattern: /(halkbank|halk-bank)/i, validDomains: ['halkbank.com.tr'] },
-    { name: 'Vakıfbank', pattern: /(vakifbank|vakif-bank)/i, validDomains: ['vakifbank.com.tr'] },
-    { name: 'PayPal', pattern: /(paypal|pay-pal)/i, validDomains: ['paypal.com'] },
-    { name: 'Binance', pattern: /(binance|binance-tr)/i, validDomains: ['binance.com', 'binance.tr'] },
-    { name: 'Papara', pattern: /(papara|pa-para)/i, validDomains: ['papara.com'] },
-    { name: 'Paribu', pattern: /(paribu|pari-bu)/i, validDomains: ['paribu.com'] },
-    { name: 'Google', pattern: /(google|g00gle)/i, validDomains: ['google.com', 'google.com.tr'] },
-    { name: 'Microsoft', pattern: /(microsoft|microsft)/i, validDomains: ['microsoft.com', 'live.com', 'outlook.com'] },
-    { name: 'Apple', pattern: /(apple-id|appleid|appie)/i, validDomains: ['apple.com', 'icloud.com'] },
-    { name: 'Netflix', pattern: /(netflix|netfllx)/i, validDomains: ['netflix.com'] },
-    { name: 'e-Devlet', pattern: /(turkiye\.gov|edevlet|e-devlet)/i, validDomains: ['turkiye.gov.tr'] },
-    { name: 'Instagram', pattern: /(instagram|instagrarn)/i, validDomains: ['instagram.com'] },
-    { name: 'Telegram', pattern: /(telegram|t\.me)/i, validDomains: ['telegram.org', 't.me'] }
+function computeLevenshteinDistance(s1, s2) {
+    const dp = Array.from({ length: s1.length + 1 }, () => Array(s2.length + 1).fill(0));
+    for (let i = 0; i <= s1.length; i++) dp[i][0] = i;
+    for (let j = 0; j <= s2.length; j++) dp[0][j] = j;
+    for (let i = 1; i <= s1.length; i++) {
+        for (let j = 1; j <= s2.length; j++) {
+            const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+            dp[i][j] = Math.min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + cost
+            );
+        }
+    }
+    return dp[s1.length][s2.length];
+}
+
+function extractDomainLabel(hostname) {
+    let clean = (hostname || '').toLowerCase().trim();
+    if (clean.startsWith('www.')) clean = clean.substring(4);
+    const parts = clean.split('.');
+    if (parts.length >= 2) {
+        if (parts.length >= 3 && ['com', 'gov', 'org', 'net', 'co'].includes(parts[parts.length - 2])) {
+            return parts[parts.length - 3];
+        }
+        return parts[parts.length - 2];
+    }
+    return clean;
+}
+
+const protectedBrandsList = [
+    { name: 'Roblox', key: 'roblox', validDomains: ['roblox.com', 'rbx.com'] },
+    { name: 'Steam', key: 'steam', validDomains: ['steampowered.com', 'steamcommunity.com'] },
+    { name: 'Discord', key: 'discord', validDomains: ['discord.com', 'discord.gg', 'discordapp.com'] },
+    { name: 'Epic Games', key: 'epicgames', validDomains: ['epicgames.com', 'unrealengine.com'] },
+    { name: 'Valorant', key: 'valorant', validDomains: ['playvalorant.com', 'riotgames.com'] },
+    { name: 'Riot Games', key: 'riotgames', validDomains: ['riotgames.com', 'leagueoflegends.com'] },
+    { name: 'Minecraft', key: 'minecraft', validDomains: ['minecraft.net', 'mojang.com'] },
+    { name: 'Twitch', key: 'twitch', validDomains: ['twitch.tv'] },
+    { name: 'Spotify', key: 'spotify', validDomains: ['spotify.com'] },
+    { name: 'Netflix', key: 'netflix', validDomains: ['netflix.com'] },
+    { name: 'Google', key: 'google', validDomains: ['google.com', 'google.com.tr', 'gmail.com', 'youtube.com'] },
+    { name: 'Microsoft', key: 'microsoft', validDomains: ['microsoft.com', 'live.com', 'outlook.com', 'office.com'] },
+    { name: 'Apple', key: 'apple', validDomains: ['apple.com', 'icloud.com'] },
+    { name: 'Amazon', key: 'amazon', validDomains: ['amazon.com', 'amazon.com.tr'] },
+    { name: 'PayPal', key: 'paypal', validDomains: ['paypal.com'] },
+    { name: 'Instagram', key: 'instagram', validDomains: ['instagram.com'] },
+    { name: 'Facebook', key: 'facebook', validDomains: ['facebook.com', 'fb.com', 'meta.com'] },
+    { name: 'WhatsApp', key: 'whatsapp', validDomains: ['whatsapp.com'] },
+    { name: 'Telegram', key: 'telegram', validDomains: ['telegram.org', 't.me'] },
+    { name: 'Twitter', key: 'twitter', validDomains: ['twitter.com', 'x.com'] },
+    { name: 'TikTok', key: 'tiktok', validDomains: ['tiktok.com'] },
+    { name: 'Binance', key: 'binance', validDomains: ['binance.com', 'binance.tr'] },
+    { name: 'Papara', key: 'papara', validDomains: ['papara.com'] },
+    { name: 'Paribu', key: 'paribu', validDomains: ['paribu.com'] },
+    { name: 'BtcTurk', key: 'btcturk', validDomains: ['btcturk.com', 'btcturk.pro'] },
+    { name: 'MetaMask', key: 'metamask', validDomains: ['metamask.io'] },
+    { name: 'TrustWallet', key: 'trustwallet', validDomains: ['trustwallet.com'] },
+    { name: 'Ziraat Bankası', key: 'ziraat', validDomains: ['ziraatbank.com.tr', 'ziraatbankasi.com.tr', 'ziraatkatilim.com.tr'] },
+    { name: 'Garanti BBVA', key: 'garanti', validDomains: ['garantibbva.com.tr', 'garanti.com.tr'] },
+    { name: 'İş Bankası', key: 'isbank', validDomains: ['isbank.com.tr'] },
+    { name: 'Akbank', key: 'akbank', validDomains: ['akbank.com', 'akbank.com.tr'] },
+    { name: 'Yapı Kredi', key: 'yapikredi', validDomains: ['yapikredi.com.tr'] },
+    { name: 'Vakıfbank', key: 'vakifbank', validDomains: ['vakifbank.com.tr'] },
+    { name: 'Halkbank', key: 'halkbank', validDomains: ['halkbank.com.tr'] },
+    { name: 'QNB Finansbank', key: 'qnbfinansbank', validDomains: ['qnbfinansbank.com', 'qnb.com.tr'] },
+    { name: 'Denizbank', key: 'denizbank', validDomains: ['denizbank.com'] },
+    { name: 'Enpara', key: 'enpara', validDomains: ['enpara.com'] },
+    { name: 'e-Devlet', key: 'edevlet', validDomains: ['turkiye.gov.tr', 'turkiye.gov'] }
 ];
+
+const brandKeywords = protectedBrandsList.map(b => ({
+    name: b.name,
+    pattern: new RegExp(b.key, 'i'),
+    validDomains: b.validDomains
+}));
 
 // 2. Central Server URL Security & Phishing/Gateway Endpoint (FREE + 30s RATE LIMIT)
 app.post(['/api/v1/scan/url', '/api/scan-url', '/api/v1/scan-url', '/api/web-scan'], async (req, res) => {
@@ -4355,15 +4411,48 @@ app.post(['/api/v1/scan/url', '/api/scan-url', '/api/v1/scan-url', '/api/web-sca
             threatCategories.push('Ham IP Adresiyle Erişim');
         }
 
-        // 1. Structural Checks (Brand keywords on domain)
-        for (const b of brandKeywords) {
-            if (b.pattern.test(initialHostname)) {
-                const isOfficial = b.validDomains.some(d => initialHostname === d || initialHostname.endsWith('.' + d));
-                if (!isOfficial) {
-                    riskScore += 70;
-                    warnings.push(`Kritik Oltalama (Phishing) Şüphesi: "${b.name}" kurumsal markası taklit ediliyor.`);
+        // 1. Structural Checks & Intelligent Typosquatting (Levenshtein Distance + Brand Impersonation)
+        const domainLabel = extractDomainLabel(initialHostname);
+
+        for (const brand of protectedBrandsList) {
+            const isOfficial = brand.validDomains.some(d => initialHostname === d || initialHostname.endsWith('.' + d));
+            if (!isOfficial) {
+                // A) Exact substring match or brand in untrusted domain
+                if (initialHostname.includes(brand.key)) {
+                    riskScore += 75;
+                    warnings.push(`Kritik Oltalama (Phishing) Şüphesi: "${brand.name}" markası resmi olmayan alanda (${initialHostname}) kullanılıyor.`);
                     threatCategories.push('Oltalama / Sahte Marka Taklidi (Phishing)');
-                    threatsDetected.push('Phishing.BrandImpersonation.' + b.name.replace(/\s+/g, ''));
+                    threatsDetected.push('Phishing.BrandImpersonation.' + brand.name.replace(/\s+/g, ''));
+                    break;
+                }
+
+                // B) Algorithmic Typosquatting (Levenshtein Distance <= 2 on SLD label, e.g. robloz -> roblox)
+                if (domainLabel.length >= 4 && Math.abs(domainLabel.length - brand.key.length) <= 2) {
+                    const dist = computeLevenshteinDistance(domainLabel, brand.key);
+                    if (dist >= 1 && dist <= 2) {
+                        riskScore += 90;
+                        warnings.push(`KRİTİK OLTALAMA (TYPOSQUATTING): '${domainLabel}' alan adı, resmi '${brand.name}' markasını ${dist} harf farkıyla taklit ediyor (${domainLabel} ➔ ${brand.key})!`);
+                        threatCategories.push('Oltalama / Typosquatting Marka Taklidi');
+                        threatsDetected.push('Phishing.Typosquatting.' + brand.name.replace(/\s+/g, ''));
+                        break;
+                    }
+                }
+
+                // C) Homoglyphs / Number substitution check (e.g. r0bl0x -> roblox, g00gle -> google)
+                const dehomoglyph = domainLabel
+                    .replace(/0/g, 'o')
+                    .replace(/1/g, 'l')
+                    .replace(/3/g, 'e')
+                    .replace(/4/g, 'a')
+                    .replace(/5/g, 's')
+                    .replace(/z/g, 'x');
+
+                if (dehomoglyph !== domainLabel && dehomoglyph === brand.key) {
+                    riskScore += 90;
+                    warnings.push(`KRİTİK OLTALAMA (HOMOGLYPH): '${domainLabel}' alan adı harf/rakam değiştirme hilesiyle '${brand.name}' markasını taklit ediyor!`);
+                    threatCategories.push('Oltalama / Homoglyph Marka Taklidi');
+                    threatsDetected.push('Phishing.Homoglyph.' + brand.name.replace(/\s+/g, ''));
+                    break;
                 }
             }
         }

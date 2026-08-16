@@ -7,6 +7,7 @@ import okhttp3.Request
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
+import kotlin.math.abs
 
 data class WebContentScanReport(
     val url: String,
@@ -28,6 +29,12 @@ data class WebContentScanReport(
     val findings: List<String>
 )
 
+data class ProtectedBrand(
+    val name: String,
+    val canonicalKey: String,
+    val officialDomains: List<String>
+)
+
 object WebContentInspector {
 
     private val httpClient = OkHttpClient.Builder()
@@ -36,6 +43,48 @@ object WebContentInspector {
         .followRedirects(true)
         .followSslRedirects(true)
         .build()
+
+    // Protected Global and Local Brands for Typosquatting / Homoglyph / Impersonation Detection
+    private val PROTECTED_BRANDS = listOf(
+        ProtectedBrand("Roblox", "roblox", listOf("roblox.com", "rbx.com")),
+        ProtectedBrand("Steam", "steam", listOf("steampowered.com", "steamcommunity.com")),
+        ProtectedBrand("Discord", "discord", listOf("discord.com", "discord.gg", "discordapp.com")),
+        ProtectedBrand("Epic Games", "epicgames", listOf("epicgames.com", "unrealengine.com")),
+        ProtectedBrand("Valorant", "valorant", listOf("playvalorant.com", "riotgames.com")),
+        ProtectedBrand("Riot Games", "riotgames", listOf("riotgames.com", "leagueoflegends.com")),
+        ProtectedBrand("Minecraft", "minecraft", listOf("minecraft.net", "mojang.com")),
+        ProtectedBrand("Twitch", "twitch", listOf("twitch.tv")),
+        ProtectedBrand("Spotify", "spotify", listOf("spotify.com")),
+        ProtectedBrand("Netflix", "netflix", listOf("netflix.com")),
+        ProtectedBrand("Google", "google", listOf("google.com", "google.com.tr", "gmail.com", "youtube.com")),
+        ProtectedBrand("Microsoft", "microsoft", listOf("microsoft.com", "live.com", "outlook.com", "office.com")),
+        ProtectedBrand("Apple", "apple", listOf("apple.com", "icloud.com")),
+        ProtectedBrand("Amazon", "amazon", listOf("amazon.com", "amazon.com.tr")),
+        ProtectedBrand("PayPal", "paypal", listOf("paypal.com")),
+        ProtectedBrand("Instagram", "instagram", listOf("instagram.com")),
+        ProtectedBrand("Facebook", "facebook", listOf("facebook.com", "fb.com", "meta.com")),
+        ProtectedBrand("WhatsApp", "whatsapp", listOf("whatsapp.com")),
+        ProtectedBrand("Telegram", "telegram", listOf("telegram.org", "t.me")),
+        ProtectedBrand("Twitter", "twitter", listOf("twitter.com", "x.com")),
+        ProtectedBrand("TikTok", "tiktok", listOf("tiktok.com")),
+        ProtectedBrand("Binance", "binance", listOf("binance.com", "binance.tr")),
+        ProtectedBrand("Papara", "papara", listOf("papara.com")),
+        ProtectedBrand("Paribu", "paribu", listOf("paribu.com")),
+        ProtectedBrand("BtcTurk", "btcturk", listOf("btcturk.com", "btcturk.pro")),
+        ProtectedBrand("MetaMask", "metamask", listOf("metamask.io")),
+        ProtectedBrand("TrustWallet", "trustwallet", listOf("trustwallet.com")),
+        ProtectedBrand("Ziraat Bankası", "ziraat", listOf("ziraatbank.com.tr", "ziraatbankasi.com.tr", "ziraatkatilim.com.tr")),
+        ProtectedBrand("Garanti BBVA", "garanti", listOf("garantibbva.com.tr", "garanti.com.tr")),
+        ProtectedBrand("İş Bankası", "isbank", listOf("isbank.com.tr")),
+        ProtectedBrand("Akbank", "akbank", listOf("akbank.com", "akbank.com.tr")),
+        ProtectedBrand("Yapı Kredi", "yapikredi", listOf("yapikredi.com.tr")),
+        ProtectedBrand("Vakıfbank", "vakifbank", listOf("vakifbank.com.tr")),
+        ProtectedBrand("Halkbank", "halkbank", listOf("halkbank.com.tr")),
+        ProtectedBrand("QNB Finansbank", "qnbfinansbank", listOf("qnbfinansbank.com", "qnb.com.tr")),
+        ProtectedBrand("Denizbank", "denizbank", listOf("denizbank.com")),
+        ProtectedBrand("Enpara", "enpara", listOf("enpara.com")),
+        ProtectedBrand("e-Devlet", "edevlet", listOf("turkiye.gov.tr", "turkiye.gov"))
+    )
 
     // 1. Critical Malware / Trojan / Stealer Signatures
     private val MALWARE_EXPLOIT_PATTERNS = listOf(
@@ -52,19 +101,19 @@ object WebContentInspector {
     // 3. Executable & Dangerous Download Patterns in URL
     private val DANGEROUS_FILE_URL_PATTERN = Pattern.compile("(?i)\\.(apk|exe|dll|bat|vbs|ps1|scr|jar|iso|img|dmg|sh|bin|msi|cmd)(\\?|#|$)")
 
-    // 4. Double Extension Obfuscation (e.g. image.jpg.exe, invoice.pdf.apk)
+    // 4. Double Extension Obfuscation
     private val DOUBLE_EXTENSION_PATTERN = Pattern.compile("(?i)\\.(pdf|jpg|jpeg|png|doc|docx|xls|xlsx|zip|rar|txt|mp3)\\.(exe|apk|bat|vbs|scr|msi|cmd)(\\?|#|$)")
 
     // 5. High-Risk TLDs
     private val HIGH_RISK_TLD_PATTERN = Pattern.compile("(?i)\\.(xyz|top|click|monster|cfd|rest|buzz|club|work|tk|ml|ga|cf|gq|pw|cc|ru|su)(/|:|\$|\\?)")
 
-    // 6. Direct IP as Host (e.g. http://192.168.1.1/malware)
+    // 6. Direct IP as Host
     private val IP_HOST_PATTERN = Pattern.compile("(?i)^https?://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")
 
     // 7. In-Page Content Phishing Patterns
     private val PHISHING_CONTENT_PATTERNS = listOf(
         Pattern.compile("(?i)(hesabınız askıya alındı|hesabınızı doğrulayın|şifrenizi güncelleyin|oturum açın|giriş yapın|güvenlik doğrulaması)"),
-        Pattern.compile("(?i)(tebrikler kazandınız|ücretsiz hediye|ödül kazandınız|iphone kazandınız|tıklayın kazanın|faturanız gecikti)"),
+        Pattern.compile("(?i)(tebrikler kazandınız|ücretsiz hediye|ödül kazandınız|iphone kazandınız|tıklayın kazanın|faturanız gecikti|robux kazandınız)"),
         Pattern.compile("(?i)(account suspended|verify your account|update your password|confirm identity|claim reward|unauthorized activity)"),
         Pattern.compile("(?i)(wallet key|recovery phrase|seed phrase|kurtarma anahtarı|cüzdan şifresi|private key)"),
         Pattern.compile("(?i)(e-devlet kapısı|turkiye\\.gov|papara|ziraat|garanti|akbank|iş bankası|yapı kredi|vakıfbank|halkbank)")
@@ -82,6 +131,45 @@ object WebContentInspector {
     private val DANGEROUS_DOWNLOAD_PATTERNS = listOf(
         Pattern.compile("(?i)href\\s*=\\s*[\"'][^\"']+\\.(apk|exe|scr|bat|vbs|jar|msi)[\"']")
     )
+
+    /**
+     * Calculates the Levenshtein Distance between two strings
+     */
+    private fun computeLevenshteinDistance(s1: String, s2: String): Int {
+        val dp = Array(s1.length + 1) { IntArray(s2.length + 1) }
+        for (i in 0..s1.length) dp[i][0] = i
+        for (j in 0..s2.length) dp[0][j] = j
+        for (i in 1..s1.length) {
+            for (j in 1..s2.length) {
+                val cost = if (s1[i - 1] == s2[j - 1]) 0 else 1
+                dp[i][j] = minOf(
+                    dp[i - 1][j] + 1,
+                    dp[i][j - 1] + 1,
+                    dp[i - 1][j - 1] + cost
+                )
+            }
+        }
+        return dp[s1.length][s2.length]
+    }
+
+    /**
+     * Extracts Second-Level Domain (SLD) / main brand label from hostname
+     * e.g., "www.robloz.com" -> "robloz", "login.steampowered.com" -> "steampowered"
+     */
+    private fun extractDomainLabel(hostname: String): String {
+        var clean = hostname.lowercase().trim()
+        if (clean.startsWith("www.")) clean = clean.substring(4)
+        val parts = clean.split(".")
+        return if (parts.size >= 2) {
+            if (parts.size >= 3 && (parts[parts.size - 2] == "com" || parts[parts.size - 2] == "gov" || parts[parts.size - 2] == "org" || parts[parts.size - 2] == "net" || parts[parts.size - 2] == "co")) {
+                parts[parts.size - 3]
+            } else {
+                parts[parts.size - 2]
+            }
+        } else {
+            clean
+        }
+    }
 
     suspend fun analyzeUrlContent(targetUrl: String): WebContentScanReport = withContext(Dispatchers.IO) {
         var cleanUrl = targetUrl.trim()
@@ -149,28 +237,54 @@ object WebContentInspector {
             findings.add("Alan adı yerine doğrudan ham IP adresi kullanılıyor (Şüpheli C2 / Saldırı sunucusu).")
         }
 
-        // Brand Impersonation in Domain / Subdomain
-        val domain = try { URI(cleanUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
-        val brandKeywords = listOf(
-            "ziraat", "garanti", "akbank", "isbank", "yapikredi", "vakifbank", "halkbank",
-            "papara", "binance", "paribu", "btcturk", "turkiye-gov", "edevlet", "e-devlet",
-            "apple", "icloud", "netflix", "instagram", "whatsapp", "telegram", "facebook", "paypal"
-        )
-        for (brand in brandKeywords) {
-            if (domain.contains(brand)) {
-                val isOfficial = domain == "$brand.com" || domain == "$brand.com.tr" || domain == "$brand.net" ||
-                        domain == "$brand.gov.tr" || domain == "$brand.org" || domain.endsWith(".$brand.com") ||
-                        domain.endsWith(".$brand.com.tr") || domain.endsWith(".$brand.gov.tr")
-                if (!isOfficial) {
-                    threatScore += 70
+        // 2. INTELLIGENT TYPOSQUATTING & BRAND IMPERSONATION DETECTION ENGINE
+        val rawHost = try { URI(cleanUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
+        val domainLabel = extractDomainLabel(rawHost)
+
+        for (brand in PROTECTED_BRANDS) {
+            val isOfficialDomain = brand.officialDomains.any { official ->
+                rawHost == official || rawHost.endsWith(".$official")
+            }
+
+            if (!isOfficialDomain) {
+                // A) Exact substring match or brand contained in untrusted domain
+                if (rawHost.contains(brand.canonicalKey)) {
+                    threatScore += 75
                     isPhishingThreat = true
-                    findings.add("MARKA TAKLİDİ (PHISHING): '$brand' resmi alan adı dışında şüpheli adreste kullanılıyor.")
+                    findings.add("MARKA TAKLİDİ (PHISHING): '${brand.name}' adı resmi olmayan şüpheli alan adında ($rawHost) tespit edildi.")
+                    break
+                }
+
+                // B) Algorithmic Typosquatting (Levenshtein Distance <= 2 on SLD label, e.g. robloz -> roblox)
+                if (domainLabel.length >= 4 && abs(domainLabel.length - brand.canonicalKey.length) <= 2) {
+                    val dist = computeLevenshteinDistance(domainLabel, brand.canonicalKey)
+                    if (dist in 1..2) {
+                        threatScore += 90
+                        isPhishingThreat = true
+                        findings.add("KRİTİK OLTALAMA (TYPOSQUATTING): '$domainLabel' alan adı, resmi '${brand.name}' markasını $dist harf farkıyla taklit ediyor ($domainLabel ➔ ${brand.canonicalKey})!")
+                        break
+                    }
+                }
+
+                // C) Number / Homoglyph substitution check (e.g. r0bl0x -> roblox, g00gle -> google)
+                val dehomoglyph = domainLabel
+                    .replace("0", "o")
+                    .replace("1", "l")
+                    .replace("3", "e")
+                    .replace("4", "a")
+                    .replace("5", "s")
+                    .replace("z", "x")
+
+                if (dehomoglyph != domainLabel && dehomoglyph == brand.canonicalKey) {
+                    threatScore += 90
+                    isPhishingThreat = true
+                    findings.add("KRİTİK OLTALAMA (HOMOGLYPH): '$domainLabel' alan adı rakam/harf değiştirme hilesiyle '${brand.name}' markasını taklit ediyor!")
                     break
                 }
             }
         }
 
-        // 2. FETCH REAL PAGE CONTENT VIA NETWORK (If reachable)
+        // 3. FETCH REAL PAGE CONTENT VIA NETWORK (If reachable)
         try {
             val request = Request.Builder()
                 .url(cleanUrl)
@@ -201,18 +315,18 @@ object WebContentInspector {
             }
         } catch (e: Exception) {
             if (threatScore > 0) {
-                findings.add("Hedef sunucuya erişilemedi ancak URL sezgisel imza tablosunda zararlı desen doğrulandı.")
+                findings.add("Hedef sunucuya erişilemedi ancak alan adı sezgisel imza tablosunda zararlı/oltalama deseni doğrulandı.")
             } else {
                 findings.add("Siteye doğrudan erişim: ${e.localizedMessage ?: "Bağlantı zaman aşımı"}")
             }
         }
 
-        // 3. FORM & PASSWORD INPUT INSPECTION
+        // 4. FORM & PASSWORD INPUT INSPECTION
         val hasPasswordInput = Pattern.compile("(?i)<input[^>]*type=[\"']password[\"']").matcher(htmlContent).find()
         val hasCreditCardInput = Pattern.compile("(?i)(cardnumber|creditcard|cvv|sonkullanma|cc-num|kartno)").matcher(htmlContent).find()
         val hasForm = Pattern.compile("(?i)<form[^>]*action=[\"']([^\"']*)[\"']").matcher(htmlContent).find()
 
-        val isOfficialTrustedDomain = domain.endsWith("google.com") || domain.endsWith("microsoft.com") || domain.endsWith("github.com") || domain.endsWith("ekoscst.com") || domain.endsWith("apple.com")
+        val isOfficialTrustedDomain = rawHost.endsWith("google.com") || rawHost.endsWith("microsoft.com") || rawHost.endsWith("github.com") || rawHost.endsWith("ekoscst.com") || rawHost.endsWith("apple.com")
 
         val formStatus: String
         if (hasCreditCardInput) {
@@ -240,7 +354,7 @@ object WebContentInspector {
             formStatus = "Temiz (Şifre tuzağı yok)"
         }
 
-        // 4. JAVASCRIPT & MALWARE / CRYPTO-MINER INSPECTION
+        // 5. JAVASCRIPT & MALWARE / CRYPTO-MINER INSPECTION
         var scriptStatus = "Temiz (Zararlı script yok)"
         for (pattern in SCRIPT_MALWARE_PATTERNS) {
             if (pattern.matcher(htmlContent).find()) {
@@ -252,7 +366,7 @@ object WebContentInspector {
             }
         }
 
-        // 5. PHISHING CONTENT PATTERNS IN HTML
+        // 6. PHISHING CONTENT PATTERNS IN HTML
         var phishingStatus = if (isPhishingThreat) "Oltalama Belirtisi Bulundu" else "Temiz (Oltalama deseni yok)"
         for (pattern in PHISHING_CONTENT_PATTERNS) {
             val matcher = pattern.matcher(htmlContent)
@@ -266,7 +380,7 @@ object WebContentInspector {
             }
         }
 
-        // 6. DANGEROUS DOWNLOAD LINKS (APK, EXE) IN HTML
+        // 7. DANGEROUS DOWNLOAD LINKS (APK, EXE) IN HTML
         var downloadStatus = if (isDownloadThreat) "Doğrudan İndirilebilir Yürütülebilir Dosya" else "Temiz (Zararlı indirme linki yok)"
         for (pattern in DANGEROUS_DOWNLOAD_PATTERNS) {
             val matcher = pattern.matcher(htmlContent)

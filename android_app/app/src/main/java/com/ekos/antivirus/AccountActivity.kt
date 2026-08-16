@@ -97,6 +97,11 @@ class AccountActivity : AppCompatActivity() {
         btnLogout = findViewById(R.id.btnLogout)
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount)
 
+        val btnCheckAppUpdates = findViewById<Button>(R.id.btnCheckAppUpdates)
+        btnCheckAppUpdates?.setOnClickListener {
+            com.ekos.antivirus.engine.AppUpdateManager.checkForUpdate(this, showNoUpdateToast = true)
+        }
+
         etLoginEmail = findViewById(R.id.etLoginEmail)
         etLoginPassword = findViewById(R.id.etLoginPassword)
         btnSubmitLogin = findViewById(R.id.btnSubmitLogin)

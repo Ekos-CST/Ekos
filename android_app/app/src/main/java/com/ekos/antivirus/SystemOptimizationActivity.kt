@@ -29,7 +29,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -58,6 +60,7 @@ class SystemOptimizationActivity : AppCompatActivity() {
     private lateinit var tvHudPrivacy: TextView
 
     private var isOptimizing = false
+    private var blastJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +100,7 @@ class SystemOptimizationActivity : AppCompatActivity() {
     private fun setupListeners() {
         btnBack.setOnClickListener { finish() }
 
-        // Logo Core Click Trigger -> Explosive Blast + Full Automation
+        // Logo Core Click Trigger -> Explosive Blast + Continuous Animation + Full Automation
         btnEkosLogoCore.setOnClickListener {
             if (!isOptimizing) {
                 triggerExplosiveOptimization()
@@ -109,8 +112,8 @@ class SystemOptimizationActivity : AppCompatActivity() {
         isOptimizing = true
         btnEkosLogoCore.isEnabled = false
 
-        // 1. EXPLOSIVE SHOCKWAVE ANIMATION
-        playExplosionEffect()
+        // 1. Start continuous blast & shockwave pulse loop during scanning
+        startContinuousBlastLoop()
 
         // 2. Initial Reset
         tvTurboTitle.text = "SİSTEM OPTİMİZE EDİLİYOR..."
@@ -173,8 +176,9 @@ class SystemOptimizationActivity : AppCompatActivity() {
                 tvHudPrivacy.text = "Puan: 100/100 (Korundu)"
                 tvHudPrivacy.setTextColor(getColor(R.color.accent_emerald_light))
 
-                // CELEBRATORY FINAL EXPLOSION
-                playExplosionEffect()
+                // Stop continuous loop and trigger MEGA CELEBRATORY FINAL EXPLOSION
+                stopContinuousBlastLoop()
+                playSingleExplosion(isFinalMega = true)
                 triggerHapticFeedback()
 
                 tvTurboTitle.text = "CİHAZ %100 OPTİMİZE EDİLDİ"
@@ -187,68 +191,88 @@ class SystemOptimizationActivity : AppCompatActivity() {
         }
     }
 
-    private fun playExplosionEffect() {
-        // Shockwave 1: Rapid expanding blast ring
+    private fun startContinuousBlastLoop() {
+        blastJob?.cancel()
+        blastJob = lifecycleScope.launch(Dispatchers.Main) {
+            while (isActive && isOptimizing) {
+                playSingleExplosion(isFinalMega = false)
+                delay(650)
+            }
+        }
+    }
+
+    private fun stopContinuousBlastLoop() {
+        blastJob?.cancel()
+        blastJob = null
+    }
+
+    private fun playSingleExplosion(isFinalMega: Boolean) {
+        val scaleMax = if (isFinalMega) 3.0f else 2.2f
+        val durationVal = if (isFinalMega) 750L else 550L
+
+        // Shockwave 1
         viewShockwave1.visibility = View.VISIBLE
         val shockwave1Anim = AnimationSet(true).apply {
             addAnimation(ScaleAnimation(
-                0.8f, 2.6f, 0.8f, 2.6f,
+                0.8f, scaleMax, 0.8f, scaleMax,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f
             ))
             addAnimation(AlphaAnimation(1.0f, 0.0f))
-            duration = 650
+            duration = durationVal
             interpolator = DecelerateInterpolator()
         }
         viewShockwave1.startAnimation(shockwave1Anim)
 
-        // Shockwave 2: Delayed wider blast ring
+        // Shockwave 2 (Delayed)
         viewShockwave2.postDelayed({
+            if (!isOptimizing && !isFinalMega) return@postDelayed
             viewShockwave2.visibility = View.VISIBLE
             val shockwave2Anim = AnimationSet(true).apply {
                 addAnimation(ScaleAnimation(
-                    0.8f, 3.2f, 0.8f, 3.2f,
+                    0.8f, scaleMax + 0.6f, 0.8f, scaleMax + 0.6f,
                     Animation.RELATIVE_TO_SELF, 0.5f,
                     Animation.RELATIVE_TO_SELF, 0.5f
                 ))
                 addAnimation(AlphaAnimation(0.8f, 0.0f))
-                duration = 750
+                duration = durationVal + 100
                 interpolator = DecelerateInterpolator()
             }
             viewShockwave2.startAnimation(shockwave2Anim)
-        }, 150)
+        }, 120)
 
-        // Center Flare Burst
+        // Flare Burst
         viewFlareBurst.visibility = View.VISIBLE
         val flareAnim = AnimationSet(true).apply {
             addAnimation(ScaleAnimation(
-                0.5f, 1.8f, 0.5f, 1.8f,
+                0.6f, if (isFinalMega) 2.2f else 1.5f, 0.6f, if (isFinalMega) 2.2f else 1.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f
             ))
             addAnimation(AlphaAnimation(0.9f, 0.0f))
-            duration = 500
+            duration = durationVal - 50
             interpolator = AccelerateDecelerateInterpolator()
         }
         viewFlareBurst.startAnimation(flareAnim)
 
-        // Logo Core Impact Punch (Squash & Pop)
+        // Logo Core Impact Punch
+        val punchScale = if (isFinalMega) 1.3f else 1.12f
         val logoPopAnim = AnimationSet(true).apply {
             addAnimation(ScaleAnimation(
-                0.85f, 1.25f, 0.85f, 1.25f,
+                0.92f, punchScale, 0.92f, punchScale,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f
             ).apply {
-                duration = 200
+                duration = 180
             })
             addAnimation(ScaleAnimation(
-                1.25f, 1.0f, 1.25f, 1.0f,
+                punchScale, 1.0f, punchScale, 1.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f
             ).apply {
-                startOffset = 200
-                duration = 350
-                interpolator = OvershootInterpolator(2.0f)
+                startOffset = 180
+                duration = 280
+                interpolator = OvershootInterpolator(1.8f)
             })
         }
         btnEkosLogoCore.startAnimation(logoPopAnim)
@@ -281,5 +305,10 @@ class SystemOptimizationActivity : AppCompatActivity() {
                 vibrator?.vibrate(140)
             }
         } catch (e: Throwable) {}
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopContinuousBlastLoop()
     }
 }

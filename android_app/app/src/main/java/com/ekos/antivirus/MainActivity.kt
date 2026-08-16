@@ -52,6 +52,11 @@ class MainActivity : AppCompatActivity() {
         try {
             BackgroundShieldService.startService(this)
         } catch (e: Exception) {}
+
+        // Check for App Updates in background
+        try {
+            com.ekos.antivirus.engine.AppUpdateManager.checkForUpdate(this, showNoUpdateToast = false)
+        } catch (e: Exception) {}
     }
 
     override fun onResume() {

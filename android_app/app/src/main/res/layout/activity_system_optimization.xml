@@ -50,48 +50,94 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Hero Overview Card -->
+            <!-- Interactive Ekos Turbo Optimization Hero Card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTurboHero"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/bg_card"
                 app:strokeColor="@color/border_hover"
                 app:strokeWidth="1.5dp"
-                app:cardCornerRadius="18dp">
+                app:cardCornerRadius="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="22dp">
+                    android:padding="24dp"
+                    android:gravity="center_horizontal">
+
+                    <!-- Interactive Animated Ekos Logo Core Button -->
+                    <FrameLayout
+                        android:id="@+id/btnEkosLogoCore"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/bg_shield_gradient">
+
+                        <!-- Glowing Halo Ring Effect -->
+                        <ProgressBar
+                            android:id="@+id/pbTurboSpin"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:layout_gravity="center"
+                            android:indeterminate="true"
+                            android:indeterminateTint="@color/accent_emerald_light"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/ivEkosOptLogo"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/ic_launcher"
+                            android:contentDescription="Ekos Logo" />
+                    </FrameLayout>
 
                     <TextView
+                        android:id="@+id/tvTurboTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CİHAZ SAĞLIĞI VE PERFORMANS"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
+                        android:layout_marginTop="16dp"
+                        android:text="EKOS TEK TIKLA OPTİMİZASYON"
+                        android:textColor="@color/accent_emerald_light"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.06" />
 
                     <TextView
+                        android:id="@+id/tvTurboStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Sistem Tam Performansta"
-                        android:textColor="@color/accent_emerald_light"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="6dp"
+                        android:text="Tüm modülleri otomatik çalıştırmak için logoya dokunun"
+                        android:textColor="@color/text_main"
+                        android:textSize="13sp"
+                        android:textAlignment="center" />
 
                     <TextView
+                        android:id="@+id/tvTurboStepDetail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Depolama temizliği, gizlilik kalkanı, ağ denetimi ve RAM optimizasyonu hazır."
+                        android:text="Gereksiz dosyalar, bellek, ağ ve gizlilik taranacak."
                         android:textColor="@color/text_muted"
-                        android:textSize="12sp"
-                        android:lineSpacingExtra="2dp" />
+                        android:textSize="11sp"
+                        android:textAlignment="center" />
+
+                    <ProgressBar
+                        android:id="@+id/pbTurboProgress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="16dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/bg_button_emerald"
+                        android:visibility="gone" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -99,7 +145,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OPTİMİZASYON VE GÜVENLİK ARAÇLARI"
+                android:text="OPTİMİZASYON VE GÜVENLİK MODÜLLERİ"
                 android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -148,6 +194,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvCleanerStatusOpt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -157,6 +204,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvCleanerBadgeOpt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TEMİZLE"
@@ -208,6 +256,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvPrivacyStatusOpt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -217,6 +266,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvPrivacyBadgeOpt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="DENETLE"
@@ -268,6 +318,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvNetworkStatusOpt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -277,6 +328,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvNetworkBadgeOpt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TEST ET"
@@ -328,6 +380,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvRamStatusOpt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -337,6 +390,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvRamBadgeOpt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="HIZLANDIR"

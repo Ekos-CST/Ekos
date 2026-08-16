@@ -68,6 +68,9 @@ const DDOS_MAX_REQ_PER_MIN = 300; // 300 requests/minute max per IP
 const DDOS_BLOCK_TIME_MS = 3 * 60 * 1000; // 3 minutes block on excessive flood
 
 function checkDdosProtection(ip) {
+    if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1' || ip === 'localhost' || !ip) {
+        return { isAllowed: true };
+    }
     const now = Date.now();
     let record = ddosIpTracker.get(ip);
     if (!record) {
@@ -3699,6 +3702,26 @@ app.get(['/api/mobile/version', '/android_app/version.json', '/api/v1/mobile/ver
         directApkUrl: "https://ekoscst.com/download/android",
         updatedAt: "2026-08-16T12:30:00Z"
     });
+});
+
+// Direct Android APK Download Endpoints
+app.get(['/download/android', '/download/EKOS_Antivirus_Mobile.apk', '/download/mobile.apk', '/download/app-debug.apk'], (req, res) => {
+    const candidates = [
+        path.join(__dirname, 'public', 'download', 'EKOS_Antivirus_Mobile.apk'),
+        path.join(__dirname, 'web_public', 'download', 'EKOS_Antivirus_Mobile.apk'),
+        path.join(__dirname, '..', 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk'),
+        path.join(__dirname, 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk')
+    ];
+
+    for (const p of candidates) {
+        if (fs.existsSync(p)) {
+            res.setHeader('Content-Disposition', 'attachment; filename="EKOS_Antivirus_Mobile.apk"');
+            res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+            return res.sendFile(path.resolve(p));
+        }
+    }
+
+    return res.status(404).send('Android APK kurulum dosyası hazırlanıyor. Lütfen birkaç dakika sonra tekrar deneyiniz.');
 });
 
 // Direct Setup Download Endpoints

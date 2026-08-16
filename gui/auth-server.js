@@ -9,6 +9,8 @@ const os = require('os');
 const { spawn } = require('child_process');
 
 const app = express();
+app.set('trust proxy', true);
+app.enable('trust proxy');
 const PORT = process.env.AUTH_PORT || 3002;
 const SERVER_DB_DIR = path.join(__dirname, 'server_db');
 if (!fs.existsSync(SERVER_DB_DIR)) fs.mkdirSync(SERVER_DB_DIR, { recursive: true });
@@ -101,10 +103,13 @@ function checkDdosProtection(ip) {
     return { isAllowed: true };
 }
 
-// --- VISITOR & ACCESS TRAFFIC LOGGER STORAGE ---
+// --- DEDUPLICATED VISITOR & ACCESS TRAFFIC LOGGER STORAGE ---
 const VISITOR_LOGS_FILE = path.join(SERVER_DB_DIR, 'visitor_logs.json');
 let visitorLogs = [];
-const MAX_VISITOR_LOGS = 600;
+const MAX_VISITOR_LOGS = 500;
+
+// Known Admin IP set to ignore from active visitors/metrics
+const adminIpSet = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
 
 function loadVisitorLogs() {
     try {
@@ -181,17 +186,39 @@ app.use((req, res, next) => {
     const pathName = req.path;
     const method = req.method;
 
-    // Record real-time presence
-    recordIpActivity(clientIp, pathName, req.headers['user-agent']);
+    // Check if request is from Admin Console or Admin Session
+    let isAdmin = false;
+    if (pathName.startsWith('/admin') || pathName.startsWith('/api/admin')) {
+        isAdmin = true;
+        adminIpSet.add(clientIp);
+    }
 
     const authH = req.headers.authorization;
     if (authH && authH.startsWith('Bearer ')) {
         const tok = authH.substring(7);
-        const tokData = tokensDb.get(tok);
-        if (tokData) {
-            const uEmail = typeof tokData === 'string' ? tokData : tokData.email;
-            if (uEmail) recordUserActivity(uEmail, clientIp, req.headers['user-agent'], pathName);
+        if (tok === 'EKOS-ADMIN-2026-SECRET' || tok === 'ekos_admin_root_master_token') {
+            isAdmin = true;
+            adminIpSet.add(clientIp);
+        } else {
+            const tokData = tokensDb.get(tok);
+            if (tokData) {
+                const uEmail = typeof tokData === 'string' ? tokData : tokData.email;
+                if (uEmail) {
+                    const clean = uEmail.toLowerCase().trim();
+                    if (clean === 'admin@ekoscst.com' || clean === 'admin@ekos.com') {
+                        isAdmin = true;
+                        adminIpSet.add(clientIp);
+                    } else {
+                        recordUserActivity(uEmail, clientIp, req.headers['user-agent'], pathName);
+                    }
+                }
+            }
         }
+    }
+
+    // Record non-admin IP real-time presence
+    if (!isAdmin && !adminIpSet.has(clientIp)) {
+        recordIpActivity(clientIp, pathName, req.headers['user-agent']);
     }
 
     // 1. DDoS / HTTP Flood Check
@@ -200,11 +227,14 @@ app.use((req, res, next) => {
         return res.status(429).json({ success: false, error: ddosCheck.message });
     }
 
-    // 2. Track Real Visitor
-    const isStatic = /\.(css|js|png|jpg|jpeg|svg|ico|woff|woff2|ttf|map)$/i.test(pathName);
-    const isInternal = pathName === '/health' || pathName === '/api/auth/health' || pathName.includes('visitor-logs') || pathName.includes('register-check-pair');
+    // 2. Track Real Website Visitor Only (Exclude Admin & Static Assets & Background Polling)
+    const isStatic = /\.(css|js|png|jpg|jpeg|svg|ico|woff|woff2|ttf|map|webmanifest)$/i.test(pathName);
+    const isInternalOrAdmin = isAdmin || adminIpSet.has(clientIp) || pathName.startsWith('/admin') || pathName.startsWith('/api/admin') || pathName.startsWith('/api/v1/health') || pathName.includes('visitor-logs') || pathName.includes('register-check-pair');
+    
+    // Website visits: GET on web pages or downloads
+    const isWebPortalVisit = (method === 'GET') && (pathName === '/' || pathName === '/scan' || pathName.startsWith('/download') || pathName === '/index.html' || pathName === '/api/v1' || !pathName.startsWith('/api/'));
 
-    if (!isStatic && !isInternal) {
+    if (!isStatic && !isInternalOrAdmin && isWebPortalVisit) {
         const start = Date.now();
         res.on('finish', () => {
             const duration = Date.now() - start;
@@ -212,27 +242,49 @@ app.use((req, res, next) => {
             const city = req.headers['cf-ipcity'] || '-';
             const userAgent = req.headers['user-agent'] || 'Bilinmiyor';
             const referrer = req.headers['referer'] || req.headers['referrer'] || 'Doğrudan Giriş';
+            const now = Date.now();
 
-            const logEntry = {
-                id: 'vis_' + crypto.randomUUID().substring(0, 8),
-                ip: clientIp,
-                country: country,
-                city: city,
-                method: method,
-                path: pathName,
-                statusCode: res.statusCode,
-                durationMs: duration,
-                deviceSummary: parseDeviceFromUserAgent(userAgent),
-                userAgent: userAgent.substring(0, 150),
-                referrer: referrer.substring(0, 100),
-                timestamp: new Date().toISOString(),
-                timeFormatted: new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })
-            };
+            // Deduplicate per IP: Find existing record for this IP
+            const existingIdx = visitorLogs.findIndex(v => v.ip === clientIp);
+            if (existingIdx !== -1) {
+                const existing = visitorLogs[existingIdx];
+                existing.lastActiveAt = now;
+                existing.timestamp = new Date().toISOString();
+                existing.timeFormatted = new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
+                existing.path = pathName;
+                existing.statusCode = res.statusCode;
+                existing.durationMs = duration;
+                existing.deviceSummary = parseDeviceFromUserAgent(userAgent);
+                existing.userAgent = userAgent.substring(0, 150);
+                existing.visitCount = (existing.visitCount || 1) + 1;
+                existing.isOnline = true;
+                // Move to front
+                visitorLogs.splice(existingIdx, 1);
+                visitorLogs.unshift(existing);
+            } else {
+                const logEntry = {
+                    id: 'vis_' + crypto.randomUUID().substring(0, 8),
+                    ip: clientIp,
+                    country: country,
+                    city: city,
+                    method: method,
+                    path: pathName,
+                    statusCode: res.statusCode,
+                    durationMs: duration,
+                    deviceSummary: parseDeviceFromUserAgent(userAgent),
+                    userAgent: userAgent.substring(0, 150),
+                    referrer: referrer.substring(0, 100),
+                    timestamp: new Date().toISOString(),
+                    timeFormatted: new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' }),
+                    lastActiveAt: now,
+                    visitCount: 1,
+                    isOnline: true
+                };
+                visitorLogs.unshift(logEntry);
+            }
 
-            visitorLogs.unshift(logEntry);
             if (visitorLogs.length > MAX_VISITOR_LOGS) visitorLogs.length = MAX_VISITOR_LOGS;
-
-            if (visitorLogs.length % 3 === 0) saveVisitorLogs();
+            saveVisitorLogs();
         });
     }
 
@@ -260,9 +312,8 @@ function saveCloudEndpointJson(url) {
 }
 
 function startCloudflareTunnelAutoManager() {
-    if (process.env.PUBLIC_AUTH_DOMAIN) {
-        activeCloudflareTunnelUrl = process.env.PUBLIC_AUTH_DOMAIN;
-        saveCloudEndpointJson(activeCloudflareTunnelUrl);
+    if (process.env.PUBLIC_AUTH_DOMAIN || fs.existsSync('C:\\EKOS_Server\\run_tunnel.bat')) {
+        console.log('[Cloudflare Tunnel] External or Named Token Tunnel runner active. Auto quick-tunnel manager bypassed.');
         return;
     }
 
@@ -507,6 +558,25 @@ if (!fs.existsSync(SERVER_DB_DIR)) {
 const PREMIUM_CODES_FILE = path.join(SERVER_DB_DIR, 'premium_codes.json');
 const PAYMENT_REQUESTS_FILE = path.join(SERVER_DB_DIR, 'payment_requests.json');
 const PATREON_ACCOUNTS_FILE = path.join(SERVER_DB_DIR, 'patreon_accounts.json');
+
+function getPremiumCodes() {
+    try {
+        if (fs.existsSync(PREMIUM_CODES_FILE)) {
+            return JSON.parse(fs.readFileSync(PREMIUM_CODES_FILE, 'utf8'));
+        }
+    } catch(e) {
+        console.error('[Server DB] Error reading premium_codes.json:', e);
+    }
+    return [];
+}
+
+function savePremiumCodes(codes) {
+    try {
+        fs.writeFileSync(PREMIUM_CODES_FILE, JSON.stringify(codes, null, 2), 'utf8');
+    } catch(e) {
+        console.error('[Server DB] Error saving premium_codes.json:', e);
+    }
+}
 
 function getPaymentRequests() {
     try {
@@ -3667,26 +3737,6 @@ function verifyServerApiKey(req, res, next) {
 app.use(express.static(path.join(__dirname, 'web_public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Android Mobile APK Direct Download & Updates
-app.get(['/download/android', '/download/ekos_antivirus.apk', '/download/EKOS_Antivirus_Mobile.apk', '/download/app-release.apk', '/download/app-debug.apk'], (req, res) => {
-    const candidates = [
-        path.join(__dirname, 'public', 'download', 'EKOS_Antivirus_Mobile.apk'),
-        path.join(__dirname, 'web_public', 'download', 'EKOS_Antivirus_Mobile.apk'),
-        path.join(__dirname, '..', 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk'),
-        path.join(__dirname, '..', 'android_app', 'app', 'build', 'outputs', 'apk', 'release', 'app-release.apk')
-    ];
-
-    for (const p of candidates) {
-        if (fs.existsSync(p)) {
-            res.setHeader('Content-Disposition', 'attachment; filename="EKOS_Antivirus_Mobile.apk"');
-            res.setHeader('Content-Type', 'application/vnd.android.package-archive');
-            return res.sendFile(path.resolve(p));
-        }
-    }
-
-    return res.status(404).send('Android kurulum APK dosyası sunucuda hazırlanıyor.');
-});
-
 // Android Mobile Version & OTA Updates Endpoint
 app.get(['/api/mobile/version', '/android_app/version.json', '/api/v1/mobile/version'], (req, res) => {
     return res.json({
@@ -3704,32 +3754,27 @@ app.get(['/api/mobile/version', '/android_app/version.json', '/api/v1/mobile/ver
     });
 });
 
-// Direct Android APK Download Endpoints
-app.get(['/download/android', '/download/EKOS_Antivirus_Mobile.apk', '/download/mobile.apk', '/download/app-debug.apk'], (req, res) => {
+// Direct Android APK Download Endpoints (High-performance RFC 7233 Range-aware streaming)
+app.get(['/download/android', '/download/ekos_antivirus.apk', '/download/EKOS_Antivirus_Mobile.apk', '/download/mobile.apk', '/download/app-release.apk', '/download/app-debug.apk'], (req, res) => {
     const candidates = [
         path.join(__dirname, 'web_public', 'download', 'EKOS_Antivirus_Mobile.apk'),
         path.join(__dirname, 'public', 'download', 'EKOS_Antivirus_Mobile.apk'),
         path.join(__dirname, '..', 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk'),
+        path.join(__dirname, '..', 'android_app', 'app', 'build', 'outputs', 'apk', 'release', 'app-release.apk'),
         path.join(__dirname, 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk')
     ];
 
     for (const p of candidates) {
         if (fs.existsSync(p)) {
-            try {
-                const stat = fs.statSync(p);
-                res.writeHead(200, {
-                    'Content-Type': 'application/vnd.android.package-archive',
-                    'Content-Disposition': 'attachment; filename="EKOS_Antivirus_Mobile.apk"',
-                    'Content-Length': stat.size,
-                    'Cache-Control': 'public, max-age=3600',
-                    'Access-Control-Allow-Origin': '*'
-                });
-                const readStream = fs.createReadStream(p);
-                readStream.on('error', () => res.end());
-                return readStream.pipe(res);
-            } catch(err) {
-                return res.status(500).send('Dosya okunamadı.');
-            }
+            const absolutePath = path.resolve(p);
+            res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            return res.download(absolutePath, 'EKOS_Antivirus_Mobile.apk', (err) => {
+                if (err && !res.headersSent) {
+                    res.status(500).send('İndirme hatası oluştu.');
+                }
+            });
         }
     }
 
@@ -5020,6 +5065,364 @@ app.post(['/api/v1/developer/get-user-key', '/api/developer/my-key', '/api/v1/de
         success: true,
         keyInfo: keyObj
     });
+});
+
+// --- CENTRAL ROOT ADMIN CONSOLE REST API CONTROLLERS ---
+
+function verifyAdminSession(req) {
+    const authHeader = req.headers.authorization || req.headers['x-admin-token'] || '';
+    let token = null;
+    if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7).trim();
+    } else if (authHeader) {
+        token = authHeader.trim();
+    }
+
+    if (!token) return false;
+
+    // Master Key or Static Admin Token
+    if (token === 'EKOS-ADMIN-2026-SECRET' || token === 'ekos_admin_root_master_token') {
+        const clientIp = getClientIp(req);
+        adminIpSet.add(clientIp.replace(/^::ffff:/, '').trim());
+        return true;
+    }
+
+    // Token Session Verification
+    const tokenData = tokensDb.get(token);
+    const email = typeof tokenData === 'string' ? tokenData : (tokenData ? tokenData.email : null);
+    if (email) {
+        const clean = email.toLowerCase().trim();
+        if (clean === 'admin@ekoscst.com' || clean === 'admin@ekos.com') {
+            const clientIp = getClientIp(req);
+            adminIpSet.add(clientIp.replace(/^::ffff:/, '').trim());
+            return true;
+        }
+        const user = usersDb.get(clean);
+        if (user && user.licenseTier && (user.licenseTier.includes('Yönetici') || user.licenseTier.includes('Admin'))) {
+            const clientIp = getClientIp(req);
+            adminIpSet.add(clientIp.replace(/^::ffff:/, '').trim());
+            return true;
+        }
+    }
+    return false;
+}
+
+// 1. Admin Login Endpoint
+app.post('/api/admin/login', (req, res) => {
+    const { email, password, masterKey } = req.body || {};
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const providedPass = (password || masterKey || '').trim();
+
+    if (!providedPass) {
+        return res.status(400).json({ success: false, error: 'Lütfen yönetici şifrenizi giriniz.' });
+    }
+
+    // Master Key Match
+    if (providedPass === 'EKOS-ADMIN-2026-SECRET' || providedPass === '621617' || providedPass === 'ekos1234') {
+        const adminToken = 'ekos_admin_root_master_token';
+        const clientIp = getClientIp(req);
+        adminIpSet.add(clientIp.replace(/^::ffff:/, '').trim());
+        return res.json({
+            success: true,
+            adminToken,
+            token: adminToken,
+            user: {
+                email: cleanEmail || 'admin@ekoscst.com',
+                username: 'EKOS Sistem Yöneticisi',
+                licenseTier: 'EKOS Kurumsal Yönetici'
+            }
+        });
+    }
+
+    // Check against usersDb admin accounts
+    const user = usersDb.get(cleanEmail);
+    if (user && verifyPassword(providedPass, user.passwordHash)) {
+        const isUserAdmin = cleanEmail === 'admin@ekoscst.com' || cleanEmail === 'admin@ekos.com' || (user.licenseTier && (user.licenseTier.includes('Yönetici') || user.licenseTier.includes('Admin')));
+        if (isUserAdmin) {
+            const adminToken = 'tok_admin_' + crypto.randomUUID().substring(0, 16);
+            tokensDb.set(adminToken, cleanEmail);
+            saveTokensDb();
+            const clientIp = getClientIp(req);
+            adminIpSet.add(clientIp.replace(/^::ffff:/, '').trim());
+            return res.json({
+                success: true,
+                adminToken,
+                token: adminToken,
+                user
+            });
+        }
+    }
+
+    return res.status(401).json({ success: false, error: 'Geçersiz yönetici kimlik bilgileri veya yetkisiz hesap.' });
+});
+
+// 2. Real-Time Admin Overview & KPI Dashboard Endpoint
+app.get('/api/admin/overview', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim. Lütfen tekrar giriş yapınız.' });
+    }
+
+    const now = Date.now();
+    const FIVE_MINUTES_MS = 5 * 60 * 1000;
+
+    // Filter out Admin IPs and compute online visitors count
+    const nonAdminVisitors = visitorLogs.filter(v => !adminIpSet.has(v.ip) && v.ip !== '127.0.0.1');
+    const onlineNowCount = nonAdminVisitors.filter(v => (now - (v.lastActiveAt || 0)) < FIVE_MINUTES_MS).length;
+
+    // Sort visitor logs: Pinned online active visitors FIRST, then previous visitors by lastActiveAt
+    const sortedVisitorLogs = [...nonAdminVisitors].map(v => ({
+        ...v,
+        isOnline: (now - (v.lastActiveAt || 0)) < FIVE_MINUTES_MS
+    })).sort((a, b) => {
+        if (a.isOnline !== b.isOnline) return b.isOnline ? 1 : -1;
+        return (b.lastActiveAt || 0) - (a.lastActiveAt || 0);
+    });
+
+    // Map registered users with real-time online presence and IP
+    const usersList = [];
+    for (const [email, u] of usersDb.entries()) {
+        const activity = userActivityTracker.get(email.toLowerCase().trim());
+        const isOnline = activity ? (now - activity.lastActiveAt < FIVE_MINUTES_MS) : false;
+        usersList.push({
+            id: u.id,
+            email: u.email,
+            username: u.username || u.email.split('@')[0],
+            licenseTier: u.licenseTier || 'EKOS Antivirüs Ücretsiz Sürüm',
+            licenseExpiry: u.licenseExpiry || 'Süresiz',
+            lastIp: activity ? activity.ip : (u.registeredHwSerial || '-'),
+            isOnline: isOnline,
+            lastSeenText: activity ? new Date(activity.lastActiveAt).toLocaleTimeString('tr-TR') : 'Kayıtlı',
+            registeredHwSerial: u.registeredHwSerial || '-',
+            patreonLinked: !!u.patreonLinked,
+            patreonEmail: u.patreonEmail || null,
+            totalRequests: u.totalRequests || 0
+        });
+    }
+
+    const devKeys = getDeveloperKeys();
+    let totalApiReqs = 0;
+    Object.values(devKeys).forEach(k => totalApiReqs += (k.totalRequests || 0));
+
+    const premiumCodes = getPremiumCodes();
+
+    return res.json({
+        success: true,
+        stats: {
+            onlineNow: onlineNowCount,
+            totalVisits: nonAdminVisitors.reduce((acc, v) => acc + (v.visitCount || 1), 0),
+            uniqueIps: nonAdminVisitors.length,
+            totalUsers: usersDb.size,
+            totalApiRequests: totalApiReqs,
+            totalLicenseCodes: premiumCodes.length
+        },
+        users: usersList,
+        visitorLogs: sortedVisitorLogs,
+        premiumCodes: premiumCodes
+    });
+});
+
+// 3. Visitor Logs Dedicated Live Stream Endpoint
+app.get('/api/admin/visitor-logs', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+
+    const now = Date.now();
+    const FIVE_MINUTES_MS = 5 * 60 * 1000;
+
+    const nonAdminVisitors = visitorLogs.filter(v => !adminIpSet.has(v.ip) && v.ip !== '127.0.0.1');
+    const sortedLogs = [...nonAdminVisitors].map(v => ({
+        ...v,
+        isOnline: (now - (v.lastActiveAt || 0)) < FIVE_MINUTES_MS
+    })).sort((a, b) => {
+        if (a.isOnline !== b.isOnline) return b.isOnline ? 1 : -1;
+        return (b.lastActiveAt || 0) - (a.lastActiveAt || 0);
+    });
+
+    return res.json({
+        success: true,
+        total: nonAdminVisitors.reduce((acc, v) => acc + (v.visitCount || 1), 0),
+        uniqueIps: nonAdminVisitors.length,
+        logs: sortedLogs
+    });
+});
+
+// 4. Clear Visitor Logs Endpoint
+app.post('/api/admin/clear-visitor-logs', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    visitorLogs = [];
+    saveVisitorLogs();
+    return res.json({ success: true, message: 'Tüm canlı ziyaretçi trafik geçmişi başarıyla temizlendi.' });
+});
+
+// 5. Admin List Users
+app.get('/api/admin/users', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const users = Array.from(usersDb.values());
+    return res.json({ success: true, users });
+});
+
+// 6. Admin Manage User (Update Tier, Password, Daily Limit, Delete)
+app.post('/api/admin/manage-user', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const { targetEmail, action, value } = req.body || {};
+    if (!targetEmail) {
+        return res.status(400).json({ success: false, error: 'Hedef e-posta gereklidir.' });
+    }
+
+    const clean = targetEmail.trim().toLowerCase();
+    const user = usersDb.get(clean);
+
+    if (action === 'delete_user') {
+        usersDb.delete(clean);
+        saveUsersDb();
+        return res.json({ success: true, message: `${clean} hesabı başarıyla silindi.` });
+    }
+
+    if (!user) {
+        return res.status(404).json({ success: false, error: 'Kullanıcı bulunamadı.' });
+    }
+
+    if (action === 'update_tier') {
+        user.licenseTier = value || 'EKOS Premium';
+        user.licenseExpiry = '2030-12-31';
+        usersDb.set(clean, user);
+        saveUsersDb();
+        return res.json({ success: true, message: `${clean} lisansı "${user.licenseTier}" olarak güncellendi.` });
+    }
+
+    if (action === 'reset_password') {
+        user.passwordHash = hashString(value || 'ekos1234');
+        usersDb.set(clean, user);
+        saveUsersDb();
+        return res.json({ success: true, message: `${clean} şifresi "${value || 'ekos1234'}" olarak güncellendi.` });
+    }
+
+    if (action === 'set_api_limit') {
+        const keys = getDeveloperKeys();
+        for (const k of Object.values(keys)) {
+            if (k.userEmail && k.userEmail.toLowerCase() === clean) {
+                k.dailyLimit = parseInt(value, 10) || 50000;
+            }
+        }
+        saveDeveloperKeys(keys);
+        return res.json({ success: true, message: `${clean} API günlük limiti ${value} olarak ayarlandı.` });
+    }
+
+    return res.status(400).json({ success: false, error: 'Geçersiz işlem parametresi.' });
+});
+
+// 7. Generate Premium License Code
+app.post('/api/admin/generate-license-code', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const { durationDays, note } = req.body || {};
+    const days = parseInt(durationDays, 10) || 365;
+    const rawCode = 'EKOS-PRO-' + crypto.randomBytes(4).toString('hex').toUpperCase() + '-' + crypto.randomBytes(4).toString('hex').toUpperCase();
+
+    const codes = getPremiumCodes();
+    const newCodeObj = {
+        code: rawCode,
+        durationDays: days,
+        status: "ACTIVE",
+        used: false,
+        usedBy: null,
+        usedAt: null,
+        note: (note || 'Yönetici tarafından üretildi').trim(),
+        createdAt: new Date().toISOString()
+    };
+    codes.unshift(newCodeObj);
+    savePremiumCodes(codes);
+
+    return res.json({
+        success: true,
+        code: rawCode,
+        licenseCode: newCodeObj,
+        message: `Yeni lisans kodu başarıyla üretildi: ${rawCode}`
+    });
+});
+
+// 8. Revoke / Delete Premium License Code
+app.post('/api/admin/revoke-license-code', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const { code } = req.body || {};
+    if (!code) {
+        return res.status(400).json({ success: false, error: 'Silinecek lisans kodu belirtilmelidir.' });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    let codes = getPremiumCodes();
+    const initialLen = codes.length;
+    codes = codes.filter(c => (c.code || '').toUpperCase() !== cleanCode);
+
+    if (codes.length < initialLen) {
+        savePremiumCodes(codes);
+        return res.json({ success: true, message: `"${cleanCode}" lisans kodu başarıyla silindi.` });
+    }
+    return res.status(404).json({ success: false, error: 'Lisans kodu bulunamadı.' });
+});
+
+// 9. Update User Subscription
+app.post('/api/admin/update-subscription', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const { email, licenseTier, licenseExpiry } = req.body || {};
+    if (!email) return res.status(400).json({ success: false, error: 'E-posta adresi gereklidir.' });
+
+    const clean = email.trim().toLowerCase();
+    const user = usersDb.get(clean);
+    if (!user) return res.status(404).json({ success: false, error: 'Kullanıcı bulunamadı.' });
+
+    user.licenseTier = licenseTier || user.licenseTier;
+    user.licenseExpiry = licenseExpiry || user.licenseExpiry;
+    usersDb.set(clean, user);
+    saveUsersDb();
+
+    return res.json({ success: true, message: 'Abonelik başarıyla güncellendi.' });
+});
+
+// 10. Change User Password
+app.post('/api/admin/change-password', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const { email, newPassword } = req.body || {};
+    if (!email || !newPassword) return res.status(400).json({ success: false, error: 'E-posta ve yeni şifre gereklidir.' });
+
+    const clean = email.trim().toLowerCase();
+    const user = usersDb.get(clean);
+    if (!user) return res.status(404).json({ success: false, error: 'Kullanıcı bulunamadı.' });
+
+    user.passwordHash = hashString(newPassword);
+    usersDb.set(clean, user);
+    saveUsersDb();
+
+    return res.json({ success: true, message: 'Şifre başarıyla değiştirildi.' });
+});
+
+// 11. Delete User
+app.post('/api/admin/delete-user', (req, res) => {
+    if (!verifyAdminSession(req)) {
+        return res.status(401).json({ success: false, error: 'Yetkisiz erişim.' });
+    }
+    const { email } = req.body || {};
+    if (!email) return res.status(400).json({ success: false, error: 'Silinecek e-posta belirtilmelidir.' });
+
+    const clean = email.trim().toLowerCase();
+    usersDb.delete(clean);
+    saveUsersDb();
+
+    return res.json({ success: true, message: `${clean} kullanıcısı tamamen silindi.` });
 });
 
 // Admin API: List All Developer Keys & Accounts

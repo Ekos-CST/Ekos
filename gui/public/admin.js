@@ -287,18 +287,26 @@ function renderVisitorLogsTable(logs) {
         const methodCls = l.method === 'GET' ? 'method-get' : (l.method === 'POST' ? 'method-post' : 'method-other');
         const statusCls = (l.statusCode >= 200 && l.statusCode < 300) ? 'status-200' : ((l.statusCode === 403) ? 'status-403' : 'status-400');
         
-        const logTime = l.timestamp ? new Date(l.timestamp).getTime() : 0;
-        const isRecent = (now - logTime) < 3 * 60 * 1000;
-        const liveDot = isRecent ? '<span class="online-pulse-dot" style="margin-right: 6px;" title="Şimdi Aktif"></span>' : '';
+        const logTime = l.lastActiveAt || (l.timestamp ? new Date(l.timestamp).getTime() : 0);
+        const isOnline = l.isOnline === true || ((now - logTime) < 5 * 60 * 1000);
+        const liveDot = isOnline 
+            ? '<span class="online-pulse-dot" style="margin-right: 8px; vertical-align: middle;" title="Şu An Web Sitesinde Aktif (Canlı Ziyaretçi)"></span>' 
+            : '<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#475569; margin-right:8px; vertical-align:middle;" title="Geçmiş Ziyaretçi (Ayrıldı)"></span>';
+        
+        const visitBadge = (l.visitCount && l.visitCount > 1) 
+            ? `<span style="font-size:10px; padding:1px 6px; border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; font-weight:700; margin-left:6px;" title="Bu IP'den gelen toplam sayfa/indirme isteği">${l.visitCount} İstek</span>` 
+            : '';
 
         return `
-            <tr>
-                <td style="font-family: var(--font-mono); font-size: 12px; color: #94a3b8; white-space: nowrap;">
-                    ${liveDot}${escapeHtml(timePart)}
+            <tr style="${isOnline ? 'background: rgba(34, 197, 94, 0.04);' : ''}">
+                <td style="font-family: var(--font-mono); font-size: 12px; color: ${isOnline ? '#4ade80' : '#94a3b8'}; white-space: nowrap;">
+                    <div style="display:flex; align-items:center;">
+                        ${liveDot}<span>${escapeHtml(timePart)}</span>${visitBadge}
+                    </div>
                 </td>
                 <td style="white-space: nowrap;">
                     <span class="country-flag-badge">${escapeHtml(l.country || 'TR')}</span>
-                    <span class="visitor-ip-badge">${escapeHtml(l.ip)}</span>
+                    <span class="visitor-ip-badge" style="${isOnline ? 'border-color: rgba(34,197,94,0.5); color: #86efac;' : ''}">${escapeHtml(l.ip)}</span>
                     <span style="font-size: 11px; color: #64748b; margin-left: 4px;">${escapeHtml(l.city && l.city !== '-' ? l.city : '')}</span>
                 </td>
                 <td style="white-space: nowrap;">
@@ -312,7 +320,7 @@ function renderVisitorLogsTable(logs) {
                     <span class="visitor-status-badge ${statusCls}">${escapeHtml(l.statusCode || 200)} • ${l.durationMs || 0}ms</span>
                 </td>
                 <td style="white-space: nowrap;">
-                    <button type="button" class="btn-row-action" onclick="navigator.clipboard.writeText('${escapeHtml(l.ip)}'); showToast('IP kopyalandı.', 'success');">IP Kopyala</button>
+                    <button type="button" class="btn-row-action" onclick="navigator.clipboard.writeText('${escapeHtml(l.ip)}'); showToast('IP kopyalandı: ${escapeHtml(l.ip)}', 'success');">IP Kopyala</button>
                 </td>
             </tr>
         `;

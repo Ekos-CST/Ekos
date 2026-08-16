@@ -21,7 +21,7 @@
             android:id="@+id/ivAppIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/ekos_logo"
             android:contentDescription="App Icon" />
 
         <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Uygulama Adı"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/text_main"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="com.example.package"
-                android:textColor="@color/text_muted"
+                android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:ellipsize="end"
                 android:maxLines="1" />
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tehdit Detayı"
-                android:textColor="@color/status_red_light"
+                android:textColor="@color/accent_crimson_light"
                 android:textSize="11sp"
                 android:visibility="gone" />
         </LinearLayout>
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="GÜVENLİ"
-            android:textColor="@color/status_green_light"
+            android:textColor="@color/accent_emerald_light"
             android:background="@drawable/bg_card_glass"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"

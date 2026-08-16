@@ -17,34 +17,34 @@ import com.ekos.antivirus.engine.ScannedAppItem
 import com.ekos.antivirus.engine.ThreatSeverity
 import kotlinx.coroutines.launch
 
-class ScanActivity : AppCompatActivity() {
+class DeepScanActivity : AppCompatActivity() {
 
     private lateinit var rootLayout: View
     private lateinit var btnBack: ImageButton
     private lateinit var tvStatus: TextView
     private lateinit var tvPercentage: TextView
     private lateinit var pbProgress: ProgressBar
-    private lateinit var tvCurrentApp: TextView
+    private lateinit var tvCurrentFile: TextView
     private lateinit var tvHeader: TextView
-    private lateinit var rvApps: RecyclerView
+    private lateinit var rvResults: RecyclerView
 
     private val scannedList = mutableListOf<ScannedAppItem>()
     private lateinit var adapter: ScannedAppAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_scan)
+        setContentView(R.layout.activity_deep_scan)
 
-        rootLayout = findViewById(R.id.rootScanLayout)
-        btnBack = findViewById(R.id.btnBackFromScan)
-        tvStatus = findViewById(R.id.tvScanCurrentStatus)
-        tvPercentage = findViewById(R.id.tvScanPercentage)
-        pbProgress = findViewById(R.id.pbScanProgress)
-        tvCurrentApp = findViewById(R.id.tvCurrentScanningApp)
-        tvHeader = findViewById(R.id.tvScanListHeader)
-        rvApps = findViewById(R.id.rvScannedApps)
+        rootLayout = findViewById(R.id.rootDeepScanLayout)
+        btnBack = findViewById(R.id.btnBackFromDeepScan)
+        tvStatus = findViewById(R.id.tvDeepScanStatus)
+        tvPercentage = findViewById(R.id.tvDeepScanPercentage)
+        pbProgress = findViewById(R.id.pbDeepScanProgress)
+        tvCurrentFile = findViewById(R.id.tvDeepCurrentFile)
+        tvHeader = findViewById(R.id.tvDeepScanHeader)
+        rvResults = findViewById(R.id.rvDeepScanResults)
 
-        // Notch & Status Bar Inset Handling
+        // Notch & Status Bar Insets
         ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             v.setPadding(20, statusBarHeight + 10, 20, 12)
@@ -54,22 +54,22 @@ class ScanActivity : AppCompatActivity() {
         btnBack.setOnClickListener { finish() }
 
         adapter = ScannedAppAdapter(scannedList)
-        rvApps.layoutManager = LinearLayoutManager(this)
-        rvApps.adapter = adapter
+        rvResults.layoutManager = LinearLayoutManager(this)
+        rvResults.adapter = adapter
 
-        startEngineScan()
+        startDeepEngineScan()
     }
 
-    private fun startEngineScan() {
+    private fun startDeepEngineScan() {
         val scanner = AppScannerEngine(this)
 
         lifecycleScope.launch {
             try {
-                val results = scanner.performQuickScan { current, total, appName ->
+                val results = scanner.performDeepScan { current, total, itemName ->
                     val pct = if (total > 0) ((current.toFloat() / total.toFloat()) * 100).toInt() else 0
                     pbProgress.progress = pct
                     tvPercentage.text = "$pct%"
-                    tvCurrentApp.text = "İnceleniyor: $appName"
+                    tvCurrentFile.text = "Analiz: $itemName"
                 }
 
                 scannedList.clear()
@@ -78,18 +78,18 @@ class ScanActivity : AppCompatActivity() {
 
                 val threatsCount = results.count { it.severity != ThreatSeverity.SAFE }
                 if (threatsCount > 0) {
-                    tvStatus.text = "DİKKAT: $threatsCount Şüpheli / Tehdit Tespit Edildi!"
-                    tvStatus.setTextColor(ContextCompat.getColor(this@ScanActivity, R.color.accent_crimson_light))
+                    tvStatus.text = "DİKKAT: $threatsCount Şüpheli / Tehdit Bulundu!"
+                    tvStatus.setTextColor(ContextCompat.getColor(this@DeepScanActivity, R.color.accent_crimson_light))
                 } else {
-                    tvStatus.text = "Hızlı Tarama Tamamlandı. Tehdit Bulunamadı."
-                    tvStatus.setTextColor(ContextCompat.getColor(this@ScanActivity, R.color.accent_emerald_light))
+                    tvStatus.text = "Derin Tarama Tamamlandı. Sistem Güvenli."
+                    tvStatus.setTextColor(ContextCompat.getColor(this@DeepScanActivity, R.color.accent_emerald_light))
                 }
 
-                tvCurrentApp.text = "Toplam ${results.size} uygulama ve paket başarıyla incelendi."
-                tvHeader.text = "TARANAN UYGULAMALAR (${results.size})"
+                tvCurrentFile.text = "Toplam ${results.size} uygulama ve dosya derinlemesine denetlendi."
+                tvHeader.text = "DERİN TARAMA RAPORU (${results.size})"
             } catch (e: Exception) {
-                tvStatus.text = "Tarama tamamlandı."
-                tvStatus.setTextColor(ContextCompat.getColor(this@ScanActivity, R.color.accent_emerald_light))
+                tvStatus.text = "Tarama tamamlandı (Bazı sistem dizinleri korumalı)."
+                tvStatus.setTextColor(ContextCompat.getColor(this@DeepScanActivity, R.color.accent_emerald_light))
             }
         }
     }

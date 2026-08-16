@@ -1,12 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootMainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main">
+    android:orientation="vertical"
+    android:background="@color/bg_dark"
+    android:fitsSystemWindows="true">
 
-    <androidx.core.widget.NestedScrollView
+    <!-- Top Header Bar (Desktop App Style) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp"
+        android:background="@color/bg_sidebar">
+
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:src="@drawable/ekos_logo"
+            android:contentDescription="EKOS Logo" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EKOS"
+                android:textColor="@color/text_main"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ANTİVİRÜS MOTORU"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+        </LinearLayout>
+
+        <!-- User Login / Profile Pill -->
+        <LinearLayout
+            android:id="@+id/btnHeaderAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_card_glass"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="6dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/tvHeaderAccountStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤 Giriş Yap"
+                android:textColor="@color/accent_purple_light"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -17,65 +87,45 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Top Header -->
+            <!-- System Protection Status Bar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="24dp">
+                android:background="@drawable/bg_card_glass"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
+                android:layout_marginBottom="16dp">
 
-                <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:contentDescription="Logo" />
-
-                <LinearLayout
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="EKOS Antivirüs"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mobil Güvenlik &amp; Tehdit Kalkanı"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                    android:text="SİSTEM DURUMU:"
+                    android:textColor="@color/text_subtle"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvHeaderStatusBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="● GÜVENLİ"
-                    android:textColor="@color/status_green_light"
-                    android:background="@drawable/bg_card_glass"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="5dp"
+                    android:text="● SİSTEM KORUMADA"
+                    android:textColor="@color/accent_emerald_light"
                     android:textSize="11sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Central Glowing Shield Status Box -->
+            <!-- Central Glowing Shield Status Box (Desktop Cyber Theme) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/bg_card_border"
+                app:strokeColor="@color/border_hover"
                 app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp">
+                app:cardCornerRadius="18dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -84,7 +134,7 @@
                     android:gravity="center"
                     android:padding="24dp">
 
-                    <!-- Radar Circle Container -->
+                    <!-- Giant Logo & Pulsing Radar Circle -->
                     <FrameLayout
                         android:layout_width="140dp"
                         android:layout_height="140dp"
@@ -92,12 +142,11 @@
 
                         <ImageView
                             android:id="@+id/ivShieldIcon"
-                            android:layout_width="72dp"
-                            android:layout_height="72dp"
+                            android:layout_width="84dp"
+                            android:layout_height="84dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_lock_idle_lock"
-                            app:tint="@color/accent_cyan"
-                            android:contentDescription="Shield" />
+                            android:src="@drawable/ekos_logo"
+                            android:contentDescription="EKOS Shield" />
                     </FrameLayout>
 
                     <TextView
@@ -105,9 +154,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="@string/shield_protected_title"
-                        android:textColor="@color/status_green_light"
-                        android:textSize="16sp"
+                        android:text="SİSTEM TAM KORUMADA"
+                        android:textColor="@color/accent_emerald_light"
+                        android:textSize="17sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.05" />
 
@@ -116,12 +165,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/shield_protected_sub"
-                        android:textColor="@color/text_secondary"
+                        android:text="Gerçek zamanlı motor &amp; 1.4M+ bulut tehdit kalkanı devrede."
+                        android:textColor="@color/text_muted"
                         android:textSize="12sp"
                         android:textAlignment="center" />
 
-                    <!-- Quick Metric Row -->
+                    <!-- Quick Metric Row (Desktop Dashboard Style) -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -140,14 +189,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="--"
-                                android:textColor="@color/text_primary"
-                                android:textSize="16sp"
+                                android:textColor="@color/text_main"
+                                android:textSize="17sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="UYGULAMA"
-                                android:textColor="@color/text_muted"
+                                android:textColor="@color/text_subtle"
                                 android:textSize="10sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -162,14 +211,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1.4M+"
-                                android:textColor="@color/accent_cyan"
-                                android:textSize="16sp"
+                                android:textColor="@color/accent_purple_light"
+                                android:textSize="17sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="İMZA DB"
-                                android:textColor="@color/text_muted"
+                                android:textColor="@color/text_subtle"
                                 android:textSize="10sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -185,14 +234,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="@color/status_green_light"
-                                android:textSize="16sp"
+                                android:textColor="@color/accent_emerald_light"
+                                android:textSize="17sp"
                                 android:textStyle="bold" />
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="TEHDİT"
-                                android:textColor="@color/text_muted"
+                                android:textColor="@color/text_subtle"
                                 android:textSize="10sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
@@ -202,24 +251,36 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Main Primary Scan CTA Button -->
+            <!-- Action Button 1: Quick Scan -->
             <Button
                 android:id="@+id/btnStartQuickScan"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/btn_quick_scan"
+                android:layout_height="54dp"
+                android:text="⚡ HIZLI SİSTEM TARAMASI BAŞLAT"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="14sp"
-                android:background="@drawable/bg_button_cyan"
+                android:textSize="13sp"
+                android:background="@drawable/bg_button_primary"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Action Button 2: Deep Scan -->
+            <Button
+                android:id="@+id/btnStartDeepScan"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:text="🛡️ KAPSAMLI DERİN TARAMA (DEPOLAMA &amp; APK)"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:background="@drawable/bg_button_emerald"
                 android:layout_marginBottom="24dp" />
 
             <!-- Section Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GÜVENLİK MODÜLLERİ"
-                android:textColor="@color/text_muted"
+                android:text="GÜVENLİK KALKANLARI &amp; MODÜLLER"
+                android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"
@@ -257,8 +318,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/btn_web_shield"
-                            android:textColor="@color/text_primary"
+                            android:text="Canlı Web &amp; Oltalama Kalkanı"
+                            android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -266,7 +327,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Sahte bankacılık &amp; oltalama bağlantı denetimi"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -300,7 +361,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:src="@android:drawable/ic_menu_edit"
-                        app:tint="@color/status_amber" />
+                        app:tint="@color/accent_amber" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -312,8 +373,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/btn_clipboard_shield"
-                            android:textColor="@color/text_primary"
+                            android:text="Pano Tehdit Koruyucu"
+                            android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -321,7 +382,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Panodaki zararlı komut &amp; script enjeksiyon koruması"
-                            android:textColor="@color/text_secondary"
+                            android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -329,15 +390,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="AÇ ➔"
-                        android:textColor="@color/status_amber"
+                        android:textColor="@color/accent_amber"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Module 3: Account & QR Cloud Sync -->
+            <!-- Module 3: Account & License Management -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardAccountSync"
+                android:id="@+id/cardAccountManagement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -354,8 +415,8 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@android:drawable/ic_menu_share"
-                        app:tint="@color/status_purple" />
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        app:tint="@color/accent_purple_light" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -367,30 +428,30 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/btn_account_sync"
-                            android:textColor="@color/text_primary"
+                            android:text="Hesap &amp; Lisans Merkezi"
+                            android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Masaüstü ve Web lisansını telefona senkronize et"
-                            android:textColor="@color/text_secondary"
+                            android:text="Oturum aç, lisans eşle ve API kotanı yönet"
+                            android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EŞLE ➔"
-                        android:textColor="@color/status_purple"
+                        android:text="YÖNET ➔"
+                        android:textColor="@color/accent_purple_light"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

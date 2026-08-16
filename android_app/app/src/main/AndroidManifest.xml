@@ -55,7 +55,21 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
 
-        <!-- Account QR Sync Activity -->
+        <!-- Deep Storage & App Scanner Activity -->
+        <activity
+            android:name=".DeepScanActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Account Login & Management Activity -->
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Legacy Account Sync Activity -->
         <activity
             android:name=".AccountSyncActivity"
             android:exported="false"

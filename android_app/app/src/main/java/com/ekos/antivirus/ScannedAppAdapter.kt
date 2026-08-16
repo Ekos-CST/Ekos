@@ -44,18 +44,18 @@ class ScannedAppAdapter(
         when (item.severity) {
             ThreatSeverity.SAFE -> {
                 holder.tvBadge.text = "GÜVENLİ"
-                holder.tvBadge.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.status_green_light))
+                holder.tvBadge.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.accent_emerald_light))
                 holder.tvThreat.visibility = View.GONE
             }
             ThreatSeverity.SUSPICIOUS -> {
                 holder.tvBadge.text = "ŞÜPHELİ"
-                holder.tvBadge.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.status_amber_light))
+                holder.tvBadge.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.accent_amber_light))
                 holder.tvThreat.text = item.riskDetails ?: "Şüpheli izin veya imza"
                 holder.tvThreat.visibility = View.VISIBLE
             }
             ThreatSeverity.MALICIOUS -> {
                 holder.tvBadge.text = "TEHDİT"
-                holder.tvBadge.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.status_red_light))
+                holder.tvBadge.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.accent_crimson_light))
                 holder.tvThreat.text = "${item.threatName}: ${item.riskDetails ?: "Zararlı yazılım tespiti"}"
                 holder.tvThreat.visibility = View.VISIBLE
             }

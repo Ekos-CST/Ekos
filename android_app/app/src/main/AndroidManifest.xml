@@ -48,13 +48,6 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
 
-        <!-- Clipboard & Exploit Shield Activity -->
-        <activity
-            android:name=".ClipboardShieldActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
-
         <!-- Deep Storage & App Scanner Activity -->
         <activity
             android:name=".DeepScanActivity"
@@ -65,13 +58,6 @@
         <!-- Account Login & Management Activity -->
         <activity
             android:name=".AccountActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
-
-        <!-- Legacy Account Sync Activity -->
-        <activity
-            android:name=".AccountSyncActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />

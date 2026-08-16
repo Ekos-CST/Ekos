@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.ekos.antivirus.engine.EkosApiClient
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
 class AccountActivity : AppCompatActivity() {
@@ -22,14 +23,20 @@ class AccountActivity : AppCompatActivity() {
     private lateinit var rootLayout: View
     private lateinit var btnBack: ImageButton
 
+    // Active Premium Badge Card
+    private lateinit var cardActivePremium: MaterialCardView
+    private lateinit var tvActivePremiumCode: TextView
+
     // Profile View
-    private lateinit var layoutProfileView: LinearLayout
+    private lateinit var layoutProfileView: MaterialCardView
     private lateinit var tvProfileName: TextView
     private lateinit var tvProfileEmail: TextView
     private lateinit var tvProfileTierBadge: TextView
+    private lateinit var btnLogout: Button
+
+    // License Activation
     private lateinit var etProfileLicenseCode: EditText
     private lateinit var btnApplyProfileLicense: Button
-    private lateinit var btnLogout: Button
 
     // Auth Form View
     private lateinit var layoutAuthForm: LinearLayout
@@ -57,7 +64,7 @@ class AccountActivity : AppCompatActivity() {
         rootLayout = findViewById(R.id.rootAccountLayout)
         btnBack = findViewById(R.id.btnBackFromAccount)
 
-        // Notch & Status Bar Inset Handling
+        // Notch & Status Bar Insets
         ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             v.setPadding(0, statusBarHeight, 0, 0)
@@ -70,13 +77,17 @@ class AccountActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        cardActivePremium = findViewById(R.id.cardActivePremium)
+        tvActivePremiumCode = findViewById(R.id.tvActivePremiumCode)
+
         layoutProfileView = findViewById(R.id.layoutProfileView)
         tvProfileName = findViewById(R.id.tvProfileName)
         tvProfileEmail = findViewById(R.id.tvProfileEmail)
         tvProfileTierBadge = findViewById(R.id.tvProfileTierBadge)
+        btnLogout = findViewById(R.id.btnLogout)
+
         etProfileLicenseCode = findViewById(R.id.etProfileLicenseCode)
         btnApplyProfileLicense = findViewById(R.id.btnApplyProfileLicense)
-        btnLogout = findViewById(R.id.btnLogout)
 
         layoutAuthForm = findViewById(R.id.layoutAuthForm)
         tabBtnLogin = findViewById(R.id.tabBtnLogin)
@@ -141,11 +152,21 @@ class AccountActivity : AppCompatActivity() {
         btnApplyProfileLicense.setOnClickListener {
             val code = etProfileLicenseCode.text.toString().trim()
             if (code.isNotBlank()) {
+                val isPrem = code.startsWith("EKOS-PREM", ignoreCase = true) || code.contains("PREM", ignoreCase = true)
+                val tierName = if (isPrem) "EKOS Kurumsal Premium" else "EKOS Pro Lisansı"
+
                 val prefs = getSharedPreferences("EKOS_MOBILE_PREFS", Context.MODE_PRIVATE)
-                prefs.edit().putString("license_tier", "EKOS Kurumsal Premium").apply()
-                tvProfileTierBadge.text = "★ EKOS KURUMSAL PREMİUM"
-                Toast.makeText(this, "Lisans başarıyla tanımlandı: $code", Toast.LENGTH_LONG).show()
+                prefs.edit()
+                    .putString("license_tier", tierName)
+                    .putString("license_key", code)
+                    .apply()
+
+                EkosApiClient.customApiKey = code
+                checkExistingSession()
+                Toast.makeText(this, "Lisans kodu başarıyla aktifleştirildi: $code", Toast.LENGTH_LONG).show()
                 etProfileLicenseCode.text.clear()
+            } else {
+                Toast.makeText(this, "Lütfen geçerli bir lisans kodu giriniz.", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -153,6 +174,7 @@ class AccountActivity : AppCompatActivity() {
             val prefs = getSharedPreferences("EKOS_MOBILE_PREFS", Context.MODE_PRIVATE)
             prefs.edit().clear().apply()
             EkosApiClient.authToken = null
+            EkosApiClient.customApiKey = null
             checkExistingSession()
             Toast.makeText(this, "Oturum kapatıldı.", Toast.LENGTH_SHORT).show()
         }
@@ -164,6 +186,17 @@ class AccountActivity : AppCompatActivity() {
         val email = prefs.getString("user_email", null)
         val name = prefs.getString("user_name", null)
         val tier = prefs.getString("license_tier", "EKOS Standart") ?: "EKOS Standart"
+        val licenseKey = prefs.getString("license_key", null)
+
+        val isPremium = tier.contains("Prem", ignoreCase = true) || tier.contains("Kurumsal", ignoreCase = true) || (licenseKey != null && licenseKey.contains("PREM", ignoreCase = true))
+
+        // Show/Hide Active Premium Gold Badge Card
+        if (isPremium) {
+            cardActivePremium.visibility = View.VISIBLE
+            tvActivePremiumCode.text = "Lisans Anahtarı: ${licenseKey ?: "Kurumsal Hesap Entegre"}"
+        } else {
+            cardActivePremium.visibility = View.GONE
+        }
 
         if (token != null && email != null) {
             layoutProfileView.visibility = View.VISIBLE
@@ -184,7 +217,7 @@ class AccountActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val res = EkosApiClient.login(email, pass)
             btnSubmitLogin.isEnabled = true
-            btnSubmitLogin.text = "GİRİŞ YAP VE EŞLE"
+            btnSubmitLogin.text = "GİRİŞ YAP VE SENKRONİZE ET"
 
             if (res.success && res.token != null) {
                 val prefs = getSharedPreferences("EKOS_MOBILE_PREFS", Context.MODE_PRIVATE)

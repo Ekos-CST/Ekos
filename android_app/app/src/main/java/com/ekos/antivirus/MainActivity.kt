@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnStartQuickScan: Button
     private lateinit var btnStartDeepScan: Button
     private lateinit var cardWebShield: MaterialCardView
-    private lateinit var cardClipboardShield: MaterialCardView
     private lateinit var cardAccountManagement: MaterialCardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         btnStartQuickScan = findViewById(R.id.btnStartQuickScan)
         btnStartDeepScan = findViewById(R.id.btnStartDeepScan)
         cardWebShield = findViewById(R.id.cardWebShield)
-        cardClipboardShield = findViewById(R.id.cardClipboardShield)
         cardAccountManagement = findViewById(R.id.cardAccountManagement)
     }
 
@@ -87,10 +85,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, WebShieldActivity::class.java))
         }
 
-        cardClipboardShield.setOnClickListener {
-            startActivity(Intent(this, ClipboardShieldActivity::class.java))
-        }
-
         cardAccountManagement.setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
         }
@@ -104,10 +98,16 @@ class MainActivity : AppCompatActivity() {
 
         if (token != null && name != null) {
             val shortName = name.split(" ").firstOrNull() ?: name
-            val tierTag = if (tier != null && tier.contains("Prem", ignoreCase = true)) "★ PREMİUM" else "★ ÜYE"
+            val isPrem = tier != null && (tier.contains("Prem", ignoreCase = true) || tier.contains("Kurumsal", ignoreCase = true))
+            val tierTag = if (isPrem) "👑 PREMİUM" else "★ ÜYE"
             tvHeaderAccountStatus.text = "👤 $shortName ($tierTag)"
         } else {
-            tvHeaderAccountStatus.text = "👤 Giriş Yap"
+            val localKey = prefs.getString("license_key", null)
+            if (localKey != null) {
+                tvHeaderAccountStatus.text = "👑 Premium Aktif"
+            } else {
+                tvHeaderAccountStatus.text = "👤 Giriş Yap"
+            }
         }
     }
 

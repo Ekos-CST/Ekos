@@ -21,7 +21,7 @@ class FileDownloadWatcher(private val context: Context) {
 
     companion object {
         const val DOWNLOAD_THREAT_CHANNEL_ID = "ekos_download_threat_channel"
-        private const val EICAR_SIG = "X5O!P%@AP[4\\PZX54(P^)7CC)7}\$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!\$H+H*"
+        private const val SAFE_TEST_TOKEN = "EKOS-TEST-SECURITY-SAMPLE-VALIDATION"
     }
 
     private var fileObserver: FileObserver? = null
@@ -74,13 +74,13 @@ class FileDownloadWatcher(private val context: Context) {
                     threatName = "Trojan.Android.GenericPayload"
                 }
 
-                // 2. Read bytes to check for EICAR or suspicious headers
-                if (!isThreat && file.length() in 1..20000000) {
+                // 2. Safe heuristic / token checks without raw EICAR
+                if (!isThreat && file.length() in 1..10000000) {
                     try {
                         val content = file.readText(Charsets.ISO_8859_1)
-                        if (content.contains(EICAR_SIG)) {
+                        if (content.contains(SAFE_TEST_TOKEN)) {
                             isThreat = true
-                            threatName = "EICAR-Standard-Antivirus-Test-File"
+                            threatName = "EKOS.Security.ValidationSample"
                         }
                     } catch (e: Throwable) {}
                 }

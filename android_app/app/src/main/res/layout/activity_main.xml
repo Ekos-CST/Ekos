@@ -249,19 +249,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GÜVENLİK VE OPTİMİZASYON ARAÇLARI"
+                android:text="GÜVENLİK VE OPTİMİZASYON MERKEZİ"
                 android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Tool 1: Junk & Cache Cleaner -->
+            <!-- Hub 1: Sistem Optimizasyonu (Integrated cleaner, privacy, network, ram) -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardCleaner"
+                android:id="@+id/cardSystemOptimization"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeColor="@color/bg_card_border"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="16dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -269,13 +273,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="18dp"
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:src="@android:drawable/ic_menu_delete"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_manage"
                         app:tint="@color/accent_emerald_light" />
 
                     <LinearLayout
@@ -288,7 +292,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Gereksiz Dosya Temizleyici"
+                            android:text="Sistem Optimizasyonu"
                             android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -296,7 +300,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Önbellek, log ve çöp dosyaları temizle"
+                            android:text="Gereksiz dosya temizleme, gizlilik, ağ ve RAM"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -304,184 +308,23 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TEMİZLE"
+                        android:text="YÖNET"
                         android:textColor="@color/accent_emerald_light"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Tool 2: Privacy & Permissions Guard -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPrivacyGuard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:src="@android:drawable/ic_menu_view"
-                        app:tint="@color/accent_cyan" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Gizlilik ve İzin Kalkanı"
-                            android:textColor="@color/text_main"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Kamera, mikrofon ve konum izinlerini denetle"
-                            android:textColor="@color/text_muted"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="DENETLE"
-                        android:textColor="@color/accent_cyan"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Tool 3: Network & Wi-Fi Shield -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardNetworkShield"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:src="@android:drawable/ic_menu_compass"
-                        app:tint="@color/accent_emerald_light" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ağ ve Wi-Fi Güvenliği"
-                            android:textColor="@color/text_main"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="DNS sızıntısı ve WPA şifreleme testi"
-                            android:textColor="@color/text_muted"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TEST ET"
-                        android:textColor="@color/accent_emerald_light"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Tool 4: RAM & Process Booster -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardRamBooster"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
-                        android:src="@android:drawable/ic_menu_rotate"
-                        app:tint="@color/accent_purple_light" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="RAM ve Performans Hızlandırıcı"
-                            android:textColor="@color/text_main"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Arka plan süreçlerini optimize et ve hızlandır"
-                            android:textColor="@color/text_muted"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HIZLANDIR"
-                        android:textColor="@color/accent_purple_light"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Tool 5: Web & Phishing Shield -->
+            <!-- Hub 2: Web & Phishing Shield -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWebShield"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeColor="@color/bg_card_border"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="16dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -489,12 +332,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="18dp"
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:src="@android:drawable/ic_menu_search"
                         app:tint="@color/accent_cyan" />
 
@@ -531,12 +374,16 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Tool 6: Account & License Management -->
+            <!-- Hub 3: Hesap Ayarları (Renamed from Hesap ve Lisans Merkezi) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardAccountManagement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:strokeColor="@color/bg_card_border"
+                app:strokeWidth="1dp"
+                app:cardCornerRadius="16dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -544,12 +391,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="18dp"
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
                         android:src="@android:drawable/ic_menu_myplaces"
                         app:tint="@color/accent_purple_light" />
 
@@ -563,7 +410,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hesap ve Lisans Merkezi"
+                            android:text="Hesap Ayarları"
                             android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -571,7 +418,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lisans planlarını incele, kod gir ve oturum aç"
+                            android:text="Lisans planları, oturum ve profil yönetimi"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>

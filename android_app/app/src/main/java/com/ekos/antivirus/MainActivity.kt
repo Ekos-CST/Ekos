@@ -26,11 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnStartQuickScan: Button
     private lateinit var btnStartDeepScan: Button
 
-    // Module Cards
-    private lateinit var cardCleaner: MaterialCardView
-    private lateinit var cardPrivacyGuard: MaterialCardView
-    private lateinit var cardNetworkShield: MaterialCardView
-    private lateinit var cardRamBooster: MaterialCardView
+    // Hub Cards
+    private lateinit var cardSystemOptimization: MaterialCardView
     private lateinit var cardWebShield: MaterialCardView
     private lateinit var cardAccountManagement: MaterialCardView
 
@@ -70,10 +67,7 @@ class MainActivity : AppCompatActivity() {
         btnStartQuickScan = findViewById(R.id.btnStartQuickScan)
         btnStartDeepScan = findViewById(R.id.btnStartDeepScan)
 
-        cardCleaner = findViewById(R.id.cardCleaner)
-        cardPrivacyGuard = findViewById(R.id.cardPrivacyGuard)
-        cardNetworkShield = findViewById(R.id.cardNetworkShield)
-        cardRamBooster = findViewById(R.id.cardRamBooster)
+        cardSystemOptimization = findViewById(R.id.cardSystemOptimization)
         cardWebShield = findViewById(R.id.cardWebShield)
         cardAccountManagement = findViewById(R.id.cardAccountManagement)
     }
@@ -91,20 +85,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, DeepScanActivity::class.java))
         }
 
-        cardCleaner.setOnClickListener {
-            startActivity(Intent(this, CleanerActivity::class.java))
-        }
-
-        cardPrivacyGuard.setOnClickListener {
-            startActivity(Intent(this, PrivacyGuardActivity::class.java))
-        }
-
-        cardNetworkShield.setOnClickListener {
-            startActivity(Intent(this, NetworkShieldActivity::class.java))
-        }
-
-        cardRamBooster.setOnClickListener {
-            startActivity(Intent(this, RamBoosterActivity::class.java))
+        cardSystemOptimization.setOnClickListener {
+            startActivity(Intent(this, SystemOptimizationActivity::class.java))
         }
 
         cardWebShield.setOnClickListener {

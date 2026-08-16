@@ -65,6 +65,13 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
 
+        <!-- System Optimization Hub Activity -->
+        <activity
+            android:name=".SystemOptimizationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
         <!-- Junk & Cache Cleaner Activity -->
         <activity
             android:name=".CleanerActivity"

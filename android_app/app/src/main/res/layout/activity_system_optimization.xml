@@ -50,7 +50,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Interactive Ekos Turbo Optimization Hero Card -->
+            <!-- Interactive Compact Ekos Turbo Optimization Hero Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardTurboHero"
                 android:layout_width="match_parent"
@@ -59,51 +59,58 @@
                 app:cardBackgroundColor="@color/bg_card"
                 app:strokeColor="@color/border_hover"
                 app:strokeWidth="1.5dp"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="18dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp"
+                    android:padding="20dp"
                     android:gravity="center_horizontal">
 
-                    <!-- Interactive Animated Ekos Logo Core Button -->
+                    <!-- Compact Logo Center with Ripple Pulse Effect -->
                     <FrameLayout
-                        android:id="@+id/btnEkosLogoCore"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="@drawable/bg_shield_gradient">
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false">
 
-                        <!-- Glowing Halo Ring Effect -->
-                        <ProgressBar
-                            android:id="@+id/pbTurboSpin"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
+                        <!-- Glowing Energy Wave Effect -->
+                        <View
+                            android:id="@+id/viewPulseWave"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
                             android:layout_gravity="center"
-                            android:indeterminate="true"
-                            android:indeterminateTint="@color/accent_emerald_light"
-                            android:visibility="gone" />
+                            android:background="@drawable/bg_pulse_ripple"
+                            android:visibility="invisible" />
 
-                        <ImageView
-                            android:id="@+id/ivEkosOptLogo"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
+                        <!-- Compact Logo Core (64dp) -->
+                        <FrameLayout
+                            android:id="@+id/btnEkosLogoCore"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
                             android:layout_gravity="center"
-                            android:src="@mipmap/ic_launcher"
-                            android:contentDescription="Ekos Logo" />
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="@drawable/bg_shield_gradient">
+
+                            <ImageView
+                                android:id="@+id/ivEkosOptLogo"
+                                android:layout_width="34dp"
+                                android:layout_height="34dp"
+                                android:layout_gravity="center"
+                                android:src="@mipmap/ic_launcher"
+                                android:contentDescription="Ekos Logo" />
+                        </FrameLayout>
                     </FrameLayout>
 
                     <TextView
                         android:id="@+id/tvTurboTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="12dp"
                         android:text="EKOS TEK TIKLA OPTİMİZASYON"
                         android:textColor="@color/accent_emerald_light"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.06" />
 
@@ -111,17 +118,17 @@
                         android:id="@+id/tvTurboStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="4dp"
                         android:text="Tüm modülleri otomatik çalıştırmak için logoya dokunun"
                         android:textColor="@color/text_main"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:textAlignment="center" />
 
                     <TextView
                         android:id="@+id/tvTurboStepDetail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="2dp"
                         android:text="Gereksiz dosyalar, bellek, ağ ve gizlilik taranacak."
                         android:textColor="@color/text_muted"
                         android:textSize="11sp"
@@ -131,8 +138,8 @@
                         android:id="@+id/pbTurboProgress"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_height="5dp"
+                        android:layout_marginTop="14dp"
                         android:max="100"
                         android:progress="0"
                         android:progressDrawable="@drawable/bg_button_emerald"

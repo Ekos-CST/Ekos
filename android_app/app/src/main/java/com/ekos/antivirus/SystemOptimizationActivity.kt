@@ -11,9 +11,10 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
-import android.view.animation.RotateAnimation
+import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -39,7 +40,7 @@ class SystemOptimizationActivity : AppCompatActivity() {
     // Hero Logo and animation elements
     private lateinit var btnEkosLogoCore: FrameLayout
     private lateinit var ivEkosOptLogo: ImageView
-    private lateinit var pbTurboSpin: ProgressBar
+    private lateinit var viewPulseWave: View
     private lateinit var tvTurboTitle: TextView
     private lateinit var tvTurboStatus: TextView
     private lateinit var tvTurboStepDetail: TextView
@@ -84,7 +85,7 @@ class SystemOptimizationActivity : AppCompatActivity() {
     private fun initViews() {
         btnEkosLogoCore = findViewById(R.id.btnEkosLogoCore)
         ivEkosOptLogo = findViewById(R.id.ivEkosOptLogo)
-        pbTurboSpin = findViewById(R.id.pbTurboSpin)
+        viewPulseWave = findViewById(R.id.viewPulseWave)
         tvTurboTitle = findViewById(R.id.tvTurboTitle)
         tvTurboStatus = findViewById(R.id.tvTurboStatus)
         tvTurboStepDetail = findViewById(R.id.tvTurboStepDetail)
@@ -138,41 +139,44 @@ class SystemOptimizationActivity : AppCompatActivity() {
         isOptimizing = true
         btnEkosLogoCore.isEnabled = false
 
-        // 1. Start Spin Animation on Ekos Logo
-        val rotateAnim = RotateAnimation(
-            0f, 360f,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f
-        ).apply {
+        // 1. Cyber Pulse & Glowing Energy Wave Animation (No wheel rotation!)
+        viewPulseWave.visibility = View.VISIBLE
+        val waveAnim = AnimationSet(true).apply {
+            addAnimation(ScaleAnimation(
+                1.0f, 1.8f, 1.0f, 1.8f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+            ))
+            addAnimation(AlphaAnimation(0.9f, 0.0f))
             duration = 1000
             repeatCount = Animation.INFINITE
-            interpolator = LinearInterpolator()
+            interpolator = AccelerateDecelerateInterpolator()
         }
-        ivEkosOptLogo.startAnimation(rotateAnim)
+        viewPulseWave.startAnimation(waveAnim)
 
-        // Scale Pulse on Container
-        val pulseAnim = ScaleAnimation(
+        // Subtle Logo Pulse Shimmer
+        val corePulse = ScaleAnimation(
             1.0f, 1.08f, 1.0f, 1.08f,
             Animation.RELATIVE_TO_SELF, 0.5f,
             Animation.RELATIVE_TO_SELF, 0.5f
         ).apply {
-            duration = 500
+            duration = 600
             repeatMode = Animation.REVERSE
             repeatCount = Animation.INFINITE
+            interpolator = AccelerateDecelerateInterpolator()
         }
-        btnEkosLogoCore.startAnimation(pulseAnim)
+        btnEkosLogoCore.startAnimation(corePulse)
 
-        pbTurboSpin.visibility = View.VISIBLE
         pbTurboProgress.visibility = View.VISIBLE
         pbTurboProgress.progress = 5
 
-        tvTurboTitle.text = "TURBO OPTİMİZASYON ÇALIŞIYOR"
-        tvTurboStatus.text = "Sistem modülleri sırayla çalıştırılıyor..."
+        tvTurboTitle.text = "TURBO OPTİMİZASYON DEVREDE"
+        tvTurboStatus.text = "Sistem modülleri taranıyor ve optimize ediliyor..."
 
         lifecycleScope.launch(Dispatchers.IO) {
             // STEP 1: CLEAN JUNK & CACHE
             withContext(Dispatchers.Main) {
-                tvTurboStepDetail.text = "[1/4] Gereksiz önbellek ve çöp dosyalar temizleniyor..."
+                tvTurboStepDetail.text = "[1/4] Gereksiz önbellek ve artık dosyalar temizleniyor..."
                 pbTurboProgress.progress = 25
                 tvCleanerBadgeOpt.text = "TEMİZLENİYOR"
             }
@@ -244,9 +248,9 @@ class SystemOptimizationActivity : AppCompatActivity() {
 
             // FINISH
             withContext(Dispatchers.Main) {
-                ivEkosOptLogo.clearAnimation()
+                viewPulseWave.clearAnimation()
+                viewPulseWave.visibility = View.INVISIBLE
                 btnEkosLogoCore.clearAnimation()
-                pbTurboSpin.visibility = View.GONE
                 pbTurboProgress.visibility = View.GONE
 
                 tvTurboTitle.text = "TÜM SİSTEMLER %100 OPTİMİZE EDİLDİ"

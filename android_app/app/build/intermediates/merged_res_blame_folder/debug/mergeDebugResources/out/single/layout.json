@@ -1,0 +1,58 @@
+[
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_web_shield.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_web_shield.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_ram_booster.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_ram_booster.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_account.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_account.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_deep_scan.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_deep_scan.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_cleaner.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_cleaner.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_network_shield.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_network_shield.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_clipboard_shield.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_clipboard_shield.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_system_optimization.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_system_optimization.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_privacy_guard.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_privacy_guard.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_account_sync.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_account_sync.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\item_scanned_app.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\item_scanned_app.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-mergeDebugResources-3:\\layout\\activity_scan.xml",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_scan.xml"
+    },
+    {
+        "merged": "com.ekos.antivirus.app-mergeDebugResources-3:/layout/activity_web_shield.xml",
+        "source": "com.ekos.antivirus.app-main-6:/layout/activity_web_shield.xml"
+    }
+]

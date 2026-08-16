@@ -4547,6 +4547,63 @@ app.post(['/api/v1/scan/url', '/api/scan-url', '/api/v1/scan-url', '/api/web-sca
                 }
             }
 
+            // Check Client-Side JS Redirects & Meta Refresh Gateways
+            const jsRedirectMatch = htmlContent.match(/(?:window\.location(?:\.replace)?|location\.href|self\.location|top\.location)\s*=\s*['"]([^'"]+)['"]/i);
+            if (jsRedirectMatch && jsRedirectMatch[1]) {
+                const jsDest = jsRedirectMatch[1];
+                if (jsDest.startsWith('http://') || jsDest.startsWith('https://')) {
+                    riskScore += 50;
+                    warnings.push(`Otomatik JavaScript Ağ Geçidi (JS Gateway): Sayfa kodları kullanıcıyı anında "${jsDest}" adresine yönlendiriyor.`);
+                    threatCategories.push('JavaScript Ağ Geçidi (JS Redirect Gateway)');
+                }
+            }
+
+            const metaRefreshMatch = htmlContent.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'][0-9]+;\s*url=([^"']+)["']/i);
+            if (metaRefreshMatch && metaRefreshMatch[1]) {
+                const metaDest = metaRefreshMatch[1];
+                riskScore += 45;
+                warnings.push(`Meta Refresh Yönlendirme Geçidi: Sayfa otomatik olarak "${metaDest}" adresine aktarılıyor.`);
+                threatCategories.push('Meta Refresh Ağ Geçidi');
+            }
+
+            // Check Linked Software & Downloadable Executables on Page
+            const softwareRegex = /href\s*=\s*["']([^"']+\.(apk|exe|dll|bat|vbs|ps1|scr|jar|iso|img|dmg|sh|bin|msi|cmd)(?:\?[^"']*)?)["']/gi;
+            let matchSoft;
+            const linkedSoftwares = [];
+            while ((matchSoft = softwareRegex.exec(htmlContent)) !== null) {
+                if (!linkedSoftwares.includes(matchSoft[1])) linkedSoftwares.push(matchSoft[1]);
+            }
+
+            if (linkedSoftwares.length > 0) {
+                riskScore += 45;
+                threatCategories.push('Sayfada İndirilebilir Yazılım Bağlantısı');
+                for (const softLink of linkedSoftwares.slice(0, 3)) {
+                    const softLower = softLink.toLowerCase();
+                    if (/crack|keygen|patch|stealer|cheat|injector|robux|nitro/i.test(softLower)) {
+                        riskScore += 40;
+                        warnings.push(`ZARARLI / İSTİSMAR YAZILIMI İNDİRME BAĞLANTISI: Sayfa "${softLink}" adlı şüpheli bir yazılımı indirmeye sunuyor!`);
+                    } else {
+                        warnings.push(`İndirilebilir Yazılım Bağlantısı: Sayfa "${softLink}" dosyasını barındırıyor.`);
+                    }
+                }
+            }
+
+            // Check Cross-Domain Form Submissions (Credential Theft)
+            const formActionMatch = htmlContent.match(/<form[^>]*action=["']([^"']*)["']/i);
+            if (formActionMatch && formActionMatch[1] && hasPasswordForm) {
+                const actionUrl = formActionMatch[1];
+                if (actionUrl.startsWith('http://') || actionUrl.startsWith('https://')) {
+                    try {
+                        const formHost = new URL(actionUrl).hostname.toLowerCase();
+                        if (formHost !== initialHostname && formHost !== finalHostname) {
+                            riskScore += 75;
+                            warnings.push(`HASSAS VERİ SIZDIRMA FORMU (CROSS-DOMAIN): Giriş formundaki şifreler farklı bir harici sunucuya (${formHost}) gönderiliyor!`);
+                            threatCategories.push('Çapraz Sunucuya Veri Sızdırma (Data Exfiltration)');
+                        }
+                    } catch(e) {}
+                }
+            }
+
             // Check Malicious Obfuscated JS & Suspicious Scripts
             const hasObfuscatedJs = /eval\s*\(\s*function\s*\(\s*p\s*,\s*a\s*,\s*c\s*,\s*k/i.test(htmlContent) || /unescape\s*\(/i.test(htmlContent) || /String\.fromCharCode/i.test(htmlContent);
             if (hasObfuscatedJs) {

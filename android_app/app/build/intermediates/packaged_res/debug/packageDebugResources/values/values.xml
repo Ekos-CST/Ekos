@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="accent_amber">#F59E0B</color>
+    <color name="accent_amber_glow">#33F59E0B</color>
+    <color name="accent_amber_light">#FBBF24</color>
+    <color name="accent_blue">#3B82F6</color>
+    <color name="accent_crimson">#EF4444</color>
+    <color name="accent_crimson_glow">#33EF4444</color>
+    <color name="accent_crimson_light">#F87171</color>
+    <color name="accent_cyan">#38BDF8</color>
+    <color name="accent_cyan_glow">#3338BDF8</color>
+    <color name="accent_emerald">#10B981</color>
+    <color name="accent_emerald_glow">#3310B981</color>
+    <color name="accent_emerald_light">#34D399</color>
+    <color name="accent_purple">#8B5CF6</color>
+    <color name="accent_purple_glow">#338B5CF6</color>
+    <color name="accent_purple_light">#A855F7</color>
+    <color name="bg_card">#12161F</color>
+    <color name="bg_card_border">#202738</color>
+    <color name="bg_card_elevated">#1A202D</color>
+    <color name="bg_dark">#0A0C10</color>
+    <color name="bg_sidebar">#0F1219</color>
+    <color name="black">#000000</color>
+    <color name="border_hover">#8B5CF6</color>
+    <color name="text_main">#F8FAFC</color>
+    <color name="text_muted">#94A3B8</color>
+    <color name="text_subtle">#64748B</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">Ekos CST</string>
+    <string name="btn_quick_scan">HIZLI SİSTEM TARAMASI BAŞLAT</string>
+    <string name="btn_web_shield">Canlı Web ve Oltalama Kalkanı</string>
+    <string name="shield_protected_sub">Gerçek zamanlı tarama motoru ve bulut tehdit kalkanı aktif.</string>
+    <string name="shield_protected_title">CİHAZINIZ KORUMA ALTINDA</string>
+    <style name="Theme.EKOSAntivirus" parent="Theme.Material3.Dark.NoActionBar">
+        
+        <item name="colorPrimary">@color/accent_purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/bg_card_elevated</item>
+        <item name="colorOnPrimaryContainer">@color/accent_purple_light</item>
+
+        
+        <item name="colorSecondary">@color/accent_emerald</item>
+        <item name="colorOnSecondary">@color/bg_dark</item>
+
+        
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+
+        
+        <item name="android:windowLayoutInDisplayCutoutMode" ns1:targetApi="p">shortEdges</item>
+
+        
+        <item name="materialCardViewStyle">@style/Widget.EKOS.CardView</item>
+    </style>
+    <style name="Widget.EKOS.CardView" parent="Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="strokeColor">@color/bg_card_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">14dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+</resources>

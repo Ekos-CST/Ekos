@@ -44,7 +44,7 @@ object WebContentInspector {
         .followSslRedirects(true)
         .build()
 
-    // Protected Global and Local Brands for Typosquatting / Homoglyph / Impersonation Detection
+    // Protected Brands for Typosquatting / Homoglyph / Impersonation
     private val PROTECTED_BRANDS = listOf(
         ProtectedBrand("Roblox", "roblox", listOf("roblox.com", "rbx.com")),
         ProtectedBrand("Steam", "steam", listOf("steampowered.com", "steamcommunity.com")),
@@ -86,55 +86,30 @@ object WebContentInspector {
         ProtectedBrand("e-Devlet", "edevlet", listOf("turkiye.gov.tr", "turkiye.gov"))
     )
 
-    // 1. Critical Malware / Trojan / Stealer Signatures
     private val MALWARE_EXPLOIT_PATTERNS = listOf(
         Pattern.compile("(?i)(malware|trojan|stealer|rat|c2|payload|exploit|keylogger|ransomware|spyware|botnet|dropper|injector|darknet|onion|crack|keygen|patcher|hacktool|ddos|miner|coinhive|crypto-drainer|grabber|infostealer|redline|lumma|raccoon|vidar|agenttesla|asyncrat|njrat|remcos|danabot|qakbot|cobaltstrike|shellcode|backdoor|rootkit|zeroday|vulnerability|bypass|unauthorized)"),
         Pattern.compile("(?i)(cryptojack|xmr-miner|xmrig|stratum\\+tcp|webminer|cpuminer)")
     )
 
-    // 2. Phishing & Credential Theft Signatures
     private val PHISHING_URL_PATTERNS = listOf(
         Pattern.compile("(?i)(phish|phishing|gift-card|free-nitro|free-robux|free-gift|bedava-hediye|hediye-ceki|bonus-kazan|odul-kazan|iphone-kazan|airdrop|claim-reward|survey-reward)"),
         Pattern.compile("(?i)(login-verify|hesap-dogrula|guvenlik-guncelleme|banka-giris|account-security|update-password|wallet-seed|recovery-phrase|seedphrase|metamask-verify|binance-claim|papara-hediye|e-devlet-kapisi|fatura-odeme-sorgula|kredi-basvuru-onay|borc-yapilandirma|verify-identity|suspended-account|update-billing)")
     )
 
-    // 3. Executable & Dangerous Download Patterns in URL
     private val DANGEROUS_FILE_URL_PATTERN = Pattern.compile("(?i)\\.(apk|exe|dll|bat|vbs|ps1|scr|jar|iso|img|dmg|sh|bin|msi|cmd)(\\?|#|$)")
-
-    // 4. Double Extension Obfuscation
     private val DOUBLE_EXTENSION_PATTERN = Pattern.compile("(?i)\\.(pdf|jpg|jpeg|png|doc|docx|xls|xlsx|zip|rar|txt|mp3)\\.(exe|apk|bat|vbs|scr|msi|cmd)(\\?|#|$)")
-
-    // 5. High-Risk TLDs
     private val HIGH_RISK_TLD_PATTERN = Pattern.compile("(?i)\\.(xyz|top|click|monster|cfd|rest|buzz|club|work|tk|ml|ga|cf|gq|pw|cc|ru|su)(/|:|\$|\\?)")
-
-    // 6. Direct IP as Host
     private val IP_HOST_PATTERN = Pattern.compile("(?i)^https?://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")
 
-    // 7. In-Page Content Phishing Patterns
-    private val PHISHING_CONTENT_PATTERNS = listOf(
-        Pattern.compile("(?i)(hesabınız askıya alındı|hesabınızı doğrulayın|şifrenizi güncelleyin|oturum açın|giriş yapın|güvenlik doğrulaması)"),
-        Pattern.compile("(?i)(tebrikler kazandınız|ücretsiz hediye|ödül kazandınız|iphone kazandınız|tıklayın kazanın|faturanız gecikti|robux kazandınız)"),
-        Pattern.compile("(?i)(account suspended|verify your account|update your password|confirm identity|claim reward|unauthorized activity)"),
-        Pattern.compile("(?i)(wallet key|recovery phrase|seed phrase|kurtarma anahtarı|cüzdan şifresi|private key)"),
-        Pattern.compile("(?i)(e-devlet kapısı|turkiye\\.gov|papara|ziraat|garanti|akbank|iş bankası|yapı kredi|vakıfbank|halkbank)")
-    )
-
-    // 8. In-Page JavaScript Malware & Crypto Miners
     private val SCRIPT_MALWARE_PATTERNS = listOf(
         Pattern.compile("(?i)(eval\\s*\\(|document\\.write\\s*\\(\\s*unescape|String\\.fromCharCode)"),
         Pattern.compile("(?i)(coinhive|cryptonight|webminer|coin-hive|cryptoloot|miner\\.start)"),
         Pattern.compile("(?i)(window\\.location\\.replace\\s*\\(['\"][^'\"]*\\.(exe|apk|scr|bat))"),
-        Pattern.compile("(?i)discord\\.com/api/webhooks")
+        Pattern.compile("(?i)discord\\.com/api/webhooks"),
+        Pattern.compile("(?i)(document\\.cookie|localStorage\\.getItem|sessionStorage\\.getItem).*fetch\\("),
+        Pattern.compile("(?i)addEventListener\\(['\"]keydown['\"].*keyCode")
     )
 
-    // 9. Dangerous Download Links in HTML DOM
-    private val DANGEROUS_DOWNLOAD_PATTERNS = listOf(
-        Pattern.compile("(?i)href\\s*=\\s*[\"'][^\"']+\\.(apk|exe|scr|bat|vbs|jar|msi)[\"']")
-    )
-
-    /**
-     * Calculates the Levenshtein Distance between two strings
-     */
     private fun computeLevenshteinDistance(s1: String, s2: String): Int {
         val dp = Array(s1.length + 1) { IntArray(s2.length + 1) }
         for (i in 0..s1.length) dp[i][0] = i
@@ -152,10 +127,6 @@ object WebContentInspector {
         return dp[s1.length][s2.length]
     }
 
-    /**
-     * Extracts Second-Level Domain (SLD) / main brand label from hostname
-     * e.g., "www.robloz.com" -> "robloz", "login.steampowered.com" -> "steampowered"
-     */
     private fun extractDomainLabel(hostname: String): String {
         var clean = hostname.lowercase().trim()
         if (clean.startsWith("www.")) clean = clean.substring(4)
@@ -182,6 +153,7 @@ object WebContentInspector {
         var pageTitle = "Web Bağlantısı"
         var htmlContent = ""
         val findings = mutableListOf<String>()
+        val gatewayChain = mutableListOf<String>()
         var threatScore = 0
 
         var isFormThreat = false
@@ -191,15 +163,16 @@ object WebContentInspector {
 
         val protocol = if (cleanUrl.startsWith("https://", ignoreCase = true)) "HTTPS (Şifreli TLS)" else "HTTP (Düz Metin)"
         val urlLower = cleanUrl.lowercase()
+        gatewayChain.add(cleanUrl)
 
-        // 1. LEXICAL URL HEURISTICS & SIGNATURE DETECTION
+        // 1. INITIAL LEXICAL & REPUTATION CHECKS
         for (pattern in MALWARE_EXPLOIT_PATTERNS) {
             val matcher = pattern.matcher(urlLower)
             if (matcher.find()) {
                 val match = matcher.group(0)
                 threatScore += 80
                 isPhishingThreat = true
-                findings.add("KRİTİK TEHDİT: URL adresinde bilinen zararlı yazılım/istismar anahtarı tespit edildi: '$match'")
+                findings.add("KRİTİK TEHDİT: URL adresinde bilinen zararlı yazılım anahtarı bulundu: '$match'")
                 break
             }
         }
@@ -210,7 +183,7 @@ object WebContentInspector {
                 val match = matcher.group(0)
                 threatScore += 70
                 isPhishingThreat = true
-                findings.add("OLTALAMA ŞÜPHESİ: URL adresinde kimlik avı / sahte ödül deseni tespit edildi: '$match'")
+                findings.add("OLTALAMA ŞÜPHESİ: URL adresinde kimlik avı / sahte ödül deseni bulundu: '$match'")
                 break
             }
         }
@@ -218,13 +191,13 @@ object WebContentInspector {
         if (DANGEROUS_FILE_URL_PATTERN.matcher(urlLower).find()) {
             threatScore += 65
             isDownloadThreat = true
-            findings.add("ZARARLI İNDİRME: Bağlantı doğrudan çalıştırılabilir ikili dosya (.apk/.exe/.bat vb.) barındırıyor.")
+            findings.add("ZARARLI İNDİRME: Bağlantı doğrudan çalıştırılabilir ikili dosya barındırıyor.")
         }
 
         if (DOUBLE_EXTENSION_PATTERN.matcher(urlLower).find()) {
             threatScore += 85
             isDownloadThreat = true
-            findings.add("GİZLENMİŞ ÇİFT UZANTI: Dosya adında sahte çift uzantı hilesi (örn: .pdf.exe) tespit edildi!")
+            findings.add("GİZLENMİŞ ÇİFT UZANTI: Dosya adında sahte çift uzantı hilesi (.pdf.exe vb.) tespit edildi!")
         }
 
         if (HIGH_RISK_TLD_PATTERN.matcher(urlLower).find()) {
@@ -234,61 +207,38 @@ object WebContentInspector {
 
         if (IP_HOST_PATTERN.matcher(urlLower).find()) {
             threatScore += 35
-            findings.add("Alan adı yerine doğrudan ham IP adresi kullanılıyor (Şüpheli C2 / Saldırı sunucusu).")
+            findings.add("Alan adı yerine doğrudan ham IP adresi kullanılıyor (Şüpheli C2 sunucusu).")
         }
 
-        // 2. INTELLIGENT TYPOSQUATTING & BRAND IMPERSONATION DETECTION ENGINE
-        val rawHost = try { URI(cleanUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
-        val domainLabel = extractDomainLabel(rawHost)
-
+        // Typosquatting Check on Initial Domain
+        val initialHost = try { URI(cleanUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
+        val initialDomainLabel = extractDomainLabel(initialHost)
         for (brand in PROTECTED_BRANDS) {
-            val isOfficialDomain = brand.officialDomains.any { official ->
-                rawHost == official || rawHost.endsWith(".$official")
-            }
-
-            if (!isOfficialDomain) {
-                // A) Exact substring match or brand contained in untrusted domain
-                if (rawHost.contains(brand.canonicalKey)) {
+            val isOfficial = brand.officialDomains.any { initialHost == it || initialHost.endsWith(".$it") }
+            if (!isOfficial) {
+                if (initialHost.contains(brand.canonicalKey)) {
                     threatScore += 75
                     isPhishingThreat = true
-                    findings.add("MARKA TAKLİDİ (PHISHING): '${brand.name}' adı resmi olmayan şüpheli alan adında ($rawHost) tespit edildi.")
+                    findings.add("MARKA TAKLİDİ (PHISHING): '${brand.name}' adı yetkisiz adreste ($initialHost) tespit edildi.")
                     break
                 }
-
-                // B) Algorithmic Typosquatting (Levenshtein Distance <= 2 on SLD label, e.g. robloz -> roblox)
-                if (domainLabel.length >= 4 && abs(domainLabel.length - brand.canonicalKey.length) <= 2) {
-                    val dist = computeLevenshteinDistance(domainLabel, brand.canonicalKey)
+                if (initialDomainLabel.length >= 4 && abs(initialDomainLabel.length - brand.canonicalKey.length) <= 2) {
+                    val dist = computeLevenshteinDistance(initialDomainLabel, brand.canonicalKey)
                     if (dist in 1..2) {
                         threatScore += 90
                         isPhishingThreat = true
-                        findings.add("KRİTİK OLTALAMA (TYPOSQUATTING): '$domainLabel' alan adı, resmi '${brand.name}' markasını $dist harf farkıyla taklit ediyor ($domainLabel ➔ ${brand.canonicalKey})!")
+                        findings.add("KRİTİK OLTALAMA (TYPOSQUATTING): '$initialDomainLabel' alan adı '${brand.name}' markasını $dist harf farkıyla taklit ediyor ($initialDomainLabel ➔ ${brand.canonicalKey})!")
                         break
                     }
-                }
-
-                // C) Number / Homoglyph substitution check (e.g. r0bl0x -> roblox, g00gle -> google)
-                val dehomoglyph = domainLabel
-                    .replace("0", "o")
-                    .replace("1", "l")
-                    .replace("3", "e")
-                    .replace("4", "a")
-                    .replace("5", "s")
-                    .replace("z", "x")
-
-                if (dehomoglyph != domainLabel && dehomoglyph == brand.canonicalKey) {
-                    threatScore += 90
-                    isPhishingThreat = true
-                    findings.add("KRİTİK OLTALAMA (HOMOGLYPH): '$domainLabel' alan adı rakam/harf değiştirme hilesiyle '${brand.name}' markasını taklit ediyor!")
-                    break
                 }
             }
         }
 
-        // 3. FETCH REAL PAGE CONTENT VIA NETWORK (If reachable)
+        // 2. LIVE FETCH & GATEWAY REDIRECTION TRAVERSAL (HTTP & JS Gateways)
         try {
             val request = Request.Builder()
                 .url(cleanUrl)
-                .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; Mobile; EkosSecurityScan/1.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36")
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; Mobile; EkosSecurityScan/2.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36")
                 .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
                 .header("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
                 .build()
@@ -298,104 +248,163 @@ object WebContentInspector {
                 finalResolvedUrl = response.request.url.toString()
                 htmlContent = response.body?.string() ?: ""
 
-                // Extract Page Title
+                if (finalResolvedUrl != cleanUrl) {
+                    gatewayChain.add(finalResolvedUrl)
+                }
+
+                // Check Page Title
                 val titleMatcher = Pattern.compile("(?i)<title[^>]*>([^<]+)</title>").matcher(htmlContent)
                 if (titleMatcher.find()) {
                     pageTitle = titleMatcher.group(1)?.trim() ?: "Web Sayfası"
                 }
 
-                // Check security headers
-                val hsts = response.header("Strict-Transport-Security")
-                val csp = response.header("Content-Security-Policy")
-                val xframe = response.header("X-Frame-Options")
+                val finalHost = try { URI(finalResolvedUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
+                if (finalHost.isNotEmpty() && finalHost != initialHost) {
+                    threatScore += 45
+                    findings.add("GİZLİ AĞ GEÇİDİ (GATEWAY): İstek ilk adresten ($initialHost) farklı olan '$finalHost' adresine yönlendirildi (Gateway Traversal).")
 
-                if (csp != null) findings.add("İçerik Güvenlik İlkesi (CSP) koruması mevcut.")
-                if (xframe != null) findings.add("Clickjacking koruması (X-Frame-Options) mevcut.")
-                if (hsts != null) findings.add("HSTS (Zorunlu Güvenli İletişim) etkin.")
+                    // Inspect final destination host for brand typosquatting / phishing
+                    val finalDomainLabel = extractDomainLabel(finalHost)
+                    for (brand in PROTECTED_BRANDS) {
+                        val isOfficial = brand.officialDomains.any { finalHost == it || finalHost.endsWith(".$it") }
+                        if (!isOfficial && (finalHost.contains(brand.canonicalKey) || computeLevenshteinDistance(finalDomainLabel, brand.canonicalKey) in 1..2)) {
+                            threatScore += 80
+                            isPhishingThreat = true
+                            findings.add("HEDEF GEÇİTTE MARKA TAKLİDİ: Yönlendirilen '$finalHost' adresi '${brand.name}' markasını taklit ediyor!")
+                            break
+                        }
+                    }
+                }
             }
         } catch (e: Exception) {
             if (threatScore > 0) {
-                findings.add("Hedef sunucuya erişilemedi ancak alan adı sezgisel imza tablosunda zararlı/oltalama deseni doğrulandı.")
+                findings.add("Hedef sunucuya doğrudan erişilemedi ancak alan adı ve ağ imzalarında tehdit deseni doğrulandı.")
             } else {
-                findings.add("Siteye doğrudan erişim: ${e.localizedMessage ?: "Bağlantı zaman aşımı"}")
+                findings.add("Ağ Erişimi: ${e.localizedMessage ?: "Bağlantı zaman aşımı"}")
             }
         }
 
-        // 4. FORM & PASSWORD INPUT INSPECTION
+        // 3. JAVASCRIPT & META REFRESH CLIENT-SIDE GATEWAY DETECTION
+        val jsRedirectMatcher = Pattern.compile("(?i)(window\\.location(\\.replace)?|location\\.href|self\\.location|top\\.location)\\s*=\\s*['\"]([^'\"]+)['\"]").matcher(htmlContent)
+        if (jsRedirectMatcher.find()) {
+            val destJsUrl = jsRedirectMatcher.group(3) ?: ""
+            if (destJsUrl.startsWith("http://", ignoreCase = true) || destJsUrl.startsWith("https://", ignoreCase = true)) {
+                threatScore += 50
+                gatewayChain.add(destJsUrl)
+                findings.add("JAVASCRIPT AĞ GEÇİDİ (JS REDIRECT): Sayfa kodlarında otomatik yönlendirme ağ geçidi bulundu: '$destJsUrl'")
+            }
+        }
+
+        val metaRefreshMatcher = Pattern.compile("(?i)<meta[^>]*http-equiv=[\"']refresh[\"'][^>]*content=[\"'][0-9]+;\\s*url=([^\"']+)[\"']").matcher(htmlContent)
+        if (metaRefreshMatcher.find()) {
+            val metaUrl = metaRefreshMatcher.group(1) ?: ""
+            threatScore += 45
+            gatewayChain.add(metaUrl)
+            findings.add("META REFRESH GEÇİDİ: Sayfa otomatik olarak '$metaUrl' adresine yönlendirme kodu içeriyor.")
+        }
+
+        // 4. DEEP SOFTWARE & EMBEDDED BINARY SCANNING (Linked files, APK/EXE payloads, Droppers)
+        val softwareLinks = mutableListOf<String>()
+        val binaryMatcher = Pattern.compile("(?i)href\\s*=\\s*[\"']([^\"']+\\.(apk|exe|dll|bat|vbs|ps1|scr|jar|iso|img|dmg|sh|bin|msi|cmd)(\\?[^\"']*)?)[\"']").matcher(htmlContent)
+        while (binaryMatcher.find()) {
+            val rawLink = binaryMatcher.group(1)
+            if (rawLink != null && !softwareLinks.contains(rawLink)) {
+                softwareLinks.add(rawLink)
+            }
+        }
+
+        if (softwareLinks.isNotEmpty()) {
+            threatScore += 50
+            isDownloadThreat = true
+            for (sLink in softwareLinks.take(3)) {
+                val sLower = sLink.lowercase()
+                var sThreatDesc = "Doğrudan İndirilebilir Yazılım Bağlantısı: '$sLink'"
+
+                if (sLower.contains("crack") || sLower.contains("keygen") || sLower.contains("patch") || sLower.contains("stealer") || sLower.contains("cheat") || sLower.contains("injector") || sLower.contains("robux") || sLower.contains("nitro")) {
+                    threatScore += 35
+                    sThreatDesc = "ZARARLI / İSTİSMAR YAZILIMI İNDİRME BAĞLANTISI: '$sLink'"
+                } else if (DOUBLE_EXTENSION_PATTERN.matcher(sLower).find()) {
+                    threatScore += 45
+                    sThreatDesc = "GİZLENMİŞ ÇİFT UZANTILI TUZAK YAZILIM: '$sLink'"
+                }
+
+                findings.add(sThreatDesc)
+            }
+        }
+
+        // 5. EXTERNAL SCRIPT SECURITY AUDIT (<script src="...">)
+        val externalScripts = mutableListOf<String>()
+        val scriptSrcMatcher = Pattern.compile("(?i)<script[^>]*src=[\"']([^\"']+)[\"']").matcher(htmlContent)
+        while (scriptSrcMatcher.find()) {
+            val src = scriptSrcMatcher.group(1)
+            if (src != null && (src.startsWith("http://") || src.startsWith("https://"))) {
+                externalScripts.add(src)
+            }
+        }
+
+        if (externalScripts.isNotEmpty()) {
+            for (scriptUrl in externalScripts.take(3)) {
+                val sUrlLower = scriptUrl.lowercase()
+                if (sUrlLower.contains("coinhive") || sUrlLower.contains("miner") || sUrlLower.contains("stealer") || sUrlLower.contains("payload") || sUrlLower.contains("keylogger")) {
+                    threatScore += 60
+                    isScriptThreat = true
+                    findings.add("ZARARLI HARİCİ BETİK (MALICIOUS JS): Sayfaya harici olarak yüklenen tehlikeli script tespit edildi: '$scriptUrl'")
+                }
+            }
+        }
+
+        // 6. FORM & DATA EXFILTRATION AUDIT (Cross-Domain Form Actions)
         val hasPasswordInput = Pattern.compile("(?i)<input[^>]*type=[\"']password[\"']").matcher(htmlContent).find()
         val hasCreditCardInput = Pattern.compile("(?i)(cardnumber|creditcard|cvv|sonkullanma|cc-num|kartno)").matcher(htmlContent).find()
-        val hasForm = Pattern.compile("(?i)<form[^>]*action=[\"']([^\"']*)[\"']").matcher(htmlContent).find()
+        val formActionMatcher = Pattern.compile("(?i)<form[^>]*action=[\"']([^\"']*)[\"']").matcher(htmlContent)
 
-        val isOfficialTrustedDomain = rawHost.endsWith("google.com") || rawHost.endsWith("microsoft.com") || rawHost.endsWith("github.com") || rawHost.endsWith("ekoscst.com") || rawHost.endsWith("apple.com")
+        var formActionUrl = ""
+        if (formActionMatcher.find()) {
+            formActionUrl = formActionMatcher.group(1) ?: ""
+        }
 
-        val formStatus: String
+        var formStatus = "Temiz (Şifre tuzağı yok)"
         if (hasCreditCardInput) {
             threatScore += 55
             isFormThreat = true
             formStatus = "Kredi Kartı / Ödeme Formu Bulundu"
             findings.add("Sayfa kodlarında hassas kredi kartı veya ödeme bilgisi toplayan form alanları tespit edildi.")
         } else if (hasPasswordInput) {
+            if (formActionUrl.startsWith("http://") || formActionUrl.startsWith("https://")) {
+                val actionHost = try { URI(formActionUrl).host?.lowercase() ?: "" } catch(e: Exception) { "" }
+                if (actionHost.isNotEmpty() && actionHost != initialHost) {
+                    threatScore += 75
+                    isFormThreat = true
+                    isPhishingThreat = true
+                    formStatus = "Çapraz Sunucuya Veri Sızdırma (Data Exfiltration)"
+                    findings.add("HASSAS VERİ SIZDIRMA (CROSS-DOMAIN FORM): Giriş formundaki şifreler farklı bir harici sunucuya ($actionHost) gönderiliyor!")
+                }
+            }
+
             if (!cleanUrl.startsWith("https://", ignoreCase = true)) {
                 threatScore += 45
                 isFormThreat = true
                 formStatus = "Yüksek Risk (HTTP üzerinden şifre girişi)"
                 findings.add("Şifresiz HTTP bağlantısı üzerinden parola girişi talep ediliyor!")
-            } else if (!isOfficialTrustedDomain) {
-                threatScore += 25
-                isFormThreat = true
-                formStatus = "Parola Giriş Formu Bulundu (Dikkat)"
-                findings.add("Sayfada şifre girişi tespit edildi. Kimlik avı riskine karşı adres çubuğunu doğrulayın.")
-            } else {
-                formStatus = "Doğrulanmış Güvenli Giriş Formu"
+            } else if (!formStatus.contains("Sızdırma")) {
+                formStatus = "Giriş Formu Bulundu"
             }
-        } else if (hasForm) {
-            formStatus = "Standart Veri Formu (Zararsız)"
-        } else {
-            formStatus = "Temiz (Şifre tuzağı yok)"
         }
 
-        // 5. JAVASCRIPT & MALWARE / CRYPTO-MINER INSPECTION
+        // 7. IN-PAGE SCRIPT & PHISHING PATTERN CHECKS
         var scriptStatus = "Temiz (Zararlı script yok)"
         for (pattern in SCRIPT_MALWARE_PATTERNS) {
             if (pattern.matcher(htmlContent).find()) {
                 threatScore += 50
                 isScriptThreat = true
                 scriptStatus = "Zararlı / Gizlenmiş Script Bulundu"
-                findings.add("Sayfa kaynağında gizlenmiş kod yürütme veya veri sızdırma betiği tespit edildi.")
+                findings.add("Sayfa kaynağında veri sızdırma, keylogger veya gizlenmiş kod yürütme betiği tespit edildi.")
                 break
             }
         }
 
-        // 6. PHISHING CONTENT PATTERNS IN HTML
         var phishingStatus = if (isPhishingThreat) "Oltalama Belirtisi Bulundu" else "Temiz (Oltalama deseni yok)"
-        for (pattern in PHISHING_CONTENT_PATTERNS) {
-            val matcher = pattern.matcher(htmlContent)
-            if (matcher.find()) {
-                val matchedText = matcher.group(0)
-                threatScore += 40
-                isPhishingThreat = true
-                phishingStatus = "Oltalama Belirtisi Bulundu"
-                findings.add("Sosyal mühendislik / kimlik avı metni: '$matchedText'")
-                break
-            }
-        }
-
-        // 7. DANGEROUS DOWNLOAD LINKS (APK, EXE) IN HTML
-        var downloadStatus = if (isDownloadThreat) "Doğrudan İndirilebilir Yürütülebilir Dosya" else "Temiz (Zararlı indirme linki yok)"
-        for (pattern in DANGEROUS_DOWNLOAD_PATTERNS) {
-            val matcher = pattern.matcher(htmlContent)
-            if (matcher.find()) {
-                threatScore += 35
-                isDownloadThreat = true
-                downloadStatus = "Doğrudan İndirilebilir Yürütülebilir Dosya"
-                findings.add("Sayfa doğrudan çalıştırılabilir (.apk / .exe) dosya indirme bağlantısı içeriyor.")
-                break
-            }
-        }
-
-        if (!cleanUrl.startsWith("https://", ignoreCase = true) && threatScore == 0) {
-            findings.add("Site HTTP kullanıyor (Şifrelenmemiş bağlantı), ancak sayfa içeriği temiz ve zararsız.")
-        }
+        var downloadStatus = if (isDownloadThreat || softwareLinks.isNotEmpty()) "Tespit Edildi (İndirilebilir Yazılım/İkili Dosya)" else "Temiz (Zararlı indirme linki yok)"
 
         val isSafe = threatScore < 30
         val verdict = when {
@@ -405,7 +414,7 @@ object WebContentInspector {
         }
 
         if (findings.isEmpty()) {
-            findings.add("Site içeriği, HTML kodları, formlar ve scriptler başarıyla denetlendi. Herhangi bir güvenlik açığı tespit edilmedi.")
+            findings.add("Site içeriği, ağ geçitleri, yönlendirmeler, bağlı yazılımlar ve scriptler denetlendi. Güvenlik açığı bulunamadı.")
         }
 
         WebContentScanReport(

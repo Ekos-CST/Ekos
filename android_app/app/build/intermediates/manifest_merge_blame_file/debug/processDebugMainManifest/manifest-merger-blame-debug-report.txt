@@ -1,0 +1,331 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.ekos.antivirus"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="35" />
+10
+11    <!-- Permissions for Real-Time Threat Analysis & Cloud Engine -->
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:6:5-67
+12-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:6:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:7:5-79
+13-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:7:22-76
+14    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+14-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:8:5-119
+14-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:8:22-74
+15    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+15-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:9:5-77
+15-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:9:22-74
+16    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+16-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:10:5-77
+16-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:10:22-74
+17    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+17-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:11:5-87
+17-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:11:22-84
+18    <uses-permission android:name="android.permission.VIBRATE" />
+18-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:12:5-66
+18-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:12:22-63
+19    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+19-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:13:5-81
+19-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:13:22-78
+20    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+20-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:14:5-80
+20-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:14:22-77
+21    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+21-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:15:5-110
+21-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:15:22-78
+22    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+22-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:16:5-111
+22-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:16:22-79
+23    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+23-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:17:5-83
+23-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:17:22-80
+24
+25    <permission
+25-->[androidx.core:core:1.15.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8ba9baf53f0d3a2b493490150c13b7c0\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+26        android:name="com.ekos.antivirus.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+26-->[androidx.core:core:1.15.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8ba9baf53f0d3a2b493490150c13b7c0\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+27        android:protectionLevel="signature" />
+27-->[androidx.core:core:1.15.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8ba9baf53f0d3a2b493490150c13b7c0\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+28
+29    <uses-permission android:name="com.ekos.antivirus.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+29-->[androidx.core:core:1.15.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8ba9baf53f0d3a2b493490150c13b7c0\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+29-->[androidx.core:core:1.15.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8ba9baf53f0d3a2b493490150c13b7c0\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+30
+31    <application
+31-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:19:5-132:19
+32        android:allowBackup="true"
+32-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:20:9-35
+33        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+33-->[androidx.core:core:1.15.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8ba9baf53f0d3a2b493490150c13b7c0\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+34        android:dataExtractionRules="@xml/data_extraction_rules"
+34-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:21:9-65
+35        android:debuggable="true"
+36        android:extractNativeLibs="false"
+37        android:fullBackupContent="@xml/backup_rules"
+37-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:22:9-54
+38        android:icon="@mipmap/ic_launcher"
+38-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:23:9-43
+39        android:label="@string/app_name"
+39-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:24:9-41
+40        android:roundIcon="@mipmap/ic_launcher_round"
+40-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:25:9-54
+41        android:supportsRtl="true"
+41-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:26:9-35
+42        android:theme="@style/Theme.EKOSAntivirus"
+42-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:27:9-51
+43        android:usesCleartextTraffic="true" >
+43-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:28:9-44
+44
+45        <!-- FileProvider for In-App Updates & APK Installation -->
+46        <provider
+47            android:name="androidx.core.content.FileProvider"
+47-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:32:13-62
+48            android:authorities="com.ekos.antivirus.fileprovider"
+48-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:33:13-64
+49            android:exported="false"
+49-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:34:13-37
+50            android:grantUriPermissions="true" >
+50-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:35:13-47
+51            <meta-data
+51-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:36:13-38:54
+52                android:name="android.support.FILE_PROVIDER_PATHS"
+52-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:37:17-67
+53                android:resource="@xml/file_paths" />
+53-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:38:17-51
+54        </provider>
+55
+56        <!-- Main Dashboard Activity -->
+57        <activity
+57-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:42:9-50:20
+58            android:name="com.ekos.antivirus.MainActivity"
+58-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:43:13-41
+59            android:exported="true"
+59-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:44:13-36
+60            android:screenOrientation="portrait" >
+60-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:45:13-49
+61            <intent-filter>
+61-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:46:13-49:29
+62                <action android:name="android.intent.action.MAIN" />
+62-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:47:17-69
+62-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:47:25-66
+63
+64                <category android:name="android.intent.category.LAUNCHER" />
+64-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:48:17-77
+64-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:48:27-74
+65            </intent-filter>
+66        </activity>
+67
+68        <!-- Threat Scanner Activity -->
+69        <activity
+69-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:53:9-57:58
+70            android:name="com.ekos.antivirus.ScanActivity"
+70-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:54:13-41
+71            android:exported="false"
+71-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:55:13-37
+72            android:parentActivityName="com.ekos.antivirus.MainActivity"
+72-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:57:13-55
+73            android:screenOrientation="portrait" />
+73-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:56:13-49
+74
+75        <!-- Web & Phishing Shield Activity -->
+76        <activity
+76-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:60:9-64:58
+77            android:name="com.ekos.antivirus.WebShieldActivity"
+77-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:61:13-46
+78            android:exported="false"
+78-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:62:13-37
+79            android:parentActivityName="com.ekos.antivirus.MainActivity"
+79-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:64:13-55
+80            android:screenOrientation="portrait" />
+80-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:63:13-49
+81
+82        <!-- Deep Storage & App Scanner Activity -->
+83        <activity
+83-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:67:9-71:58
+84            android:name="com.ekos.antivirus.DeepScanActivity"
+84-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:68:13-45
+85            android:exported="false"
+85-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:69:13-37
+86            android:parentActivityName="com.ekos.antivirus.MainActivity"
+86-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:71:13-55
+87            android:screenOrientation="portrait" />
+87-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:70:13-49
+88
+89        <!-- Account Login & Management Activity -->
+90        <activity
+90-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:74:9-78:58
+91            android:name="com.ekos.antivirus.AccountActivity"
+91-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:75:13-44
+92            android:exported="false"
+92-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:76:13-37
+93            android:parentActivityName="com.ekos.antivirus.MainActivity"
+93-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:78:13-55
+94            android:screenOrientation="portrait" />
+94-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:77:13-49
+95
+96        <!-- System Optimization Hub Activity -->
+97        <activity
+97-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:81:9-85:58
+98            android:name="com.ekos.antivirus.SystemOptimizationActivity"
+98-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:82:13-55
+99            android:exported="false"
+99-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:83:13-37
+100            android:parentActivityName="com.ekos.antivirus.MainActivity"
+100-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:85:13-55
+101            android:screenOrientation="portrait" />
+101-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:84:13-49
+102
+103        <!-- Junk & Cache Cleaner Activity -->
+104        <activity
+104-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:88:9-92:58
+105            android:name="com.ekos.antivirus.CleanerActivity"
+105-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:89:13-44
+106            android:exported="false"
+106-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:90:13-37
+107            android:parentActivityName="com.ekos.antivirus.MainActivity"
+107-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:92:13-55
+108            android:screenOrientation="portrait" />
+108-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:91:13-49
+109
+110        <!-- Privacy & Permissions Guard Activity -->
+111        <activity
+111-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:95:9-99:58
+112            android:name="com.ekos.antivirus.PrivacyGuardActivity"
+112-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:96:13-49
+113            android:exported="false"
+113-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:97:13-37
+114            android:parentActivityName="com.ekos.antivirus.MainActivity"
+114-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:99:13-55
+115            android:screenOrientation="portrait" />
+115-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:98:13-49
+116
+117        <!-- Network & Wi-Fi Shield Activity -->
+118        <activity
+118-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:102:9-106:58
+119            android:name="com.ekos.antivirus.NetworkShieldActivity"
+119-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:103:13-50
+120            android:exported="false"
+120-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:104:13-37
+121            android:parentActivityName="com.ekos.antivirus.MainActivity"
+121-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:106:13-55
+122            android:screenOrientation="portrait" />
+122-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:105:13-49
+123
+124        <!-- RAM & Performance Booster Activity -->
+125        <activity
+125-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:109:9-113:58
+126            android:name="com.ekos.antivirus.RamBoosterActivity"
+126-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:110:13-47
+127            android:exported="false"
+127-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:111:13-37
+128            android:parentActivityName="com.ekos.antivirus.MainActivity"
+128-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:113:13-55
+129            android:screenOrientation="portrait" />
+129-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:112:13-49
+130
+131        <!-- Background Security Service -->
+132        <service
+132-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:116:9-119:56
+133            android:name="com.ekos.antivirus.service.BackgroundShieldService"
+133-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:117:13-60
+134            android:exported="false"
+134-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:118:13-37
+135            android:foregroundServiceType="dataSync" />
+135-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:119:13-53
+136
+137        <!-- Real-Time Package Install & Update Receiver -->
+138        <receiver
+138-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:122:9-130:20
+139            android:name="com.ekos.antivirus.receiver.PackageInstallReceiver"
+139-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:123:13-60
+140            android:exported="true" >
+140-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:124:13-36
+141            <intent-filter>
+141-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:125:13-129:29
+142                <action android:name="android.intent.action.PACKAGE_ADDED" />
+142-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:126:17-78
+142-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:126:25-75
+143                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+143-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:127:17-81
+143-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:127:25-78
+144
+145                <data android:scheme="package" />
+145-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:128:17-50
+145-->C:\Users\erenc\.gemini\antigravity-ide\scratch\c_antivirus_engine\android_app\app\src\main\AndroidManifest.xml:128:23-47
+146            </intent-filter>
+147        </receiver>
+148
+149        <provider
+149-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+150            android:name="androidx.startup.InitializationProvider"
+150-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+151            android:authorities="com.ekos.antivirus.androidx-startup"
+151-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+152            android:exported="false" >
+152-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+153            <meta-data
+153-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+154                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+154-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+155                android:value="androidx.startup" />
+155-->[androidx.emoji2:emoji2:1.3.0] C:\Users\erenc\.gradle\caches\8.13\transforms\8efc56e4aa859891cc9a4e3255d3dd05\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+156            <meta-data
+156-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\erenc\.gradle\caches\8.13\transforms\d6c5bc523d08901c16d94608b910636a\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+157                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+157-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\erenc\.gradle\caches\8.13\transforms\d6c5bc523d08901c16d94608b910636a\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+158                android:value="androidx.startup" />
+158-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\erenc\.gradle\caches\8.13\transforms\d6c5bc523d08901c16d94608b910636a\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+159            <meta-data
+159-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+160                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+160-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+161                android:value="androidx.startup" />
+161-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+162        </provider>
+163
+164        <receiver
+164-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+165            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+165-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+166            android:directBootAware="false"
+166-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+167            android:enabled="true"
+167-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+168            android:exported="true"
+168-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+169            android:permission="android.permission.DUMP" >
+169-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+170            <intent-filter>
+170-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+171                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+171-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+171-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+172            </intent-filter>
+173            <intent-filter>
+173-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+174                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+174-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+174-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+175            </intent-filter>
+176            <intent-filter>
+176-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+177                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+177-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+177-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+178            </intent-filter>
+179            <intent-filter>
+179-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+180                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+180-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+180-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\erenc\.gradle\caches\8.13\transforms\6bdf19a742d83770f56129956b65279b\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92
+181            </intent-filter>
+182        </receiver>
+183    </application>
+184
+185</manifest>

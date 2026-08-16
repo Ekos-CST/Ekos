@@ -1,0 +1,206 @@
+[
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_ekos_logo.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\ekos_logo.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_glass_card_bg.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\glass_card_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_web_shield.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_web_shield.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_button_primary.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_button_primary.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_account.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_account.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_button_cyan.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_button_cyan.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\xml_file_paths.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\xml\\file_paths.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_pulse_ripple.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_pulse_ripple.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-hdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xxxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_neon_glow_circle.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\neon_glow_circle.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_button_emerald.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_button_emerald.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_shield_clean.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_shield_clean.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_deep_scan.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_deep_scan.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_ic_launcher_foreground_inset.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\ic_launcher_foreground_inset.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_privacy_guard.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_privacy_guard.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_ram_booster.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_ram_booster.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_particle_flare.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_particle_flare.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_scan.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_scan.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_clipboard_shield.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_clipboard_shield.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_radar_circle.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_radar_circle.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_card_glass.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_card_glass.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_shield_gradient.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_shield_gradient.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_network_shield.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_network_shield.xml"
+    },
+    {
+        "merged": "com.ekos.antivirus.app-debug-4:/layout_activity_web_shield.xml.flat",
+        "source": "com.ekos.antivirus.app-main-6:/layout/activity_web_shield.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-mdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_shockwave_ring.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_shockwave_ring.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_cleaner.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_cleaner.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\xml\\backup_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_item_scanned_app.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\item_scanned_app.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_system_optimization.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_system_optimization.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\mipmap-hdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\layout_activity_account_sync.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\layout\\activity_account_sync.xml"
+    },
+    {
+        "merged": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-debug-4:\\drawable_bg_button_danger.xml.flat",
+        "source": "C:\\Users\\erenc\\.gradle\\daemon\\8.13\\com.ekos.antivirus.app-main-6:\\drawable\\bg_button_danger.xml"
+    }
+]

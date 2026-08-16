@@ -48,362 +48,302 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:gravity="center_horizontal">
 
-            <!-- Interactive Compact Ekos Turbo Optimization Hero Card -->
+            <!-- Hero Explosion & Core Card -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardTurboHero"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/bg_card"
                 app:strokeColor="@color/border_hover"
                 app:strokeWidth="1.5dp"
-                app:cardCornerRadius="18dp">
+                app:cardCornerRadius="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp"
+                    android:paddingVertical="32dp"
+                    android:paddingHorizontal="20dp"
                     android:gravity="center_horizontal">
 
-                    <!-- Compact Logo Center with Ripple Pulse Effect -->
+                    <!-- Explosion Arena (Shockwaves & Logo) -->
                     <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
                         android:clipChildren="false">
 
-                        <!-- Glowing Energy Wave Effect -->
+                        <!-- Shockwave Blast 1 -->
                         <View
-                            android:id="@+id/viewPulseWave"
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
+                            android:id="@+id/viewShockwave1"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/bg_pulse_ripple"
+                            android:background="@drawable/bg_shockwave_ring"
                             android:visibility="invisible" />
 
-                        <!-- Compact Logo Core (64dp) -->
+                        <!-- Shockwave Blast 2 -->
+                        <View
+                            android:id="@+id/viewShockwave2"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_shockwave_ring"
+                            android:visibility="invisible" />
+
+                        <!-- Center Flare Burst -->
+                        <View
+                            android:id="@+id/viewFlareBurst"
+                            android:layout_width="140dp"
+                            android:layout_height="140dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_particle_flare"
+                            android:visibility="invisible" />
+
+                        <!-- Center Clean Ekos Logo (No green ring) -->
                         <FrameLayout
                             android:id="@+id/btnEkosLogoCore"
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
+                            android:layout_width="66dp"
+                            android:layout_height="66dp"
                             android:layout_gravity="center"
                             android:clickable="true"
                             android:focusable="true"
-                            android:background="@drawable/bg_shield_gradient">
+                            android:background="@drawable/bg_shield_clean">
 
                             <ImageView
                                 android:id="@+id/ivEkosOptLogo"
-                                android:layout_width="34dp"
-                                android:layout_height="34dp"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
                                 android:layout_gravity="center"
                                 android:src="@mipmap/ic_launcher"
                                 android:contentDescription="Ekos Logo" />
                         </FrameLayout>
                     </FrameLayout>
 
+                    <!-- Score / Percentage Live Readout -->
+                    <TextView
+                        android:id="@+id/tvLivePercent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="100%"
+                        android:textColor="@color/accent_purple_light"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tvTurboTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="EKOS TEK TIKLA OPTİMİZASYON"
-                        android:textColor="@color/accent_emerald_light"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.06" />
+                        android:layout_marginTop="4dp"
+                        android:text="EKOS AKILLI OPTİMİZASYON"
+                        android:textColor="@color/text_main"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvTurboStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Tüm modülleri otomatik çalıştırmak için logoya dokunun"
-                        android:textColor="@color/text_main"
-                        android:textSize="12sp"
-                        android:textAlignment="center" />
-
-                    <TextView
-                        android:id="@+id/tvTurboStepDetail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Gereksiz dosyalar, bellek, ağ ve gizlilik taranacak."
+                        android:text="Otomatik temizlik ve hızlandırma için logoya dokunun"
                         android:textColor="@color/text_muted"
-                        android:textSize="11sp"
+                        android:textSize="12sp"
                         android:textAlignment="center" />
 
                     <ProgressBar
                         android:id="@+id/pbTurboProgress"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:layout_marginTop="14dp"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="18dp"
                         android:max="100"
-                        android:progress="0"
-                        android:progressDrawable="@drawable/bg_button_emerald"
-                        android:visibility="gone" />
+                        android:progress="100"
+                        android:progressDrawable="@drawable/bg_button_primary" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Tools Section Title -->
+            <!-- Real-Time Automated System Telemetry HUD -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OPTİMİZASYON VE GÜVENLİK MODÜLLERİ"
+                android:text="OTOMATİK SİSTEM ANALİZİ VE RAPORU"
                 android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"
+                android:layout_gravity="start"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Tool 1: Junk & Cache Cleaner -->
+            <!-- Telemetry Container Card -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optCardCleaner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 app:cardBackgroundColor="@color/bg_card"
                 app:strokeColor="@color/bg_card_border"
                 app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp"
-                android:clickable="true"
-                android:focusable="true">
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@android:drawable/ic_menu_delete"
-                        app:tint="@color/accent_emerald_light" />
-
+                    <!-- Metric 1: Junk Storage -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_delete"
+                            app:tint="@color/accent_emerald_light" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Gereksiz Dosya Temizleme"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Gereksiz Dosya Temizliği"
                             android:textColor="@color/text_main"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvCleanerStatusOpt"
+                            android:id="@+id/tvHudStorage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Önbellek, geçici loglar ve çöp dosyaları temizle"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:text="240 MB Boşaltıldı"
+                            android:textColor="@color/accent_emerald_light"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvCleanerBadgeOpt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TEMİZLE"
-                        android:textColor="@color/accent_emerald_light"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_card_border" />
 
-            <!-- Tool 2: Privacy & Permissions Guard -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optCardPrivacy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/bg_card_border"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@android:drawable/ic_menu_view"
-                        app:tint="@color/accent_cyan" />
-
+                    <!-- Metric 2: RAM Optimization -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_rotate"
+                            app:tint="@color/accent_purple_light" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Gizlilik ve İzin Kalkanı"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="RAM ve Süreç Hızlandırma"
                             android:textColor="@color/text_main"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvPrivacyStatusOpt"
+                            android:id="@+id/tvHudRam"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Kamera, mikrofon ve hassas konum erişimlerini denetle"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:text="%42 Bellek Optimize"
+                            android:textColor="@color/accent_purple_light"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvPrivacyBadgeOpt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="DENETLE"
-                        android:textColor="@color/accent_cyan"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_card_border" />
 
-            <!-- Tool 3: Network & Wi-Fi Security -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optCardNetwork"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/bg_card_border"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@android:drawable/ic_menu_compass"
-                        app:tint="@color/accent_emerald_light" />
-
+                    <!-- Metric 3: Network Security -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_compass"
+                            app:tint="@color/accent_cyan" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
                             android:text="Ağ ve Wi-Fi Güvenliği"
                             android:textColor="@color/text_main"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvNetworkStatusOpt"
+                            android:id="@+id/tvHudNetwork"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="DNS sızıntısı, WPA şifreleme ve sahte ağ testi"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:text="DNS ve WPA Güvenli"
+                            android:textColor="@color/accent_cyan"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvNetworkBadgeOpt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TEST ET"
-                        android:textColor="@color/accent_emerald_light"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/bg_card_border" />
 
-            <!-- Tool 4: RAM & Performance Booster -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/optCardRam"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/bg_card_border"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@android:drawable/ic_menu_rotate"
-                        app:tint="@color/accent_purple_light" />
-
+                    <!-- Metric 4: Privacy Guard -->
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="14dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:src="@android:drawable/ic_menu_view"
+                            app:tint="@color/accent_emerald_light" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="RAM ve Performans Hızlandırıcı"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Gizlilik ve İzin Kalkanı"
                             android:textColor="@color/text_main"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvRamStatusOpt"
+                            android:id="@+id/tvHudPrivacy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Arka plan süreçlerini optimize et ve belleği rahatlat"
-                            android:textColor="@color/text_muted"
-                            android:textSize="11sp" />
+                            android:text="Puan: 100/100 Korundu"
+                            android:textColor="@color/accent_emerald_light"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvRamBadgeOpt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HIZLANDIR"
-                        android:textColor="@color/accent_purple_light"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

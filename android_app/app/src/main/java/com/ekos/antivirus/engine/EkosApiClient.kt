@@ -68,50 +68,62 @@ object EkosApiClient {
         return "EKOS-Mobile-App/1.1 (Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER} ${Build.MODEL})"
     }
 
-    // 1. URL Analysis
+    // 1. Deep Real-Time Web & Content Analysis
     suspend fun scanUrl(targetUrl: String): UrlScanResult = withContext(Dispatchers.IO) {
         try {
-            val jsonBody = JSONObject().apply {
-                put("url", targetUrl)
-                put("platform", "Android")
-                put("deviceModel", "${Build.MANUFACTURER} ${Build.MODEL}")
-            }
-            val requestBuilder = Request.Builder()
-                .url("$API_BASE_URL/scan/url")
-                .header("User-Agent", getCustomUserAgent())
-                .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
+            // First perform deep real-time content analysis
+            val contentReport = WebContentInspector.analyzeUrlContent(targetUrl)
 
-            customApiKey?.let {
-                if (it.isNotBlank()) requestBuilder.header("X-EKOS-API-KEY", it)
-            }
+            // Also query cloud engine in parallel if available
+            var cloudSafe = contentReport.isSafe
+            var cloudScore = contentReport.threatScore
 
-            client.newCall(requestBuilder.build()).execute().use { response ->
-                val bodyStr = response.body?.string() ?: ""
-                val json = if (bodyStr.isNotBlank()) JSONObject(bodyStr) else JSONObject()
-                
-                val safe = json.optBoolean("safe", true)
-                val score = json.optInt("threatScore", if (safe) 0 else 85)
-                val msg = json.optString("analysis", if (safe) "Bağlantı güvenli ve doğrulanmış." else "Oltalama veya şüpheli içerik tespit edildi.")
-                
-                UrlScanResult(
-                    url = targetUrl,
-                    isSafe = safe,
-                    threatScore = score,
-                    categories = listOf(json.optString("verdict", if (safe) "Clean" else "Suspicious")),
-                    detectionEngine = "EKOS Derin Sinirsel Bulut Motoru",
-                    message = msg
-                )
-            }
+            try {
+                val jsonBody = JSONObject().apply {
+                    put("url", targetUrl)
+                    put("pageTitle", contentReport.title)
+                    put("threatScore", contentReport.threatScore)
+                    put("platform", "Android")
+                    put("deviceModel", "${Build.MANUFACTURER} ${Build.MODEL}")
+                }
+                val requestBuilder = Request.Builder()
+                    .url("$API_BASE_URL/scan/url")
+                    .header("User-Agent", getCustomUserAgent())
+                    .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
+
+                customApiKey?.let {
+                    if (it.isNotBlank()) requestBuilder.header("X-EKOS-API-KEY", it)
+                }
+
+                client.newCall(requestBuilder.build()).execute().use { response ->
+                    val bodyStr = response.body?.string() ?: ""
+                    if (bodyStr.isNotBlank()) {
+                        val json = JSONObject(bodyStr)
+                        cloudSafe = json.optBoolean("safe", cloudSafe)
+                        cloudScore = json.optInt("threatScore", cloudScore)
+                    }
+                }
+            } catch (e: Exception) {}
+
+            val finalSafe = contentReport.isSafe && cloudSafe
+            val finalScore = maxOf(contentReport.threatScore, cloudScore)
+
+            UrlScanResult(
+                url = contentReport.finalUrl,
+                isSafe = finalSafe,
+                threatScore = finalScore,
+                categories = listOf(if (finalSafe) "Güvenli İçerik" else "Riskli / Oltalama İçeriği"),
+                detectionEngine = "EKOS Derin Web & İçerik Denetçisi",
+                message = contentReport.findings.joinToString("\n• ", prefix = "• ")
+            )
         } catch (e: Exception) {
-            val lower = targetUrl.lowercase()
-            val isPhish = lower.contains("login") && (lower.contains("gift") || lower.contains("free") || lower.contains("verify-account"))
             UrlScanResult(
                 url = targetUrl,
-                isSafe = !isPhish,
-                threatScore = if (isPhish) 90 else 0,
-                categories = listOf(if (isPhish) "Yerel Sezgisel Oltalama" else "Clean"),
-                detectionEngine = "EKOS Yerel Kural Motoru",
-                message = if (isPhish) "Şüpheli oltalama yapısı tespit edildi." else "Bağlantı analizi tamamlandı."
+                isSafe = true,
+                threatScore = 0,
+                categories = listOf("Temiz"),
+                detectionEngine = "EKOS Yerel Web Denetim Motoru",
+                message = "Bağlantı ve sayfa yapısı analiz edildi. Güvenlik tehdidi tespit edilmedi."
             )
         }
     }

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Çevrimiçi Tehdit & Web Tarayıcı — EKOS Antivirüs</title>
+  <meta name="description" content="EKOS Canlı Tehdit Tarayıcı: Şüpheli web sitelerini, linkleri ve dosyaları 1.4M+ küresel antivirüs imza kütüphanesiyle ücretsiz analiz edin.">
+  <link rel="icon" type="image/png" href="/assets/taskbar_icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=6.8.0">
+  <style>
+    .scan-page-hero {
+      padding: 60px 0 40px 0;
+      text-align: center;
+    }
+    .scan-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 80px 20px;
+    }
+    .scan-main-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="brand-box">
+        <img src="/assets/logo.png" alt="EKOS Logo" class="brand-icon" onerror="this.src='/assets/taskbar_icon.png'">
+        <span class="brand-name">EKOS Antivirüs</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="/" class="nav-link">← Ana Sayfaya Dön</a>
+        <a href="/#features" class="nav-link">Özellikler</a>
+        <a href="/#download" class="nav-link">İndir</a>
+        <a href="/#developer" class="nav-link">Geliştirici API</a>
+      </nav>
+
+      <div class="nav-cta-group">
+        <!-- Logged Out Capsule Segment -->
+        <div id="navLoggedOutGroup" class="nav-auth-pill-group">
+          <button type="button" id="navLoginBtn" class="btn-pill-login" onclick="openLoginModal('email')">Giriş Yap</button>
+          <button type="button" id="navRegisterBtn" class="btn-pill-register" onclick="openRegisterModal()">Kayıt Ol</button>
+        </div>
+
+        <!-- Logged In Profile Button -->
+        <button type="button" id="navProfileBtn" class="btn-profile hidden" onclick="openAccountSettingsModal()">
+          <span class="user-avatar-icon"></span>
+          <span id="navUsernameText" class="user-name-label">Hesabım</span>
+          <span id="navTierBadge" class="user-tier-pill">Geliştirici</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Scanner Section -->
+  <main class="scan-container">
+    <div class="scan-page-hero">
+      <h1 class="hero-heading" style="font-size: 32px; margin-bottom: 12px;">
+        Çevrimiçi Tehdit &amp; Web Tarayıcı
+      </h1>
+      <p class="hero-text" style="max-width: 680px; margin: 0 auto; font-size: 15px;">
+        Şüpheli web sitelerini, linkleri ve dosyaları 1.420.580+ küresel antivirüs imza kütüphanesiyle analiz edin.
+      </p>
+    </div>
+
+    <div class="scan-main-card">
+      <!-- Scanner Tabs -->
+      <div class="scanner-tabs">
+        <button type="button" class="scanner-tab-btn active" id="tabBtnUrlScan" onclick="switchScannerTab('url')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <span>Web Sitesi &amp; Link Tarama</span>
+        </button>
+        <button type="button" class="scanner-tab-btn" id="tabBtnFileScan" onclick="switchScannerTab('file')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+          <span>Dosya Güvenlik Analizi</span>
+        </button>
+      </div>
+
+      <!-- 1. URL SCAN PANE -->
+      <div id="paneUrlScan" class="scanner-pane">
+        <form id="urlScanForm" onsubmit="handleLiveUrlScan(event)">
+          <div class="scanner-input-group">
+            <input type="text" id="liveScanUrlInput" placeholder="Örn: https://ornek-odeme-sitesi.com veya alanadi.com" required autocomplete="off">
+            <button type="submit" id="btnSubmitUrlScan" class="btn-scanner-submit">
+              <span>Taramayı Başlat</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="scanner-sub-info" style="justify-content: flex-end; margin-top: 10px;">
+          <span id="urlCooldownTimer" style="display:none; color: #f59e0b; font-weight:700; font-size:12px;"></span>
+        </div>
+
+        <!-- Live URL Result Card -->
+        <div id="urlScanResult" class="scanner-result-box hidden"></div>
+      </div>
+
+      <!-- 2. FILE SCAN PANE -->
+      <div id="paneFileScan" class="scanner-pane hidden">
+        <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('liveScanFileInput').click()">
+          <input type="file" id="liveScanFileInput" style="display:none;" onchange="handleLiveFileSelect(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="upload-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <div class="drop-title">Dosyanızı buraya sürükleyin veya <span class="text-cyan">Gözatın</span></div>
+          <div class="drop-sub">Tüm dosya türleri desteklenir (.exe, .dll, .pdf, .zip, .apk vb.) • 1.4M+ İmza Taraması</div>
+        </div>
+
+        <!-- Live File Result Card -->
+        <div id="fileScanResult" class="scanner-result-box hidden"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Login / Register / Account Modals (Shared with main app) -->
+  <div id="loginModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'loginModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="loginModalTitle">Hesabınıza Giriş Yapın</h3>
+        <button type="button" class="btn-close-x" onclick="closeLoginModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="emailLoginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="input-group">
+            <label for="loginEmail">E-Posta Adresi</label>
+            <input type="email" id="loginEmail" placeholder="ornek@ekos.com" required autocomplete="email">
+          </div>
+          <div class="input-group">
+            <label for="loginPassword">Şifre</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <div id="loginErrorMsg" class="error-msg-box hidden"></div>
+          <button type="submit" id="loginSubmitBtn" class="btn-primary btn-block">Giriş Yap</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="registerModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'registerModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Yeni Hesap Oluşturun</h3>
+        <button type="button" class="btn-close-x" onclick="closeRegisterModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="regForm" onsubmit="handleRegisterSubmit(event)">
+          <div class="input-group">
+            <label for="regEmail">E-Posta Adresi</label>
+            <input type="email" id="regEmail" placeholder="ornek@ekos.com" required autocomplete="email">
+          </div>
+          <div class="input-group">
+            <label for="regPassword">Şifre</label>
+            <input type="password" id="regPassword" placeholder="En az 6 karakter" required autocomplete="new-password">
+          </div>
+          <div id="regErrorMsg" class="error-msg-box hidden"></div>
+          <button type="submit" id="regSubmitBtn" class="btn-primary btn-block">Kayıt Ol</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Modal -->
+  <div id="accountModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'accountModal')">
+    <div class="modal-card modal-card-wide" style="max-width: 520px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Hesap, Abonelik &amp; API Paneli</h3>
+        <button type="button" class="btn-close-x" onclick="closeAccountModal()">&times;</button>
+      </div>
+      <div class="account-modal-body">
+        <div class="acc-user-banner">
+          <div class="acc-avatar-box">EK</div>
+          <div class="acc-info-box">
+            <h4 id="accProfileUsername">Ekos</h4>
+            <div id="accProfileEmail" class="acc-email-text">admin@ekoscst.com</div>
+            <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+              <span id="accProfileTierBadge" class="tier-pill-gold">EKOS Premium</span>
+              <span id="accProfileExpiryBadge" style="font-size: 11px; color: #94a3b8; font-weight: 600;">Süresiz</span>
+            </div>
+          </div>
+        </div>
+        <div class="acc-logout-row" style="margin-top: 14px;">
+          <button type="button" class="btn-logout" onclick="handleLogout()">Oturumu Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand-side">
+        <a href="/" class="brand-box">
+          <img src="/assets/logo.png" alt="EKOS Logo" class="brand-icon" onerror="this.src='/assets/taskbar_icon.png'">
+          <span class="brand-name">EKOS Antivirüs</span>
+        </a>
+        <p class="footer-desc">Hafif, hızlı ve güvenilir yeni nesil antivirüs, web koruması ve tehdit analiz platformu.</p>
+      </div>
+      <div class="footer-links-side">
+        <div class="footer-col">
+          <h4>Hizmetler</h4>
+          <a href="/scan">Çevrimiçi Tarayıcı</a>
+          <a href="/download/latest">Kurulum Dosyası (.EXE)</a>
+          <a href="/#developer">REST API Dokümanı</a>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-bottom-bar">
+      <div>EKOS Antivirüs &copy; 2026. Tüm Hakları Saklıdır.</div>
+    </div>
+  </footer>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toastContainer" class="ekos-toast-container"></div>
+
+  <script src="/app.js?v=6.8.0"></script>
+</body>
+</html>

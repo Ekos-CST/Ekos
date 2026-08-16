@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EKOS Antivirüs — Hafif, Hızlı ve Güvenilir Uç Nokta Koruması</title>
+  <meta name="description" content="Sisteminizi yavaşlatmayan ultra hafif antivirüs motoru, gerçek zamanlı pano ve web kalkanı, geliştiriciler için REST API platformu.">
+  <link rel="icon" type="image/x-icon" href="/assets/icon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=6.8.0">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="brand-box">
+        <img src="/assets/logo.png" alt="EKOS Logo" class="brand-icon" onerror="this.src='/assets/taskbar_icon.png'">
+        <span class="brand-name">EKOS Antivirüs</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="/scan" class="nav-link" style="color: #38bdf8; font-weight: 700;">Çevrimiçi Tarayıcı</a>
+        <a href="#features" class="nav-link">Özellikler</a>
+        <a href="#download" class="nav-link">İndir</a>
+        <a href="#wiki" class="nav-link">Dokümantasyon</a>
+        <a href="#developer" class="nav-link">Geliştirici API</a>
+        <a href="#blog" class="nav-link">Sürüm Notları</a>
+      </nav>
+
+      <div class="nav-cta-group">
+        <!-- Logged Out Capsule Segment -->
+        <div id="navLoggedOutGroup" class="nav-auth-pill-group">
+          <button type="button" id="navLoginBtn" class="btn-pill-login" onclick="openLoginModal('email')">Giriş Yap</button>
+          <button type="button" id="navRegisterBtn" class="btn-pill-register" onclick="openRegisterModal()">Kayıt Ol</button>
+        </div>
+
+        <!-- Admin Direct Navigation Button (Opens in new tab) -->
+        <a href="/admin" target="_blank" id="navAdminBtn" class="btn-admin-pill hidden" style="text-decoration: none;">
+          <span>👑 Admin Paneli ↗</span>
+        </a>
+
+        <!-- Logged In Profile Button -->
+        <button type="button" id="navProfileBtn" class="btn-profile hidden" onclick="openAccountSettingsModal()">
+          <span class="user-avatar-icon"></span>
+          <span id="navUsernameText" class="user-name-label">Hesabım</span>
+          <span id="navTierBadge" class="user-tier-pill">Geliştirici</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container-narrow">
+      <h1 class="hero-heading">
+        Bilgisayarınızı yavaşlatmayan, <br>
+        <span class="text-highlight">hafif ve güçlü antivirüs koruması.</span>
+      </h1>
+
+      <p class="hero-text">
+        Düşük bellek kullanımıyla arka planda sessizce çalışan modern tarama motoru, gerçek zamanlı pano ve web koruması, geliştiriciler için yüksek performanslı REST API platformu.
+      </p>
+
+      <div class="hero-actions" id="heroActionsHub">
+        <!-- Windows Desktop Download Button -->
+        <a href="/download/latest" id="btnHeroWindows" class="btn-main-download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="svg-icon-lg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <div class="btn-text-col">
+            <span class="main-txt">Windows İçin İndir (.EXE)</span>
+            <span class="sub-txt">v4.2.0 • 64-Bit • 117 MB</span>
+          </div>
+        </a>
+
+        <!-- Android Mobile APK Download Button -->
+        <a href="/download/android" id="btnHeroAndroid" class="btn-main-download btn-android-download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="svg-icon-lg"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          <div class="btn-text-col">
+            <span class="main-txt">Android İçin İndir (.APK)</span>
+            <span class="sub-txt">v1.0.0 • Canlı Kalkan • 14 MB</span>
+          </div>
+        </a>
+
+        <a href="#developer" class="btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="svg-icon-md"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span>Geliştirici API'si</span>
+        </a>
+      </div>
+
+      <!-- Key Performance Metrics -->
+      <div class="metrics-row">
+        <div class="metric-box">
+          <span class="metric-num">1.42M+</span>
+          <span class="metric-desc">Tehdit İmzası İndekslendi</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-num">&lt; 35 MB</span>
+          <span class="metric-desc">Boşta RAM Tüketimi</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-num">&lt; 0.1 ms</span>
+          <span class="metric-desc">Ortalama Doğrulama Hızı</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-num">Win 10/11 &amp; Android</span>
+          <span class="metric-desc">Masaüstü &amp; Mobil Destek</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="content-section">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-tag">TEMEL ÖZELLİKLER</span>
+        <h2 class="section-title">Sisteminizi Yormayan Güvenlik Mimarisi</h2>
+        <p class="section-subtitle">Hantal güvenlik yazılımlarının aksine EKOS, donanım kaynaklarınızı tüketmeden tam koruma sağlamak üzere tasarlanmıştır.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="card feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+          </div>
+          <h3>Ultra Hızlı Tarama Motoru</h3>
+          <p>Optimize edilmiş tarama algoritması ile diskteki dosyaları sistem hızınızı etkilemeden saniyeler içinde denetler.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          </div>
+          <h3>Gerçek Zamanlı Pano & Komut Kalkanı</h3>
+          <p>Panoya kopyalanan veya arka planda çalıştırılmak istenen gizli komutları, betik enjeksiyonlarını anında durdurur.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          </div>
+          <h3>Web ve Oltalama (Phishing) Koruması</h3>
+          <p>Sahte bankacılık, kripto ve e-ticaret sitelerini, gizli veri hırsızlığı yapan sayfaları anlık olarak filtreler.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          </div>
+          <h3>1.4M+ Tehdit İmza Veritabanı</h3>
+          <p>Bilinen tüm zararlı yazılımları, fidye yazılımlarını ve şüpheli dosyaları küresel tehdit havuzuyla doğrular.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          </div>
+          <h3>Geliştiriciler İçin REST API</h3>
+          <p>Kendi projelerinize URL analizi, dosya kontrolü ve tehdit sorgulama yeteneklerini kolayca entegre edin.</p>
+        </div>
+
+        <div class="card feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <h3>Android &amp; Masaüstü Tam Entegrasyon</h3>
+          <p>Hem bilgisayarınızı hem Android telefonunuzu aynı EKOS hesabınızla eşleyip tek merkezden yönetin.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download Section -->
+  <section id="download" class="content-section download-section">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-tag">İNDİRME MERKEZİ</span>
+        <h2 class="section-title">EKOS Antivirüs Kurulum Dosyaları</h2>
+        <p class="section-subtitle">Bilgisayarınız veya Android telefonunuz için en son kararlı sürümü doğrudan sunucumuzdan yüksek hızla indirin.</p>
+      </div>
+
+      <!-- Dual Platform Download Cards (Desktop vs Mobile) -->
+      <div class="download-dual-grid">
+        <!-- 1. WINDOWS DESKTOP INSTALLER CARD -->
+        <div class="card installer-panel">
+          <div class="installer-info-side">
+            <span class="badge-version">v4.2.0 KARARLI SÜRÜM</span>
+            <h3 class="installer-heading">Windows Masaüstü Paketi</h3>
+            <p class="installer-summary">Tam koruma kalkanları, bellek ve pano koruması, web filtresi ve otomatik güncelleme aracı.</p>
+
+            <div class="specs-table">
+              <div class="spec-line">
+                <span class="spec-k">Dosya:</span>
+                <span class="spec-v">EKOS_Antivirus_Setup_4.2.0.exe</span>
+              </div>
+              <div class="spec-line">
+                <span class="spec-k">İşletim Sistemi:</span>
+                <span class="spec-v">Windows 10 / 11 (64-Bit)</span>
+              </div>
+              <div class="spec-line">
+                <span class="spec-k">Boyut:</span>
+                <span class="spec-v">117 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="installer-action-side">
+            <a href="/download/latest" class="btn-install-big">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="svg-dl"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <div class="install-texts">
+                <span class="inst-top">Windows İçin İndir (.EXE)</span>
+                <span class="inst-sub">Doğrudan Sunucudan Hızlı İndirme</span>
+              </div>
+            </a>
+            <span class="verified-label">✓ Dijital İmzalı Windows Kurulumu</span>
+          </div>
+        </div>
+
+        <!-- 2. ANDROID MOBILE APK CARD -->
+        <div class="card installer-panel installer-panel-android">
+          <div class="installer-info-side">
+            <span class="badge-version badge-android-version">v1.0.0 MOBİL GÜNCELLEME</span>
+            <h3 class="installer-heading">Android Mobil Güvenlik Paketi</h3>
+            <p class="installer-summary">Gerçek zamanlı indirilen dosya &amp; uygulama kalkanı, derin web analizi ve sistem optimizasyonu.</p>
+
+            <div class="specs-table">
+              <div class="spec-line">
+                <span class="spec-k">Dosya:</span>
+                <span class="spec-v">EKOS_Antivirus_Mobile.apk</span>
+              </div>
+              <div class="spec-line">
+                <span class="spec-k">Gereksinim:</span>
+                <span class="spec-v">Android 8.0 ve üzeri (Android 14/15 Uyumlu)</span>
+              </div>
+              <div class="spec-line">
+                <span class="spec-k">Boyut:</span>
+                <span class="spec-v">14.2 MB</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="installer-action-side">
+            <a href="/download/android" class="btn-install-big btn-install-android">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="svg-dl"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              <div class="install-texts">
+                <span class="inst-top">Android İçin İndir (.APK)</span>
+                <span class="inst-sub">Doğrudan Cihaza APK Yükle</span>
+              </div>
+            </a>
+            <span class="verified-label verified-label-android">✓ Android Canlı Kalkan &amp; Optimizasyon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Steps -->
+      <div class="steps-grid">
+        <div class="card step-card">
+          <span class="step-counter">01</span>
+          <h4>İndirin</h4>
+          <p>Kurulum dosyasını doğrudan yukarıdaki bağlantıdan bilgisayarınıza kaydedin.</p>
+        </div>
+        <div class="card step-card">
+          <span class="step-counter">02</span>
+          <h4>Kurun</h4>
+          <p>İndirilen <code>.exe</code> dosyasını çalıştırın; kurulum 10 saniyede hazır hale gelir.</p>
+        </div>
+        <div class="card step-card">
+          <span class="step-counter">03</span>
+          <h4>Korunun</h4>
+          <p>Programı başlatın, ilk taramanızı yapın ve kalkanları anında devreye alın.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wiki & Documentation -->
+  <section id="wiki" class="content-section">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-tag">DOKÜMANTASYON</span>
+        <h2 class="section-title">Kullanım Kılavuzu & Bilgi Bankası</h2>
+        <p class="section-subtitle">Komut satırı kullanımı, koruma modülleri ve istisna ayarları hakkında teknik rehber.</p>
+      </div>
+
+      <div class="wiki-grid">
+        <div class="card wiki-card">
+          <span class="card-pill">KOMUT SATIRI (CLI)</span>
+          <h3>Terminal Üzerinden Tarama</h3>
+          <p>EKOS'u uç birimden veya zamanlanmış görevlerden çalıştırmak için seçenekler:</p>
+          <pre class="terminal-view"><code># Belirli bir klasörü hızlıca tara
+EkosAntivirus.exe --scan "C:\Hedef\Klasor"
+
+# Otomatik karantina ile tara
+EkosAntivirus.exe --scan "D:\Downloads" --quarantine
+
+# Detaylı rapor oluştur
+EkosAntivirus.exe --scan "C:\" --deep --output "scan_log.txt"</code></pre>
+        </div>
+
+        <div class="card wiki-card">
+          <span class="card-pill">KORUMA MODÜLLERİ</span>
+          <h3>Pano & Bellek Koruması</h3>
+          <p>Panoya kopyalanan zararlı komutların ve betiklerin analiz süreci:</p>
+          <ul class="wiki-bullets">
+            <li><strong>Base64 Komutları:</strong> Şifreli PowerShell enjeksiyonlarını durdurur.</li>
+            <li><strong>Certutil İstismarı:</strong> Zararlı dosya indirme komutlarını engeller.</li>
+            <li><strong>Başlangıç Kalıcılığı:</strong> Kayıt defteri değişikliklerini denetler.</li>
+          </ul>
+        </div>
+
+        <div class="card wiki-card">
+          <span class="card-pill">İNTERNET GÜVENLİĞİ</span>
+          <h3>Web Kalkanı ve Oltalama Analizi</h3>
+          <p>İnternette gezinirken arka planda çalışan koruma katmanları:</p>
+          <ul class="wiki-bullets">
+            <li>Banka ve ödeme sitelerinin sahte kopyalarını tespit eder.</li>
+            <li>Gizli iframe ve veri kaçırma kodlarını filtreler.</li>
+            <li>Şifre çalma amaçlı formları anında bloke eder.</li>
+          </ul>
+        </div>
+
+        <div class="card wiki-card">
+          <span class="card-pill">YAPILANDIRMA</span>
+          <h3>Güvenli Liste & İstisnalar</h3>
+          <p>Kendi yazılımlarınızı veya güvendiğiniz araçları tarama dışı bırakmak için:</p>
+          <p class="wiki-text-muted">Uygulama içerisindeki <em>"Ayarlar ➔ Güvenli Liste"</em> sekmesinden dilediğiniz klasör veya dosya yolunu istisnalara ekleyebilirsiniz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Developer API Reference Section -->
+  <section id="developer" class="content-section dev-section">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-tag">GELİŞTİRİCİ PORTALI</span>
+        <h2 class="section-title">Geliştirici REST API Dokümantasyonu</h2>
+        <p class="section-subtitle">Yüksek performanslı bulut antivirüs ve web güvenlik analiz motoru REST API'si. Tüm istekler <code>X-EKOS-API-KEY</code> başlığı ile korunmaktadır.</p>
+      </div>
+
+      <div class="dev-auth-note-box card">
+        <div class="auth-note-content">
+          <div>
+            <h4>REST API Erişimi ve Kimlik Doğrulama</h4>
+            <p>API entegrasyonu için tüm istekler <code>X-EKOS-API-KEY</code> başlığı ile korunmaktadır. Her geliştirici hesabı için kurumsal seviyede sabit ve güvenli erişim anahtarı tanımlanır.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card dev-console-panel" style="margin-top: 24px;">
+        <div class="console-top-row">
+          <span class="console-head-title">ÖRNEK API İSTEKLERİ</span>
+          <div class="code-tab-btns">
+            <button class="tab-btn active" onclick="switchSnippetLang('curl')">cURL</button>
+            <button class="tab-btn" onclick="switchSnippetLang('python')">Python</button>
+            <button class="tab-btn" onclick="switchSnippetLang('node')">Node.js</button>
+            <button class="tab-btn" onclick="switchSnippetLang('csharp')">C#</button>
+          </div>
+        </div>
+
+        <div class="console-content">
+          <div class="endpoint-bar">
+            <select id="apiEndpointSelect" class="endpoint-sel" onchange="updateConsoleTemplate()">
+              <option value="/api/v1/scan/url">POST /api/v1/scan/url — Canlı Web & Oltalama Taraması</option>
+              <option value="/api/v1/scan/hash">POST /api/v1/scan/hash — 1.4M+ Tehdit Hash Sorgusu</option>
+              <option value="/api/v1/analyze/payload">POST /api/v1/analyze/payload — Komut & Script Exploit Analizi</option>
+              <option value="/api/v1/scan/file">POST /api/v1/scan/file — Dosya İkili & PE Entropi Analizi</option>
+              <option value="/api/v1/threat-intelligence/feed">GET /api/v1/threat-intelligence/feed — Canlı IoC Akışı</option>
+              <option value="/api/v1/status">GET /api/v1/status — Motor Durumu & Hesap Doğrulama</option>
+            </select>
+            <a href="https://api.ekoscst.com/api/v1" target="_blank" class="btn-doc-link">Tam API Dokümanı ↗</a>
+          </div>
+
+          <div class="code-box">
+            <pre><code id="liveCodeSnippet">curl -X POST https://api.ekoscst.com/api/v1/scan/url \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/login"}'</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Changelog & Release Notes -->
+  <section id="blog" class="content-section">
+    <div class="container">
+      <div class="section-intro">
+        <span class="section-tag">GÜNCELLEMELER</span>
+        <h2 class="section-title">Sürüm Notları ve İyileştirmeler</h2>
+        <p class="section-subtitle">EKOS Antivirüs platformundaki en güncel yenilikler ve geliştirmeler.</p>
+      </div>
+
+      <div class="changelog-grid">
+        <div class="card changelog-card main-release">
+          <div class="release-meta">
+            <span class="release-pill-tag">SÜRÜM NOTU</span>
+            <span class="release-date">15 Ağustos 2026</span>
+          </div>
+          <h3>EKOS Antivirüs v4.2.0 Yayınlandı</h3>
+          <p>v4.2.0 sürümüyle birlikte Geliştirici REST API platformu hesaba bağlandı, web üzerinden canlı derin sayfa ve oltalama (phishing) analiz motoru devreye alındı ve çift uzantılı gizli dosya koruması entegre edildi.</p>
+          <ul class="bullet-features">
+            <li><strong>Geliştirici REST API Yönetimi:</strong> Masaüstü ve web arayüzünde hesaba özel dinamik API anahtarı ve kota takip sistemi.</li>
+            <li><strong>Canlı Derin Web ve Form Kalkanı:</strong> Gerçek zamanlı HTML DOM analizi, gizli iFrame, Cryptojacking madenciliği ve sahte ödeme formu tespiti.</li>
+            <li><strong>Çift Uzantı Koruması:</strong> Yanıltıcı belge/görsel uzantıları arkasına gizlenmiş çalıştırılabilir (.exe/.vbs) tuzakların engellenmesi.</li>
+            <li><strong>Optimize Güvenlik Denetimi:</strong> Zararsız HTTP sayfalarındaki gereksiz uyarıların giderilmesi ve sıfır yanlış pozitif oranı.</li>
+          </ul>
+        </div>
+
+        <div class="card changelog-card">
+          <div class="release-meta">
+            <span class="release-pill-tag">SÜRÜM NOTU</span>
+            <span class="release-date">14 Ağustos 2026</span>
+          </div>
+          <h3>EKOS Antivirüs v4.1.0</h3>
+          <p>Tüm altyapı resmi <code>ekoscst.com</code> alan adına taşındı. Doğrudan kurulum dosyası dağıtımı ve REST API v1.0 altyapısı devreye alındı.</p>
+        </div>
+
+        <div class="card changelog-card">
+          <div class="release-meta">
+            <span class="release-pill-tag">SÜRÜM NOTU</span>
+            <span class="release-date">1 Ağustos 2026</span>
+          </div>
+          <h3>EKOS v4.0.0: Hızlı Tarayıcı ve Pano Kalkanı</h3>
+          <p>Yenilenen antivirüs tarama motoru entegre edildi. Panodaki zararlı PowerShell, Certutil ve şifreli komut saldırılarını anlık engelleyen pano kalkanı yayınlandı.</p>
+        </div>
+
+        <div class="card changelog-card">
+          <div class="release-meta">
+            <span class="article-pill-tag">GÜVENLİK BÜLTENİ</span>
+            <span class="release-date">10 Ağustos 2026</span>
+          </div>
+          <h3>Bellek ve Pano İçi Komut Enjeksiyonları Nasıl Engellenir?</h3>
+          <p>Dosyasız zararlı yazılımların Windows panosunu kullanarak bellek içi komut yürütme taktikleri ve EKOS'un bu saldırıları önleme yöntemleri.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- ========================================================================= -->
+  <!-- 1. GİRİŞ YAP MODALI (E-posta ve Şifre ile Giriş)                          -->
+  <!-- ========================================================================= -->
+  <div id="loginModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'loginModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modalLoginTitle">EKOS Hesabına Giriş Yap</h3>
+        <button type="button" class="btn-close-x" onclick="closeLoginModal()">&times;</button>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="loginAlertBox" class="modal-alert-box hidden"></div>
+
+      <!-- View: E-posta ile Giriş -->
+      <div id="loginViewEmail" class="auth-view-content">
+        <form id="formLogin" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label for="txtLoginEmail">E-posta Adresi:</label>
+            <input type="email" id="txtLoginEmail" required placeholder="ornek@ekos.com" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="txtLoginPassword">Şifre:</label>
+              <a href="#" class="link-small" onclick="showForgotView(); return false;">Şifremi Unuttum?</a>
+            </div>
+            <input type="password" id="txtLoginPassword" required placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <button type="submit" id="btnLoginSubmit" class="btn-submit-modal">Giriş Yap</button>
+        </form>
+        <div class="modal-switch-text">
+          Hesabınız yok mu? <a href="#" onclick="switchToRegisterModal(); return false;">Hemen Kayıt Olun</a>
+        </div>
+      </div>
+
+      <!-- View: Şifremi Unuttum -->
+      <div id="loginViewForgot" class="auth-view-content hidden">
+        <form id="formForgot" onsubmit="handleForgotSubmit(event)">
+          <div class="form-group">
+            <label for="txtForgotEmail">Kayıtlı E-posta Adresiniz:</label>
+            <input type="email" id="txtForgotEmail" required placeholder="ornek@ekoscst.com">
+          </div>
+          <div class="form-group">
+            <label for="txtForgotNewPassword">Yeni Şifreniz:</label>
+            <input type="password" id="txtForgotNewPassword" required placeholder="En az 4 karakter" minlength="4">
+          </div>
+          <button type="submit" id="btnForgotSubmit" class="btn-submit-modal">Şifremi Sıfırla ve Güncelle</button>
+        </form>
+        <div class="modal-switch-text">
+          <a href="#" onclick="showLoginView(); return false;">Giriş Ekranına Dön</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. KAYIT OL MODALI (Zorunlu Mobil QR Eşleme & Onaylı Kayıt)              -->
+  <!-- ========================================================================= -->
+  <div id="registerModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'registerModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="regModalTitle">Yeni EKOS Hesabı Oluştur</h3>
+        <button type="button" class="btn-close-x" onclick="closeRegisterModal()">&times;</button>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="registerAlertBox" class="modal-alert-box hidden"></div>
+
+      <!-- View 1: Kayıt Formu -->
+      <div id="regViewForm" class="auth-view-content">
+        <form id="formRegister" onsubmit="handleRegisterSubmit(event)">
+          <div class="form-group">
+            <label for="txtRegEmail">E-posta Adresi:</label>
+            <input type="email" id="txtRegEmail" required placeholder="ornek@ekoscst.com" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="txtRegUsername">Ad Soyad / Kullanıcı Adı:</label>
+            <input type="text" id="txtRegUsername" required placeholder="Ekos" autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="txtRegPassword">Şifre:</label>
+            <input type="password" id="txtRegPassword" required placeholder="En az 4 karakter" minlength="4" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label for="selRegSecurityQuestion">Güvenlik Sorusu:</label>
+            <select id="selRegSecurityQuestion" class="form-select">
+              <option value="İlk evcil hayvanınızın adı nedir?">İlk evcil hayvanınızın adı nedir?</option>
+              <option value="Doğduğunuz şehir neresidir?">Doğduğunuz şehir neresidir?</option>
+              <option value="En sevdiğiniz öğretmeninizin adı nedir?">En sevdiğiniz öğretmeninizin adı nedir?</option>
+              <option value="Çocukluk lakabınız nedir?">Çocukluk lakabınız nedir?</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="txtRegSecurityAnswer">Güvenlik Cevabı:</label>
+            <input type="text" id="txtRegSecurityAnswer" required placeholder="Kurtarma için cevabınız" autocomplete="off">
+          </div>
+          <button type="submit" id="btnRegSubmit" class="btn-submit-modal">📱 QR Kod ile Mobil Eşle &amp; Kayıt Ol</button>
+        </form>
+        <div class="modal-switch-text">
+          Zaten hesabınız var mı? <a href="#" onclick="switchToLoginModal(); return false;">Giriş Yapın</a>
+        </div>
+      </div>
+
+      <!-- View 2: QR Kod ile Telefon Eşleme & Onay Ekranı -->
+      <div id="regViewQR" class="auth-view-content hidden" style="text-align: center;">
+        <div style="margin-bottom: 14px;">
+          <span style="font-size: 11px; font-weight: 800; color: #06b6d4; letter-spacing: 0.8px; text-transform: uppercase;">ZORUNLU GÜVENLİK ADIMI</span>
+          <h4 style="font-size: 16px; color: #fff; margin: 4px 0 8px 0;">Telefonunuzla QR Kodu Okutun</h4>
+          <p style="font-size: 12px; color: #94a3b8; line-height: 1.5; margin: 0 0 16px 0;">
+            Hesabınızı aktifleştirmek için lütfen telefonunuzun kamerasıyla aşağıdaki QR kodu taratın ve ekranda çıkan <strong>"Mobil Cihazı Eşle"</strong> butonuna basınız.
+          </p>
+        </div>
+
+        <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+          <div style="background: #fff; padding: 12px; border-radius: 16px; box-shadow: 0 10px 30px rgba(6,182,212,0.25); display: inline-block;">
+            <img id="regQrCodeImg" src="" alt="EKOS Mobil Eşleme QR Kodu" style="width: 190px; height: 190px; display: block; border-radius: 8px;">
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: #38bdf8; font-weight: 600; margin-bottom: 12px;">
+          <span class="pulse-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; animation: pulseRing 1.5s infinite;"></span>
+          <span id="regPairStatusText">Telefonunuzdan onay bekleniyor...</span>
+        </div>
+
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 16px;" id="regTimerText">Kalan Süre: 10:00</div>
+
+        <button type="button" class="btn-secondary" style="width: 100%; justify-content: center;" onclick="backToRegForm()">← Bilgileri Düzenle / İptal</button>
+      </div>
+
+      <!-- View 3: Başarılı Kayıt ve Eşleme Ekranı -->
+      <div id="regViewSuccess" class="auth-view-content hidden" style="text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🎉📱</div>
+        <h4 style="font-size: 18px; color: #10b981; margin: 0 0 8px 0;">Hesabınız Başarıyla Aktifleştirildi!</h4>
+        <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 16px;">
+          Mobil cihazınız başarıyla eşlendi ve <strong>EKOS Standart (Ücretsiz)</strong> hesabınız açıldı.
+        </p>
+
+        <div style="background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; padding: 12px; margin-bottom: 18px;">
+          <span style="font-size: 11px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 4px;">GÜVENLİK KURTARMA KODUNUZ:</span>
+          <code id="regRecoveryCode" style="font-size: 15px; color: #f59e0b; font-weight: 800; font-family: monospace;">REC-XXXX-XXXX</code>
+          <span style="font-size: 10px; color: #64748b; display: block; margin-top: 4px;">Şifrenizi unutursanız bu kod ile hesabınızı kurtarabilirsiniz.</span>
+        </div>
+
+        <button type="button" id="btnRegDone" class="btn-submit-modal" onclick="finishRegistration()">Paneli Aç ve Başla →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. HESAP, ABONELİK & REST API YÖNETİM MODALI -->
+  <!-- ========================================================================= -->
+  <div id="accountModal" class="modal-backdrop hidden" onclick="handleBackdropClick(event, 'accountModal')">
+    <div class="modal-card modal-card-wide" style="max-width: 520px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Hesap, Abonelik &amp; API Paneli</h3>
+        <button type="button" class="btn-close-x" onclick="closeAccountModal()">&times;</button>
+      </div>
+
+      <div class="account-modal-body">
+        <!-- User Info Row -->
+        <div class="acc-user-banner">
+          <div class="acc-avatar-box">EK</div>
+          <div class="acc-info-box">
+            <h4 id="accProfileUsername">Ekos</h4>
+            <div id="accProfileEmail" class="acc-email-text">admin@ekoscst.com</div>
+            <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+              <span id="accProfileTierBadge" class="tier-pill-gold">EKOS Premium</span>
+              <span id="accProfileExpiryBadge" style="font-size: 11px; color: #94a3b8; font-weight: 600;">Süresiz</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Abonelik & Lisans Bilgileri -->
+        <div class="acc-section-box">
+          <div class="acc-section-title">ABONELİK &amp; LİSANS DURUMU</div>
+          <div class="acc-stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 8px;">
+            <div class="acc-stat-box">
+              <span class="acc-stat-k">PAKET TÜRÜ</span>
+              <span id="accSubTierText" class="acc-stat-v text-cyan" style="font-size: 14px;">EKOS Premium</span>
+            </div>
+            <div class="acc-stat-box">
+              <span class="acc-stat-k">GEÇERLİLİK</span>
+              <span id="accSubExpiryText" class="acc-stat-v text-green" style="font-size: 14px;">Süresiz</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Geliştirici REST API Anahtarı & Kullanım -->
+        <div class="acc-section-box">
+          <div class="acc-section-title">GELİŞTİRİCİ REST API ANAHTARI</div>
+          <p class="acc-section-desc">API isteklerinizde kimlik doğrulaması için <code>X-EKOS-API-KEY</code> başlığı olarak kullanınız.</p>
+
+          <div class="acc-api-key-row">
+            <input type="password" id="accApiKeyDisplay" readonly value="ekos_live_sk_...">
+            <button type="button" class="btn-square" onclick="toggleAccountApiKeyVisibility()" title="Göster / Gizle">Göster</button>
+            <button type="button" class="btn-square" onclick="copyAccountApiKeyToClipboard()" title="Kopyala">Kopyala</button>
+          </div>
+
+          <div class="acc-stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 10px;">
+            <div class="acc-stat-box">
+              <span class="acc-stat-k">TOPLAM İSTEK</span>
+              <span id="accTotalReqCount" class="acc-stat-v">0</span>
+            </div>
+            <div class="acc-stat-box">
+              <span class="acc-stat-k">GÜNLÜK KALAN KOTA</span>
+              <span id="accRemainingQuotaCount" class="acc-stat-v text-green">10.000</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logout Action -->
+        <div class="acc-logout-row" style="margin-top: 14px;">
+          <button type="button" class="btn-logout" onclick="handleLogout()">Oturumu Kapat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand-side">
+        <a href="/" class="brand-box">
+          <img src="/assets/logo.png" alt="EKOS Logo" class="brand-icon" onerror="this.src='/assets/taskbar_icon.png'">
+          <span class="brand-name">EKOS Antivirüs</span>
+        </a>
+        <p class="footer-desc">Hafif, hızlı ve güvenilir yeni nesil antivirüs, web koruması ve tehdit analiz platformu.</p>
+      </div>
+
+      <div class="footer-links-side">
+        <div class="footer-col">
+          <h4>Navigasyon</h4>
+          <a href="#features">Özellikler</a>
+          <a href="#download">İndir</a>
+          <a href="#wiki">Dokümantasyon</a>
+          <a href="#developer">Geliştirici API</a>
+          <a href="#blog">Sürüm Notları</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Geliştirici</h4>
+          <a href="https://api.ekoscst.com/api/v1" target="_blank">API Dokümantasyonu</a>
+          <a href="/download/latest">Kurulum Dosyası (.EXE)</a>
+          <a href="#developer">REST API Dokümanı</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom-bar">
+      <div>EKOS Antivirüs &copy; 2026. Tüm Hakları Saklıdır.</div>
+    </div>
+  </footer>
+
+  <!-- Floating Toast Notifications (In-Page Non-blocking) -->
+  <div id="toastContainer" class="ekos-toast-container"></div>
+
+  <script src="/app.js?v=6.2.0"></script>
+</body>
+</html>

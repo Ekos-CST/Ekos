@@ -3707,17 +3707,29 @@ app.get(['/api/mobile/version', '/android_app/version.json', '/api/v1/mobile/ver
 // Direct Android APK Download Endpoints
 app.get(['/download/android', '/download/EKOS_Antivirus_Mobile.apk', '/download/mobile.apk', '/download/app-debug.apk'], (req, res) => {
     const candidates = [
-        path.join(__dirname, 'public', 'download', 'EKOS_Antivirus_Mobile.apk'),
         path.join(__dirname, 'web_public', 'download', 'EKOS_Antivirus_Mobile.apk'),
+        path.join(__dirname, 'public', 'download', 'EKOS_Antivirus_Mobile.apk'),
         path.join(__dirname, '..', 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk'),
         path.join(__dirname, 'android_app', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk')
     ];
 
     for (const p of candidates) {
         if (fs.existsSync(p)) {
-            res.setHeader('Content-Disposition', 'attachment; filename="EKOS_Antivirus_Mobile.apk"');
-            res.setHeader('Content-Type', 'application/vnd.android.package-archive');
-            return res.sendFile(path.resolve(p));
+            try {
+                const stat = fs.statSync(p);
+                res.writeHead(200, {
+                    'Content-Type': 'application/vnd.android.package-archive',
+                    'Content-Disposition': 'attachment; filename="EKOS_Antivirus_Mobile.apk"',
+                    'Content-Length': stat.size,
+                    'Cache-Control': 'public, max-age=3600',
+                    'Access-Control-Allow-Origin': '*'
+                });
+                const readStream = fs.createReadStream(p);
+                readStream.on('error', () => res.end());
+                return readStream.pipe(res);
+            } catch(err) {
+                return res.status(500).send('Dosya okunamadı.');
+            }
         }
     }
 
@@ -5838,6 +5850,35 @@ app.post('/api/auth/logout', (req, res) => {
     return res.json({ success: true, message: 'Oturum kapatıldı. Cihaz kilidi serbest bırakıldı.' });
 });
 
-app.listen(PORT, () => {
-    console.log(`[EKOS Auth Server] Sunucu http://127.0.0.1:${PORT} ve http://[::1]:${PORT} üzerinde çalışıyor.`);
-});
+// 1. Primary HTTP Listener on Port 3002 (IPv4 & IPv6 all interfaces)
+try {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`[EKOS Auth Server] HTTP Port 3002 (0.0.0.0) aktif.`);
+    });
+} catch(e) {}
+
+// 2. Standard HTTP Listener on Port 80
+try {
+    app.listen(80, '0.0.0.0', () => {
+        console.log(`[EKOS Auth Server] Standard HTTP Port 80 (0.0.0.0) aktif.`);
+    });
+} catch(e) {}
+
+// 3. Dual HTTPS Listener with PFX certificate on Port 443 & 3443
+try {
+    const https = require('https');
+    const pfxPath = path.join(__dirname, 'server.pfx');
+    const pfxParent = path.join(__dirname, '..', 'server.pfx');
+    const targetPfx = fs.existsSync(pfxPath) ? pfxPath : (fs.existsSync(pfxParent) ? pfxParent : null);
+    if (targetPfx) {
+        const pfxData = fs.readFileSync(targetPfx);
+        https.createServer({ pfx: pfxData, passphrase: 'EkosCert2026!' }, app).listen(443, () => {
+            console.log(`[EKOS Auth Server] Standard HTTPS Port 443 aktif.`);
+        });
+        https.createServer({ pfx: pfxData, passphrase: 'EkosCert2026!' }, app).listen(3443, () => {
+            console.log(`[EKOS Auth Server] Alternate HTTPS Port 3443 aktif.`);
+        });
+    }
+} catch(e) {
+    console.log('[EKOS Auth Server] HTTPS desteği opsiyonel:', e.message);
+}

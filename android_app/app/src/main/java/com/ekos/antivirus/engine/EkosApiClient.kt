@@ -1,5 +1,8 @@
 package com.ekos.antivirus.engine
 
+import android.content.Context
+import android.os.Build
+import android.provider.Settings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -40,14 +43,42 @@ object EkosApiClient {
     var customApiKey: String? = null
     var authToken: String? = null
 
+    fun getDeviceMetadata(context: Context? = null): Map<String, String> {
+        val deviceId = if (context != null) {
+            try {
+                Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID) ?: "ANDROID-GENERIC"
+            } catch (e: Throwable) {
+                "ANDROID-GENERIC"
+            }
+        } else {
+            "ANDROID-GENERIC"
+        }
+
+        return mapOf(
+            "deviceId" to deviceId,
+            "manufacturer" to Build.MANUFACTURER,
+            "model" to Build.MODEL,
+            "brand" to Build.BRAND,
+            "osVersion" to "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
+            "deviceFingerprint" to Build.FINGERPRINT
+        )
+    }
+
+    private fun getCustomUserAgent(): String {
+        return "EKOS-Mobile-App/1.1 (Android ${Build.VERSION.RELEASE}; ${Build.MANUFACTURER} ${Build.MODEL})"
+    }
+
     // 1. URL Analysis
     suspend fun scanUrl(targetUrl: String): UrlScanResult = withContext(Dispatchers.IO) {
         try {
             val jsonBody = JSONObject().apply {
                 put("url", targetUrl)
+                put("platform", "Android")
+                put("deviceModel", "${Build.MANUFACTURER} ${Build.MODEL}")
             }
             val requestBuilder = Request.Builder()
                 .url("$API_BASE_URL/scan/url")
+                .header("User-Agent", getCustomUserAgent())
                 .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
 
             customApiKey?.let {
@@ -90,9 +121,11 @@ object EkosApiClient {
         try {
             val jsonBody = JSONObject().apply {
                 put("hash", sha256)
+                put("deviceModel", "${Build.MANUFACTURER} ${Build.MODEL}")
             }
             val requestBuilder = Request.Builder()
                 .url("$API_BASE_URL/scan/hash")
+                .header("User-Agent", getCustomUserAgent())
                 .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
 
             customApiKey?.let {
@@ -111,54 +144,23 @@ object EkosApiClient {
         }
     }
 
-    // 3. Payload & Script Analysis
-    suspend fun analyzePayload(text: String): ClipboardAnalysisResult = withContext(Dispatchers.IO) {
+    // 3. User Login with Full Device Identity Metadata
+    suspend fun login(email: String, password: String, context: Context? = null): AuthResponse = withContext(Dispatchers.IO) {
         try {
+            val meta = getDeviceMetadata(context)
             val jsonBody = JSONObject().apply {
-                put("payload", text)
-            }
-            val requestBuilder = Request.Builder()
-                .url("$API_BASE_URL/analyze/payload")
-                .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
-
-            client.newCall(requestBuilder.build()).execute().use { response ->
-                val bodyStr = response.body?.string() ?: ""
-                val json = if (bodyStr.isNotBlank()) JSONObject(bodyStr) else JSONObject()
-                val isMalicious = json.optBoolean("isMalicious", false)
-                val threatType = json.optString("threatType", "Suspicious Script Payload")
-                val explanation = json.optString("explanation", "Panoda şüpheli komut yürütme deseni tespit edildi.")
-
-                ClipboardAnalysisResult(
-                    content = text,
-                    isSuspicious = isMalicious,
-                    threatType = if (isMalicious) threatType else null,
-                    explanation = if (isMalicious) explanation else "Pano içeriği temiz."
-                )
-            }
-        } catch (e: Exception) {
-            val isSusp = text.contains("powershell -enc", ignoreCase = true) ||
-                    text.contains("cmd.exe /c", ignoreCase = true) ||
-                    text.contains("certutil -urlcache", ignoreCase = true)
-            ClipboardAnalysisResult(
-                content = text,
-                isSuspicious = isSusp,
-                threatType = if (isSusp) "Local.CommandInjection" else null,
-                explanation = if (isSusp) "Zararlı komut çalıştırma kalıbı bulundu." else "İçerik temiz."
-            )
-        }
-    }
-
-    // 4. User Login
-    suspend fun login(email: String, password: String): AuthResponse = withContext(Dispatchers.IO) {
-        try {
-            val jsonBody = JSONObject().apply {
-                put("email", email.trim().toLowerCase())
+                put("email", email.trim().lowercase())
                 put("password", password)
-                put("hwSerial", "ANDROID-REALME")
+                put("hwSerial", meta["deviceId"])
+                put("deviceModel", "${meta["manufacturer"]} ${meta["model"]}")
+                put("osVersion", meta["osVersion"])
+                put("platform", "Android")
+                put("deviceFingerprint", meta["deviceFingerprint"])
             }
 
             val request = Request.Builder()
                 .url("$AUTH_BASE_URL/login")
+                .header("User-Agent", getCustomUserAgent())
                 .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
                 .build()
 
@@ -185,25 +187,32 @@ object EkosApiClient {
         }
     }
 
-    // 5. User Registration
+    // 4. User Registration with Device Info
     suspend fun register(
         fullName: String,
         email: String,
         password: String,
         securityQuestion: String,
-        securityAnswer: String
+        securityAnswer: String,
+        context: Context? = null
     ): AuthResponse = withContext(Dispatchers.IO) {
         try {
+            val meta = getDeviceMetadata(context)
             val jsonBody = JSONObject().apply {
                 put("fullName", fullName.trim())
-                put("email", email.trim().toLowerCase())
+                put("email", email.trim().lowercase())
                 put("password", password)
                 put("securityQuestion", securityQuestion)
                 put("securityAnswer", securityAnswer)
+                put("hwSerial", meta["deviceId"])
+                put("deviceModel", "${meta["manufacturer"]} ${meta["model"]}")
+                put("osVersion", meta["osVersion"])
+                put("platform", "Android")
             }
 
             val request = Request.Builder()
                 .url("$AUTH_BASE_URL/register")
+                .header("User-Agent", getCustomUserAgent())
                 .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
                 .build()
 

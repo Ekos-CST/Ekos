@@ -208,7 +208,7 @@ class AccountActivity : AppCompatActivity() {
         btnSubmitLogin.text = "Giriş Yapılıyor..."
 
         lifecycleScope.launch {
-            val res = EkosApiClient.login(email, pass)
+            val res = EkosApiClient.login(email, pass, this@AccountActivity)
             btnSubmitLogin.isEnabled = true
             btnSubmitLogin.text = "Giriş Yap"
 

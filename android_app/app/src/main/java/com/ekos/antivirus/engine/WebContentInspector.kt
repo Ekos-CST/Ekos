@@ -101,13 +101,25 @@ object WebContentInspector {
     private val HIGH_RISK_TLD_PATTERN = Pattern.compile("(?i)\\.(xyz|top|click|monster|cfd|rest|buzz|club|work|tk|ml|ga|cf|gq|pw|cc|ru|su)(/|:|\$|\\?)")
     private val IP_HOST_PATTERN = Pattern.compile("(?i)^https?://\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")
 
+    // 1. Script Malware, Exfiltration, Keyloggers
     private val SCRIPT_MALWARE_PATTERNS = listOf(
         Pattern.compile("(?i)(eval\\s*\\(|document\\.write\\s*\\(\\s*unescape|String\\.fromCharCode)"),
         Pattern.compile("(?i)(coinhive|cryptonight|webminer|coin-hive|cryptoloot|miner\\.start)"),
         Pattern.compile("(?i)(window\\.location\\.replace\\s*\\(['\"][^'\"]*\\.(exe|apk|scr|bat))"),
         Pattern.compile("(?i)discord\\.com/api/webhooks"),
         Pattern.compile("(?i)(document\\.cookie|localStorage\\.getItem|sessionStorage\\.getItem).*fetch\\("),
-        Pattern.compile("(?i)addEventListener\\(['\"]keydown['\"].*keyCode")
+        Pattern.compile("(?i)addEventListener\\(['\"]keydown['\"].*keyCode"),
+        Pattern.compile("(?i)document\\.createElement\\(['\"]script['\"]\\)")
+    )
+
+    // 2. Aggressive Pop-Up, Pop-Under, Notification & Clickjacking Patterns
+    private val POPUP_HIJACK_PATTERNS = listOf(
+        Pattern.compile("(?i)window\\.open\\s*\\([^)]*\\)"),
+        Pattern.compile("(?i)setInterval\\s*\\([^)]*window\\.open"),
+        Pattern.compile("(?i)(onbeforeunload|addEventListener\\(['\"]beforeunload['\"])"),
+        Pattern.compile("(?i)Notification\\.requestPermission"),
+        Pattern.compile("(?i)(requestFullscreen|webkitRequestFullscreen)"),
+        Pattern.compile("(?i)navigator\\.clipboard\\.writeText")
     )
 
     private fun computeLevenshteinDistance(s1: String, s2: String): Int {
@@ -252,7 +264,6 @@ object WebContentInspector {
                     gatewayChain.add(finalResolvedUrl)
                 }
 
-                // Check Page Title
                 val titleMatcher = Pattern.compile("(?i)<title[^>]*>([^<]+)</title>").matcher(htmlContent)
                 if (titleMatcher.find()) {
                     pageTitle = titleMatcher.group(1)?.trim() ?: "Web Sayfası"
@@ -263,7 +274,6 @@ object WebContentInspector {
                     threatScore += 45
                     findings.add("GİZLİ AĞ GEÇİDİ (GATEWAY): İstek ilk adresten ($initialHost) farklı olan '$finalHost' adresine yönlendirildi (Gateway Traversal).")
 
-                    // Inspect final destination host for brand typosquatting / phishing
                     val finalDomainLabel = extractDomainLabel(finalHost)
                     for (brand in PROTECTED_BRANDS) {
                         val isOfficial = brand.officialDomains.any { finalHost == it || finalHost.endsWith(".$it") }
@@ -303,7 +313,32 @@ object WebContentInspector {
             findings.add("META REFRESH GEÇİDİ: Sayfa otomatik olarak '$metaUrl' adresine yönlendirme kodu içeriyor.")
         }
 
-        // 4. DEEP SOFTWARE & EMBEDDED BINARY SCANNING (Linked files, APK/EXE payloads, Droppers)
+        // 4. POP-UP, POP-UNDER, NOTIFICATION & BROWSER HIJACK AUDIT
+        if (Pattern.compile("(?i)setInterval\\s*\\([^)]*window\\.open").matcher(htmlContent).find() ||
+            Pattern.compile("(?i)(window\\.open\\s*\\([^)]*\\)[^;]*;\\s*){2,}").matcher(htmlContent).find()) {
+            threatScore += 55
+            isScriptThreat = true
+            findings.add("AGRESİF POP-UP DÖNGÜSÜ (SPAM POPUP): Sayfa kullanıcıdan habersiz çoklu veya döngüsel açılır pencere (pop-up) üretiyor!")
+        } else if (Pattern.compile("(?i)window\\.open\\s*\\(").matcher(htmlContent).find()) {
+            findings.add("Sayfa kodlarında dinamik açılır pencere (window.open) kullanımı tespit edildi.")
+        }
+
+        if (Pattern.compile("(?i)(onbeforeunload|addEventListener\\(['\"]beforeunload['\"])").matcher(htmlContent).find()) {
+            threatScore += 35
+            findings.add("SAYFA TERKİ ENGELLEME TUZAĞI (UNLOAD TRAP): Ziyaretçinin sayfayı kapatmasını veya geri gitmesini engelleyen kilitleyici kod bulundu.")
+        }
+
+        if (Pattern.compile("(?i)Notification\\.requestPermission").matcher(htmlContent).find()) {
+            threatScore += 30
+            findings.add("BİLDİRİM İZNİ ZORLAMASI (NOTIFICATION SPAM): Sayfa tarayıcı bildirim izni talep eden kod barındırıyor.")
+        }
+
+        if (Pattern.compile("(?i)(navigator\\.clipboard\\.writeText|document\\.execCommand\\(['\"]copy['\"])").matcher(htmlContent).find()) {
+            threatScore += 40
+            findings.add("PANO MÜDAHALESİ (CLIPBOARD HIJACK): Sayfa kullanıcının panosunu sessizce değiştirme yeteneğine sahip kod içeriyor.")
+        }
+
+        // 5. DEEP SOFTWARE & EMBEDDED BINARY SCANNING
         val softwareLinks = mutableListOf<String>()
         val binaryMatcher = Pattern.compile("(?i)href\\s*=\\s*[\"']([^\"']+\\.(apk|exe|dll|bat|vbs|ps1|scr|jar|iso|img|dmg|sh|bin|msi|cmd)(\\?[^\"']*)?)[\"']").matcher(htmlContent)
         while (binaryMatcher.find()) {
@@ -325,14 +360,14 @@ object WebContentInspector {
                     sThreatDesc = "ZARARLI / İSTİSMAR YAZILIMI İNDİRME BAĞLANTISI: '$sLink'"
                 } else if (DOUBLE_EXTENSION_PATTERN.matcher(sLower).find()) {
                     threatScore += 45
-                    sThreatDesc = "GİZLENMİŞ ÇİFT UZANTILI TUZAK YAZILIM: '$sLink'"
+                    sThreatDesc = "GİZLENMİŞ ÇİFT UZANTI TUZAĞI: '$sLink'"
                 }
 
                 findings.add(sThreatDesc)
             }
         }
 
-        // 5. EXTERNAL SCRIPT SECURITY AUDIT (<script src="...">)
+        // 6. EXTERNAL SCRIPT SECURITY AUDIT (<script src="...">)
         val externalScripts = mutableListOf<String>()
         val scriptSrcMatcher = Pattern.compile("(?i)<script[^>]*src=[\"']([^\"']+)[\"']").matcher(htmlContent)
         while (scriptSrcMatcher.find()) {
@@ -348,12 +383,12 @@ object WebContentInspector {
                 if (sUrlLower.contains("coinhive") || sUrlLower.contains("miner") || sUrlLower.contains("stealer") || sUrlLower.contains("payload") || sUrlLower.contains("keylogger")) {
                     threatScore += 60
                     isScriptThreat = true
-                    findings.add("ZARARLI HARİCİ BETİK (MALICIOUS JS): Sayfaya harici olarak yüklenen tehlikeli script tespit edildi: '$scriptUrl'")
+                    findings.add("ZARARLI HARİCİ BETİK (MALICIOUS JS): Sayfaya harici olarak yüklenen tehlikeli script: '$scriptUrl'")
                 }
             }
         }
 
-        // 6. FORM & DATA EXFILTRATION AUDIT (Cross-Domain Form Actions)
+        // 7. FORM & DATA EXFILTRATION AUDIT
         val hasPasswordInput = Pattern.compile("(?i)<input[^>]*type=[\"']password[\"']").matcher(htmlContent).find()
         val hasCreditCardInput = Pattern.compile("(?i)(cardnumber|creditcard|cvv|sonkullanma|cc-num|kartno)").matcher(htmlContent).find()
         val formActionMatcher = Pattern.compile("(?i)<form[^>]*action=[\"']([^\"']*)[\"']").matcher(htmlContent)
@@ -391,14 +426,14 @@ object WebContentInspector {
             }
         }
 
-        // 7. IN-PAGE SCRIPT & PHISHING PATTERN CHECKS
+        // 8. IN-PAGE SCRIPT & PHISHING PATTERN CHECKS
         var scriptStatus = "Temiz (Zararlı script yok)"
         for (pattern in SCRIPT_MALWARE_PATTERNS) {
             if (pattern.matcher(htmlContent).find()) {
                 threatScore += 50
                 isScriptThreat = true
                 scriptStatus = "Zararlı / Gizlenmiş Script Bulundu"
-                findings.add("Sayfa kaynağında veri sızdırma, keylogger veya gizlenmiş kod yürütme betiği tespit edildi.")
+                findings.add("Sayfa kaynağında veri sızdırma, tuş kaydedici veya gizlenmiş kod yürütme betiği tespit edildi.")
                 break
             }
         }
@@ -414,7 +449,7 @@ object WebContentInspector {
         }
 
         if (findings.isEmpty()) {
-            findings.add("Site içeriği, ağ geçitleri, yönlendirmeler, bağlı yazılımlar ve scriptler denetlendi. Güvenlik açığı bulunamadı.")
+            findings.add("Site içeriği, açılır pencereler (pop-up), ağ geçitleri, bağlı yazılımlar ve scriptler denetlendi. Güvenlik açığı bulunamadı.")
         }
 
         WebContentScanReport(

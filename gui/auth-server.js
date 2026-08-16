@@ -4620,6 +4620,33 @@ app.post(['/api/v1/scan/url', '/api/scan-url', '/api/v1/scan-url', '/api/web-sca
                 threatCategories.push('Gizli Çerçeve (Hidden iFrame Injection)');
             }
 
+            // Check Aggressive Pop-Up Loops, Unload Traps & Browser Hijacking
+            if (/setInterval\s*\([^)]*window\.open/i.test(htmlContent) || /(?:window\.open\s*\([^)]*\)[^;]*;\s*){2,}/i.test(htmlContent)) {
+                riskScore += 55;
+                warnings.push('AGRESİF POP-UP DÖNGÜSÜ (SPAM POPUP): Sayfa kullanıcıdan habersiz çoklu veya döngüsel açılır pencere (pop-up) üretiyor!');
+                threatCategories.push('İstenmeyen Açılır Pencere Saldırısı (Pop-up Flood)');
+            } else if (/window\.open\s*\(/i.test(htmlContent)) {
+                warnings.push('Açılır Pencere (Pop-up) Kodları: Sayfada dinamik pencere açma komutları (window.open) bulundu.');
+            }
+
+            if (/onbeforeunload|addEventListener\(['"]beforeunload['"]/i.test(htmlContent)) {
+                riskScore += 35;
+                warnings.push('SAYFA TERKİ ENGELLEME TUZAĞI (UNLOAD TRAP): Ziyaretçinin sayfayı kapatmasını veya geri gitmesini engelleyen kilit kodu bulundu.');
+                threatCategories.push('Sayfa Terkini Engelleme Tuzağı (Unload Hijack)');
+            }
+
+            if (/Notification\.requestPermission/i.test(htmlContent)) {
+                riskScore += 30;
+                warnings.push('BİLDİRİM İZNİ ZORLAMASI (NOTIFICATION SPAM): Sayfa tarayıcı bildirim izni talep eden kod barındırıyor.');
+                threatCategories.push('Bildirim İzni İstismarı (Notification Spam)');
+            }
+
+            if (/navigator\.clipboard\.writeText|document\.execCommand\(['"]copy['"]\)/i.test(htmlContent)) {
+                riskScore += 40;
+                warnings.push('PANO MÜDAHALESİ (CLIPBOARD HIJACK): Sayfa kullanıcının panosunu sessizce değiştirme yeteneğine sahip kod içeriyor.');
+                threatCategories.push('Pano Müdahalesi / Değiştirme (Clipboard Hijack)');
+            }
+
             // Check Crypto Miners / Discord Webhook Stealers
             if (/coinhive|crypto-miner|miner\.start/i.test(htmlContent)) {
                 riskScore += 60;

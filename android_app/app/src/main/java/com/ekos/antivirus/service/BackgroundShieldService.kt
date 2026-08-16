@@ -33,15 +33,26 @@ class BackgroundShieldService : Service() {
         }
     }
 
+    private var fileWatcher: FileDownloadWatcher? = null
+
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+        fileWatcher = FileDownloadWatcher(this).apply {
+            startWatching()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notification = buildForegroundNotification()
         startForeground(NOTIFICATION_ID, notification)
         return START_STICKY
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fileWatcher?.stopWatching()
+        fileWatcher = null
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -67,9 +78,10 @@ class BackgroundShieldService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        // Strict: NO EMOJIS
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("EKOS Antivirüs — Kalkan Aktif")
-            .setContentText("Cihazınız gerçek zamanlı bulut motoruyla korunuyor.")
+            .setContentTitle("EKOS Antivirüs - Canlı Kalkan Aktif")
+            .setContentText("Cihazınız, indirilen dosyalar ve uygulamalar sürekli taranıyor.")
             .setSmallIcon(android.R.drawable.ic_lock_idle_lock)
             .setContentIntent(pendingIntent)
             .setOngoing(true)

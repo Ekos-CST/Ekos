@@ -17,9 +17,13 @@ data class WebContentScanReport(
     val threatScore: Int,
     val verdict: String,
     val protocol: String,
+    val isFormThreat: Boolean,
     val formSecurityStatus: String,
+    val isScriptThreat: Boolean,
     val scriptSecurityStatus: String,
+    val isPhishingThreat: Boolean,
     val phishingStatus: String,
+    val isDownloadThreat: Boolean,
     val downloadStatus: String,
     val findings: List<String>
 )
@@ -27,13 +31,20 @@ data class WebContentScanReport(
 object WebContentInspector {
 
     private val httpClient = OkHttpClient.Builder()
-        .connectTimeout(8, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
+        .connectTimeout(6, TimeUnit.SECONDS)
+        .readTimeout(8, TimeUnit.SECONDS)
         .followRedirects(true)
         .followSslRedirects(true)
         .build()
 
-    private val PHISHING_PATTERNS = listOf(
+    // URL Keyword Patterns
+    private val SUSPICIOUS_URL_PATTERNS = listOf(
+        Pattern.compile("(?i)(malware|phish|phishing|stealer|trojan|hack|keygen|crack|darknet|c2|payload|botnet|keylogger|ransomware|spyware)"),
+        Pattern.compile("(?i)(gift-card|free-nitro|free-robux|free-gift|bedava-hediye|hediye-ceki|bonus-kazan)"),
+        Pattern.compile("(?i)(login-verify|hesap-dogrula|guvenlik-guncelleme|banka-giris|account-security|update-password|wallet-seed|recovery-phrase)")
+    )
+
+    private val PHISHING_CONTENT_PATTERNS = listOf(
         Pattern.compile("(?i)(hesabınız askıya alındı|hesabınızı doğrulayın|şifrenizi güncelleyin|oturum açın|giriş yapın)"),
         Pattern.compile("(?i)(tebrikler kazandınız|ücretsiz hediye|ödül kazandınız|iphone kazandınız|tıklayın kazanın)"),
         Pattern.compile("(?i)(account suspended|verify your account|update your password|confirm identity|claim reward)"),
@@ -59,17 +70,47 @@ object WebContentInspector {
 
         var responseCode = 0
         var finalResolvedUrl = cleanUrl
-        var pageTitle = "Web Sayfası"
+        var pageTitle = "Web Bağlantısı"
         var htmlContent = ""
         val findings = mutableListOf<String>()
         var threatScore = 0
 
-        val protocol = if (cleanUrl.startsWith("https://", ignoreCase = true)) "HTTPS (Şifreli TLS)" else "HTTP (Düz Metin)"
+        var isFormThreat = false
+        var isScriptThreat = false
+        var isPhishingThreat = false
+        var isDownloadThreat = false
 
+        val protocol = if (cleanUrl.startsWith("https://", ignoreCase = true)) "HTTPS (Şifreli TLS)" else "HTTP (Düz Metin)"
+        val urlLower = cleanUrl.lowercase()
+
+        // 1. LEXICAL URL HEURISTICS
+        for (pattern in SUSPICIOUS_URL_PATTERNS) {
+            val matcher = pattern.matcher(urlLower)
+            if (matcher.find()) {
+                val match = matcher.group(0)
+                threatScore += 55
+                isPhishingThreat = true
+                findings.add("URL adresinde şüpheli/zararlı anahtar sözcük tespit edildi: '$match'")
+                break
+            }
+        }
+
+        val domain = try { URI(cleanUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
+        val suspiciousBrands = listOf("instagram", "facebook", "twitter", "banka", "turkiye", "e-devlet", "papara", "binance", "netflix", "whatsapp")
+        for (brand in suspiciousBrands) {
+            if (domain.contains(brand) && !domain.endsWith("$brand.com") && !domain.endsWith("$brand.com.tr") && !domain.endsWith("$brand.net")) {
+                threatScore += 50
+                isPhishingThreat = true
+                findings.add("Sahte marka taklidi tespit edildi: Domain içerisinde '$brand' adı kullanılıyor.")
+                break
+            }
+        }
+
+        // 2. FETCH REAL PAGE CONTENT VIA NETWORK
         try {
             val request = Request.Builder()
                 .url(cleanUrl)
-                .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; Mobile; EkosSecurityScan/1.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36")
+                .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; Mobile; EkosSecurityScan/1.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36")
                 .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
                 .header("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
                 .build()
@@ -90,30 +131,34 @@ object WebContentInspector {
                 val csp = response.header("Content-Security-Policy")
                 val xframe = response.header("X-Frame-Options")
 
-                if (csp != null) findings.add("İçerik Güvenlik İlkesi (CSP) aktif.")
+                if (csp != null) findings.add("İçerik Güvenlik İlkesi (CSP) koruması mevcut.")
                 if (xframe != null) findings.add("Clickjacking koruması (X-Frame-Options) mevcut.")
                 if (hsts != null) findings.add("HSTS (Zorunlu Güvenli İletişim) etkin.")
             }
         } catch (e: Exception) {
-            // If direct network failed or URL is unreachable
-            findings.add("Siteye doğrudan erişim: ${e.localizedMessage ?: "Bağlantı zaman aşımı"}")
+            if (threatScore > 0) {
+                findings.add("Hedef sunucu çevrimdışı veya erişilemiyor (Zararlı URL imzası doğrulandı).")
+            } else {
+                findings.add("Siteye doğrudan erişim: ${e.localizedMessage ?: "Bağlantı zaman aşımı"}")
+            }
         }
 
-        val domain = try { URI(finalResolvedUrl).host?.lowercase() ?: "" } catch (e: Exception) { "" }
-
-        // 1. FORM & PASSWORD INPUT INSPECTION
-        var formStatus = "Temiz (Şifre veya form tuzağı yok)"
+        // 3. FORM & PASSWORD INPUT INSPECTION
         val hasPasswordInput = Pattern.compile("(?i)<input[^>]*type=[\"']password[\"']").matcher(htmlContent).find()
         val hasForm = Pattern.compile("(?i)<form[^>]*action=[\"']([^\"']*)[\"']").matcher(htmlContent).find()
 
+        val isOfficialTrustedDomain = domain.endsWith("google.com") || domain.endsWith("microsoft.com") || domain.endsWith("github.com") || domain.endsWith("ekoscst.com") || domain.endsWith("apple.com")
+
+        val formStatus: String
         if (hasPasswordInput) {
-            val isOfficialTrustedDomain = domain.endsWith("google.com") || domain.endsWith("microsoft.com") || domain.endsWith("github.com") || domain.endsWith("ekoscst.com") || domain.endsWith("apple.com")
             if (!cleanUrl.startsWith("https://", ignoreCase = true)) {
                 threatScore += 45
+                isFormThreat = true
                 formStatus = "Yüksek Risk (HTTP üzerinden şifre girişi)"
                 findings.add("Şifresiz HTTP bağlantısı üzerinden parola girişi talep ediliyor!")
             } else if (!isOfficialTrustedDomain) {
                 threatScore += 25
+                isFormThreat = true
                 formStatus = "Parola Giriş Formu Bulundu (Dikkat)"
                 findings.add("Sayfada şifre girişi tespit edildi. Kimlik avı riskine karşı adres çubuğunu doğrulayın.")
             } else {
@@ -121,56 +166,49 @@ object WebContentInspector {
             }
         } else if (hasForm) {
             formStatus = "Standart Veri Formu (Zararsız)"
+        } else {
+            formStatus = "Temiz (Şifre tuzağı yok)"
         }
 
-        // 2. JAVASCRIPT & MALWARE / CRYPTO-MINER INSPECTION
-        var scriptStatus = "Güvenli (Zararlı script tespit edilmedi)"
+        // 4. JAVASCRIPT & MALWARE / CRYPTO-MINER INSPECTION
+        var scriptStatus = "Temiz (Zararlı script yok)"
         for (pattern in SCRIPT_MALWARE_PATTERNS) {
             if (pattern.matcher(htmlContent).find()) {
                 threatScore += 40
-                scriptStatus = "Tehlikeli / Gizlenmiş Script Tespit Edildi"
+                isScriptThreat = true
+                scriptStatus = "Zararlı / Gizlenmiş Script Bulundu"
                 findings.add("Sayfa kaynağında gizlenmiş kod yürütme (eval/obfuscated JS) tespit edildi.")
                 break
             }
         }
 
-        // 3. PHISHING & SOCIAL ENGINEERING PATTERNS
-        var phishingStatus = "Güvenli (Oltalama deseni yok)"
-        for (pattern in PHISHING_PATTERNS) {
+        // 5. PHISHING CONTENT PATTERNS
+        var phishingStatus = if (isPhishingThreat) "Oltalama Belirtisi Bulundu" else "Temiz (Oltalama deseni yok)"
+        for (pattern in PHISHING_CONTENT_PATTERNS) {
             val matcher = pattern.matcher(htmlContent)
             if (matcher.find()) {
                 val matchedText = matcher.group(0)
                 threatScore += 35
+                isPhishingThreat = true
                 phishingStatus = "Oltalama Belirtisi Bulundu"
                 findings.add("Sosyal mühendislik / oltalama şüphesi: '$matchedText'")
                 break
             }
         }
 
-        // Check if URL has deceptive brand name in subdomain (e.g. instagram.login-verify.xyz)
-        val suspiciousBrands = listOf("instagram", "facebook", "twitter", "banka", "turkiye", "e-devlet", "papara", "binance", "netflix", "whatsapp")
-        for (brand in suspiciousBrands) {
-            if (domain.contains(brand) && !domain.endsWith("$brand.com") && !domain.endsWith("$brand.com.tr") && !domain.endsWith("$brand.net")) {
-                threatScore += 50
-                phishingStatus = "Marka Taklidi / Sahte Domain Tespit Edildi"
-                findings.add("Sahte marka taklidi tespit edildi: Domain içerisinde '$brand' adı kullanılıyor.")
-                break
-            }
-        }
-
-        // 4. DANGEROUS DOWNLOAD LINKS (APK, EXE)
+        // 6. DANGEROUS DOWNLOAD LINKS (APK, EXE)
         var downloadStatus = "Temiz (Zararlı indirme linki yok)"
         for (pattern in DANGEROUS_DOWNLOAD_PATTERNS) {
             val matcher = pattern.matcher(htmlContent)
             if (matcher.find()) {
                 threatScore += 30
+                isDownloadThreat = true
                 downloadStatus = "Doğrudan İndirilebilir Yürütülebilir Dosya"
                 findings.add("Sayfa doğrudan çalıştırılabilir (.apk / .exe) dosya bağlantısı içeriyor.")
                 break
             }
         }
 
-        // Base protocol note (HTTP does not mean threat if content is clean)
         if (!cleanUrl.startsWith("https://", ignoreCase = true) && threatScore == 0) {
             findings.add("Site HTTP kullanıyor (Şifrelenmemiş bağlantı), ancak sayfa içeriği temiz ve zararsız.")
         }
@@ -195,9 +233,13 @@ object WebContentInspector {
             threatScore = threatScore.coerceAtMost(100),
             verdict = verdict,
             protocol = protocol,
+            isFormThreat = isFormThreat,
             formSecurityStatus = formStatus,
+            isScriptThreat = isScriptThreat,
             scriptSecurityStatus = scriptStatus,
+            isPhishingThreat = isPhishingThreat,
             phishingStatus = phishingStatus,
+            isDownloadThreat = isDownloadThreat,
             downloadStatus = downloadStatus,
             findings = findings
         )

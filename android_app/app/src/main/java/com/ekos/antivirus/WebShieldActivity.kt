@@ -89,10 +89,10 @@ class WebShieldActivity : AppCompatActivity() {
                 val greenColor = ContextCompat.getColor(this@WebShieldActivity, R.color.accent_emerald_light)
                 val redColor = ContextCompat.getColor(this@WebShieldActivity, R.color.accent_crimson_light)
 
-                tvCheckForm.setTextColor(if (report.formSecurityStatus.contains("Yüksek") || report.formSecurityStatus.contains("Dikkat")) redColor else greenColor)
-                tvCheckScript.setTextColor(if (report.scriptSecurityStatus.contains("Tehlikeli") || report.scriptSecurityStatus.contains("Gizlenmiş")) redColor else greenColor)
-                tvCheckPhishing.setTextColor(if (report.phishingStatus.contains("Oltalama") || report.phishingStatus.contains("Sahte")) redColor else greenColor)
-                tvCheckDownload.setTextColor(if (report.downloadStatus.contains("Yürütülebilir")) redColor else greenColor)
+                tvCheckForm.setTextColor(if (report.isFormThreat) redColor else greenColor)
+                tvCheckScript.setTextColor(if (report.isScriptThreat) redColor else greenColor)
+                tvCheckPhishing.setTextColor(if (report.isPhishingThreat) redColor else greenColor)
+                tvCheckDownload.setTextColor(if (report.isDownloadThreat) redColor else greenColor)
 
                 if (report.isSafe) {
                     tvVerdict.setTextColor(greenColor)

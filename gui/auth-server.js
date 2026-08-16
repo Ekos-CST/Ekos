@@ -21,6 +21,9 @@ app.use((req, res, next) => {
     res.header('X-Frame-Options', 'SAMEORIGIN');
     res.header('X-XSS-Protection', '1; mode=block');
     res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', '0');
     res.header('Content-Security-Policy', "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://api.qrserver.com; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://ekoscst.com https://api.ekoscst.com https://api.qrserver.com; object-src 'none'; frame-ancestors 'self';");
     res.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     if (req.method === 'OPTIONS') {
@@ -3733,8 +3736,6 @@ app.get('/', (req, res) => {
     }
     return res.redirect('/api/v1');
 });
-    return res.redirect('/api/v1');
-});
 
 // Dedicated Threat Scanner Portal (https://ekoscst.com/scan)
 app.get(['/scan', '/scan/'], (req, res) => {
@@ -5814,6 +5815,6 @@ app.post('/api/auth/logout', (req, res) => {
     return res.json({ success: true, message: 'Oturum kapatıldı. Cihaz kilidi serbest bırakıldı.' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[EKOS Auth Server] Sunucu http://127.0.0.1:${PORT} portunda çalışıyor.`);
+app.listen(PORT, () => {
+    console.log(`[EKOS Auth Server] Sunucu http://127.0.0.1:${PORT} ve http://[::1]:${PORT} üzerinde çalışıyor.`);
 });

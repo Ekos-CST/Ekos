@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/admin/
 
-Sitemap: https://ekos-antivirus.com/sitemap.xml
+Sitemap: https://ekoscst.com/sitemap.xml

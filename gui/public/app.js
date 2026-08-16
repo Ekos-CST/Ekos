@@ -1322,14 +1322,30 @@ function renderFileScanResult(data) {
 
 // Adaptive Multi-Device (Mobile vs Desktop) Initialization
 function initDeviceAdaptiveLayout() {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    const ua = navigator.userAgent || '';
+    const isAndroid = /Android/i.test(ua);
+    const isMobile = isAndroid || /webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || window.innerWidth < 768;
     const heroHub = document.getElementById('heroActionsHub');
     const btnWin = document.getElementById('btnHeroWindows');
     const btnAndroid = document.getElementById('btnHeroAndroid');
 
-    if (isMobile && heroHub && btnAndroid && btnWin) {
-        // Prioritize Android download button on mobile devices
-        heroHub.prepend(btnAndroid);
+    if (heroHub && btnAndroid) {
+        if (isMobile) {
+            // Highlight & place Android button first
+            heroHub.prepend(btnAndroid);
+            btnAndroid.classList.add('btn-android-primary-glow');
+            
+            // Check if badge already exists
+            if (!document.getElementById('mobileDetectedBadge')) {
+                const badge = document.createElement('div');
+                badge.id = 'mobileDetectedBadge';
+                badge.className = 'mobile-detected-badge';
+                badge.innerHTML = isAndroid 
+                    ? '<span>📱</span> <strong>Android Cihazınız Algılandı:</strong> Resmi APK sürümü indirmeye hazır!'
+                    : '<span>📱</span> <strong>Mobil Cihaz Algılandı:</strong> Android APK veya web tarayıcıyı kullanabilirsiniz.';
+                heroHub.parentElement.insertBefore(badge, heroHub);
+            }
+        }
     }
 }
 
@@ -1338,4 +1354,5 @@ if (document.readyState === 'loading') {
 } else {
     initDeviceAdaptiveLayout();
 }
+window.addEventListener('resize', initDeviceAdaptiveLayout);
 

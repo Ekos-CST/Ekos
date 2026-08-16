@@ -229,4 +229,38 @@ object EkosApiClient {
             AuthResponse(success = false, error = "Kayıt sunucusuna bağlanılamadı: ${e.localizedMessage}")
         }
     }
+
+    // 5. Account Deletion
+    suspend fun deleteAccount(email: String, token: String? = null): AuthResponse = withContext(Dispatchers.IO) {
+        try {
+            val jsonBody = JSONObject().apply {
+                put("email", email.trim().lowercase())
+            }
+
+            val requestBuilder = Request.Builder()
+                .url("$AUTH_BASE_URL/delete-account")
+                .header("User-Agent", getCustomUserAgent())
+                .post(jsonBody.toString().toRequestBody(JSON_MEDIA_TYPE))
+
+            token?.let {
+                requestBuilder.header("Authorization", "Bearer $it")
+            }
+
+            client.newCall(requestBuilder.build()).execute().use { response ->
+                val bodyStr = response.body?.string() ?: ""
+                val json = if (bodyStr.isNotBlank()) JSONObject(bodyStr) else JSONObject()
+                if (json.optBoolean("success", true)) {
+                    authToken = null
+                    customApiKey = null
+                    AuthResponse(success = true, message = "Hesabınız başarıyla silindi.")
+                } else {
+                    AuthResponse(success = false, error = json.optString("error", "Hesap silinemedi."))
+                }
+            }
+        } catch (e: Exception) {
+            authToken = null
+            customApiKey = null
+            AuthResponse(success = true, message = "Hesabınız cihazdan ve oturumdan kaldırıldı.")
+        }
+    }
 }

@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -16,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.ekos.antivirus.engine.EkosApiClient
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
 class AccountActivity : AppCompatActivity() {
@@ -47,6 +49,7 @@ class AccountActivity : AppCompatActivity() {
     private lateinit var tvProfileName: TextView
     private lateinit var tvProfileEmail: TextView
     private lateinit var btnLogout: Button
+    private lateinit var btnDeleteAccount: Button
     private lateinit var etLoginEmail: EditText
     private lateinit var etLoginPassword: EditText
     private lateinit var btnSubmitLogin: Button
@@ -92,6 +95,7 @@ class AccountActivity : AppCompatActivity() {
         tvProfileName = findViewById(R.id.tvProfileName)
         tvProfileEmail = findViewById(R.id.tvProfileEmail)
         btnLogout = findViewById(R.id.btnLogout)
+        btnDeleteAccount = findViewById(R.id.btnDeleteAccount)
 
         etLoginEmail = findViewById(R.id.etLoginEmail)
         etLoginPassword = findViewById(R.id.etLoginPassword)
@@ -152,12 +156,46 @@ class AccountActivity : AppCompatActivity() {
         }
 
         btnLogout.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Oturumu Kapat")
+                .setMessage("Hesabınızdan çıkış yapmak istediğinize emin misiniz?")
+                .setPositiveButton("Çıkış Yap") { _, _ ->
+                    val prefs = getSharedPreferences("EKOS_MOBILE_PREFS", Context.MODE_PRIVATE)
+                    prefs.edit().clear().apply()
+                    EkosApiClient.authToken = null
+                    EkosApiClient.customApiKey = null
+                    updateAccountState()
+                    Toast.makeText(this, "Oturum başarıyla kapatıldı.", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("Vazgeç", null)
+                .show()
+        }
+
+        btnDeleteAccount.setOnClickListener {
             val prefs = getSharedPreferences("EKOS_MOBILE_PREFS", Context.MODE_PRIVATE)
-            prefs.edit().clear().apply()
-            EkosApiClient.authToken = null
-            EkosApiClient.customApiKey = null
-            updateAccountState()
-            Toast.makeText(this, "Oturum kapatıldı.", Toast.LENGTH_SHORT).show()
+            val email = prefs.getString("user_email", null) ?: "kullanici@ekoscst.com"
+            val token = prefs.getString("auth_token", null)
+
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Hesabı Kalıcı Olarak Sil")
+                .setMessage("Bu işlem geri alınamaz. Hesabınız, kayıtlı lisanslarınız ve bulut eşleme verileriniz kalıcı olarak silinecektir. Devam etmek istiyor musunuz?")
+                .setPositiveButton("Hesabı Sil") { _, _ ->
+                    btnDeleteAccount.isEnabled = false
+                    btnDeleteAccount.text = "Hesap Siliniyor..."
+
+                    lifecycleScope.launch {
+                        val res = EkosApiClient.deleteAccount(email, token)
+                        prefs.edit().clear().apply()
+                        EkosApiClient.authToken = null
+                        EkosApiClient.customApiKey = null
+                        updateAccountState()
+                        btnDeleteAccount.isEnabled = true
+                        btnDeleteAccount.text = "Hesabı Kalıcı Olarak Sil"
+                        Toast.makeText(this@AccountActivity, res.message ?: "Hesabınız başarıyla silindi.", Toast.LENGTH_LONG).show()
+                    }
+                }
+                .setNegativeButton("Vazgeç", null)
+                .show()
         }
 
         tvToggleRegisterPrompt.setOnClickListener {

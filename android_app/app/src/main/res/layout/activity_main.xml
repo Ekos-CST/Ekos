@@ -9,7 +9,7 @@
     android:background="@color/bg_dark"
     android:fitsSystemWindows="true">
 
-    <!-- Top Header Bar (Ultra Clean Minimalist Style) -->
+    <!-- Top Header Bar (Ultra Clean Minimalist Style with compact 24dp logo) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,13 +20,20 @@
         android:paddingBottom="14dp"
         android:background="@color/bg_sidebar">
 
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="10dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="Logo" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Ekos CST"
             android:textColor="@color/text_main"
-            android:textSize="20sp"
+            android:textSize="19sp"
             android:textStyle="bold"
             android:letterSpacing="0.02" />
 
@@ -214,7 +221,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Action 1: Quick Scan (No emojis) -->
+            <!-- Action 1: Quick Scan -->
             <Button
                 android:id="@+id/btnStartQuickScan"
                 android:layout_width="match_parent"
@@ -226,12 +233,12 @@
                 android:background="@drawable/bg_button_primary"
                 android:layout_marginBottom="10dp" />
 
-            <!-- Action 2: Deep Scan (No emojis) -->
+            <!-- Action 2: Deep Scan -->
             <Button
                 android:id="@+id/btnStartDeepScan"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="KAPSAMLI DERİN TARAMA (DEPOLAMA VE APK)"
+                android:text="KAPSAMLI DERİN TARAMA (TÜM DOSYALAR)"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="13sp"
@@ -242,19 +249,239 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="GÜVENLİK MODÜLLERİ"
+                android:text="GÜVENLİK VE OPTİMİZASYON ARAÇLARI"
                 android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Module 1: Web Shield -->
+            <!-- Tool 1: Junk & Cache Cleaner -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardCleaner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@android:drawable/ic_menu_delete"
+                        app:tint="@color/accent_emerald_light" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gereksiz Dosya Temizleyici"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Önbellek, log ve çöp dosyaları temizle"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TEMİZLE"
+                        android:textColor="@color/accent_emerald_light"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tool 2: Privacy & Permissions Guard -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPrivacyGuard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@android:drawable/ic_menu_view"
+                        app:tint="@color/accent_cyan" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gizlilik ve İzin Kalkanı"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kamera, mikrofon ve konum izinlerini denetle"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DENETLE"
+                        android:textColor="@color/accent_cyan"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tool 3: Network & Wi-Fi Shield -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardNetworkShield"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@android:drawable/ic_menu_compass"
+                        app:tint="@color/accent_emerald_light" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ağ ve Wi-Fi Güvenliği"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DNS sızıntısı ve WPA şifreleme testi"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TEST ET"
+                        android:textColor="@color/accent_emerald_light"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tool 4: RAM & Process Booster -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRamBooster"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@android:drawable/ic_menu_rotate"
+                        app:tint="@color/accent_purple_light" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RAM ve Performans Hızlandırıcı"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Arka plan süreçlerini optimize et ve hızlandır"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="HIZLANDIR"
+                        android:textColor="@color/accent_purple_light"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tool 5: Web & Phishing Shield -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWebShield"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="10dp"
                 android:clickable="true"
                 android:focusable="true">
 
@@ -304,7 +531,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Module 2: Account & License Management -->
+            <!-- Tool 6: Account & License Management -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardAccountManagement"
                 android:layout_width="match_parent"

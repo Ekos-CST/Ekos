@@ -65,6 +65,34 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
 
+        <!-- Junk & Cache Cleaner Activity -->
+        <activity
+            android:name=".CleanerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Privacy & Permissions Guard Activity -->
+        <activity
+            android:name=".PrivacyGuardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Network & Wi-Fi Shield Activity -->
+        <activity
+            android:name=".NetworkShieldActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- RAM & Performance Booster Activity -->
+        <activity
+            android:name=".RamBoosterActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
         <!-- Background Security Service -->
         <service
             android:name=".service.BackgroundShieldService"

@@ -2,7 +2,6 @@ package com.ekos.antivirus
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -26,6 +25,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvMetricThreats: TextView
     private lateinit var btnStartQuickScan: Button
     private lateinit var btnStartDeepScan: Button
+
+    // Module Cards
+    private lateinit var cardCleaner: MaterialCardView
+    private lateinit var cardPrivacyGuard: MaterialCardView
+    private lateinit var cardNetworkShield: MaterialCardView
+    private lateinit var cardRamBooster: MaterialCardView
     private lateinit var cardWebShield: MaterialCardView
     private lateinit var cardAccountManagement: MaterialCardView
 
@@ -64,6 +69,11 @@ class MainActivity : AppCompatActivity() {
         tvMetricThreats = findViewById(R.id.tvMetricThreats)
         btnStartQuickScan = findViewById(R.id.btnStartQuickScan)
         btnStartDeepScan = findViewById(R.id.btnStartDeepScan)
+
+        cardCleaner = findViewById(R.id.cardCleaner)
+        cardPrivacyGuard = findViewById(R.id.cardPrivacyGuard)
+        cardNetworkShield = findViewById(R.id.cardNetworkShield)
+        cardRamBooster = findViewById(R.id.cardRamBooster)
         cardWebShield = findViewById(R.id.cardWebShield)
         cardAccountManagement = findViewById(R.id.cardAccountManagement)
     }
@@ -79,6 +89,22 @@ class MainActivity : AppCompatActivity() {
 
         btnStartDeepScan.setOnClickListener {
             startActivity(Intent(this, DeepScanActivity::class.java))
+        }
+
+        cardCleaner.setOnClickListener {
+            startActivity(Intent(this, CleanerActivity::class.java))
+        }
+
+        cardPrivacyGuard.setOnClickListener {
+            startActivity(Intent(this, PrivacyGuardActivity::class.java))
+        }
+
+        cardNetworkShield.setOnClickListener {
+            startActivity(Intent(this, NetworkShieldActivity::class.java))
+        }
+
+        cardRamBooster.setOnClickListener {
+            startActivity(Intent(this, RamBoosterActivity::class.java))
         }
 
         cardWebShield.setOnClickListener {

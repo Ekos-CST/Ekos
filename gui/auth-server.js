@@ -30,7 +30,28 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'web_public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('trust proxy', true);
+
+// Google SEO Endpoints: robots.txt & sitemap.xml
+app.get('/robots.txt', (req, res) => {
+    const robotsPath = path.join(__dirname, 'web_public', 'robots.txt');
+    if (fs.existsSync(robotsPath)) {
+        res.type('text/plain');
+        return res.sendFile(robotsPath);
+    }
+    res.type('text/plain').send("User-agent: *\nAllow: /\nSitemap: https://ekos-antivirus.com/sitemap.xml\n");
+});
+
+app.get('/sitemap.xml', (req, res) => {
+    const sitemapPath = path.join(__dirname, 'web_public', 'sitemap.xml');
+    if (fs.existsSync(sitemapPath)) {
+        res.type('application/xml');
+        return res.sendFile(sitemapPath);
+    }
+    res.type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://ekos-antivirus.com/</loc></url></urlset>');
+});
 
 // Helper: Get Client IP
 function getClientIp(req) {

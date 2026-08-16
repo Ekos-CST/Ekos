@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EKOS Antivirüs — Root Admin &amp; Güvenlik Operasyon Merkezi</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/x-icon" href="/assets/icon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css?v=1.0.1">
+</head>
+<body>
+
+  <!-- Top Admin Navbar -->
+  <header class="admin-navbar">
+    <div class="admin-nav-inner">
+      <a href="/admin" class="admin-brand">
+        <img src="/assets/logo.png" alt="EKOS Logo" class="admin-brand-icon" onerror="this.src='/assets/taskbar_icon.png'">
+        <div class="admin-brand-text">
+          <span class="admin-brand-title">
+            EKOS Antivirüs
+            <span class="badge-root-admin">Root Admin</span>
+          </span>
+          <span class="admin-brand-sub">Sistem Yönetimi &amp; Canlı Güvenlik İzleme Konsolu</span>
+        </div>
+      </a>
+
+      <div class="admin-nav-status-group">
+        <div class="nav-status-pill">
+          <span class="online-pulse-dot"></span>
+          <span>Sunucu: <strong>Çevrimiçi (3002)</strong></span>
+        </div>
+        <div class="nav-status-pill">
+          <span>🛡️ Cloudflare: <strong>Anycast Aktif</strong></span>
+        </div>
+        <div class="nav-status-pill">
+          <span id="liveClockText">--:--:-- TSİ</span>
+        </div>
+      </div>
+
+      <div class="admin-nav-actions">
+        <a href="/" target="_blank" class="btn-nav-action">
+          <span>🌐 Ana Sayfayı Aç ↗</span>
+        </a>
+        <button type="button" class="btn-nav-action btn-nav-logout" onclick="handleAdminLogout()">
+          <span>Çıkış Yap</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Auth Overlay for Unauthorized Access -->
+  <div id="adminAuthOverlay" class="admin-auth-overlay hidden">
+    <div class="admin-auth-card">
+      <div style="font-size: 36px; margin-bottom: 12px;">👑</div>
+      <h2 style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;">Yönetici Girişi Gerekli</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Bu konsola yalnızca yetkili sistem yöneticileri erişebilir.</p>
+
+      <div id="adminLoginAlert" style="background: rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#f87171; padding:10px 14px; border-radius:8px; font-size:12px; margin-bottom:16px;" class="hidden"></div>
+
+      <form id="adminLoginForm" onsubmit="handleAdminLoginSubmit(event)" style="text-align: left;">
+        <div style="margin-bottom: 14px;">
+          <label style="display:block; font-size:12px; color:#94a3b8; margin-bottom:5px;">Yönetici E-Posta:</label>
+          <input type="email" id="txtAdminLoginEmail" required placeholder="admin@ekoscst.com" value="admin@ekoscst.com" class="admin-input" style="width:100%;">
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display:block; font-size:12px; color:#94a3b8; margin-bottom:5px;">Yönetici Şifresi:</label>
+          <input type="password" id="txtAdminLoginPassword" required placeholder="••••••••" class="admin-input" style="width:100%;">
+        </div>
+        <button type="submit" id="btnAdminLoginSubmit" class="btn-gen-cta" style="width:100%; padding:12px;">Giriş Yap ve Konsolu Aç</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <main id="adminDashboardContent" class="admin-container">
+    
+    <!-- Top KPI Cards Grid -->
+    <section class="kpi-grid">
+      <!-- 1. Online Presence -->
+      <div class="kpi-card" style="border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.05);">
+        <div class="kpi-header">
+          <span class="kpi-title" style="color: #4ade80;">ÇEVRİMİÇİ VARLIK</span>
+          <span class="online-pulse-dot"></span>
+        </div>
+        <div id="kpiOnlineNow" class="kpi-value" style="color: #4ade80;">1 Aktif</div>
+        <div class="kpi-sub">Anlık canlı kullanıcı &amp; ziyaretçi</div>
+      </div>
+
+      <!-- 2. Total Visitors -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">CANLI ZİYARETÇİ</span>
+          <span class="kpi-icon">🌐</span>
+        </div>
+        <div id="kpiTotalVisitors" class="kpi-value" style="color: #38bdf8;">0</div>
+        <div class="kpi-sub">Kayıtlı sayfa trafiği</div>
+      </div>
+
+      <!-- 3. Unique IPs -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">BENZERSİZ IP</span>
+          <span class="kpi-icon">🛡️</span>
+        </div>
+        <div id="kpiUniqueIps" class="kpi-value" style="color: #34d399;">0</div>
+        <div class="kpi-sub">Farklı istemci havuzu</div>
+      </div>
+
+      <!-- 4. Total Users -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">KULLANICILAR</span>
+          <span class="kpi-icon">👥</span>
+        </div>
+        <div id="kpiTotalUsers" class="kpi-value" style="color: #fbbf24;">0</div>
+        <div class="kpi-sub">Kayıtlı geliştirici hesabı</div>
+      </div>
+
+      <!-- 5. API Requests -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">API ÇAĞRILARI</span>
+          <span class="kpi-icon">⚡</span>
+        </div>
+        <div id="kpiApiRequests" class="kpi-value">0</div>
+        <div class="kpi-sub">REST analiz istek hacmi</div>
+      </div>
+
+      <!-- 6. License Keys -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-title">LİSANS KODLARI</span>
+          <span class="kpi-icon">🔑</span>
+        </div>
+        <div id="kpiLicenseCodes" class="kpi-value" style="color: #c084fc;">0</div>
+        <div class="kpi-sub">Havuzdaki anahtar sayısı</div>
+      </div>
+    </section>
+
+    <!-- Tab Bar -->
+    <nav class="admin-tab-bar">
+      <button type="button" class="admin-tab-btn active" data-tab="visitors" onclick="switchAdminTab('visitors')">
+        <span>🌐 Canlı Ziyaretçi &amp; IP Akışı</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="users" onclick="switchAdminTab('users')">
+        <span>👥 Kullanıcı Yönetimi &amp; Kotalar</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="codes" onclick="switchAdminTab('codes')">
+        <span>🔑 Lisans Anahtarı Üretici</span>
+      </button>
+      <button type="button" class="admin-tab-btn" data-tab="security" onclick="switchAdminTab('security')">
+        <span>🛡️ DDoS &amp; Sistem Güvenliği</span>
+      </button>
+    </nav>
+
+    <!-- PANEL 1: Canlı Ziyaretçi & IP Trafik Akışı -->
+    <section class="admin-view-panel" data-panel="visitors">
+      <div class="panel-header-row">
+        <div class="panel-title-group">
+          <h3>🌐 Gerçek Zamanlı Ziyaretçi &amp; IP Trafik Akışı</h3>
+          <p>Siteye ve API uç noktalarına gelen tüm istekler IP, Ülke, Sayfa ve Yanıt Gecikmesi ile anlık olarak loglanır (Her 3.5s otomatik yenilenir).</p>
+        </div>
+        <div class="panel-controls">
+          <button type="button" class="btn-ctrl" onclick="loadVisitorLogsOnly()">🔄 Canlı Yenile</button>
+          <button type="button" class="btn-ctrl btn-ctrl-danger" onclick="handleAdminClearVisitorLogs()">Tüm Logları Temizle</button>
+        </div>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-data-table">
+          <thead>
+            <tr>
+              <th>Zaman (TSİ)</th>
+              <th>IP Adresi &amp; Konum</th>
+              <th>HTTP Metodu &amp; İstek Yolu</th>
+              <th>İstemci Cihazı / Tarayıcı</th>
+              <th>Durum &amp; Gecikme</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody id="visitorLogsTableBody">
+            <tr><td colspan="6" class="text-dim" style="text-align: center; padding: 24px;">Canlı trafik akışı yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 2: Kullanıcı Yönetimi & Kotalar -->
+    <section class="admin-view-panel hidden" data-panel="users">
+      <div class="panel-header-row">
+        <div class="panel-title-group">
+          <h3>👥 Kayıtlı Kullanıcı Hesapları &amp; API Kotaları</h3>
+          <p>Sistemdeki tüm kayıtlı kullanıcıların lisans paketleri, anlık çevrimiçi durumları, son IP adresleri ve API limitleri.</p>
+        </div>
+        <div class="panel-controls">
+          <button type="button" class="btn-ctrl" onclick="loadAdminDashboardData()">🔄 Yenile</button>
+        </div>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-data-table">
+          <thead>
+            <tr>
+              <th>Durum</th>
+              <th>E-Posta Adresi</th>
+              <th>Son Bağlanan IP</th>
+              <th>Kullanıcı Adı</th>
+              <th>Lisans Paketi</th>
+              <th>Son Görülme</th>
+              <th>Toplam İstek</th>
+              <th>Yönetim İşlemleri</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="8" class="text-dim" style="text-align: center; padding: 24px;">Kullanıcı listesi yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 3: Lisans Anahtarı Üretici -->
+    <section class="admin-view-panel hidden" data-panel="codes">
+      <div class="panel-header-row">
+        <div class="panel-title-group">
+          <h3>🔑 Premium Lisans Anahtarı Üretici &amp; Envanter</h3>
+          <p>Kullanıcılara veya kurumsal müşterilere tanımlanmak üzere güvenli EKOS Premium lisans anahtarları oluşturun.</p>
+        </div>
+      </div>
+
+      <div class="generator-card">
+        <h4 style="font-size: 13px; font-weight: 700; color: #fbbf24;">YENİ PREMIUM LİSANS ANAHTARI OLUŞTUR</h4>
+        <div class="generator-form">
+          <select id="selAdminLicenseDays" class="admin-select">
+            <option value="30">30 Günlük Lisans</option>
+            <option value="90">90 Günlük Lisans</option>
+            <option value="365" selected>1 Yıllık Lisans (365 Gün)</option>
+            <option value="9999">Ömür Boyu (Süresiz) Lisans</option>
+          </select>
+          <input type="text" id="txtAdminLicenseNote" class="admin-input" placeholder="Müşteri / Kurum Açıklama Notu (Opsiyonel)">
+          <button type="button" class="btn-gen-cta" onclick="handleAdminGenerateLicenseKey()">+ Yeni Lisans Kodu Üret</button>
+        </div>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-data-table">
+          <thead>
+            <tr>
+              <th>Lisans Anahtarı</th>
+              <th>Süre / Geçerlilik</th>
+              <th>Kullanım Durumu</th>
+              <th>Kullanan Hesap</th>
+              <th>İşlem</th>
+            </tr>
+          </thead>
+          <tbody id="codesTableBody">
+            <tr><td colspan="5" class="text-dim" style="text-align: center; padding: 24px;">Lisans anahtarları yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PANEL 4: DDoS & Sistem Güvenliği -->
+    <section class="admin-view-panel hidden" data-panel="security">
+      <div class="panel-header-row">
+        <div class="panel-title-group">
+          <h3>🛡️ DDoS Koruması &amp; Sistem Güvenlik Durumu</h3>
+          <p>Altyapının çift katmanlı (Cloudflare Anycast + Node.js L7 Rate Limiter) savunma mekanizması metrikleri.</p>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+        <div class="kpi-card" style="padding: 20px;">
+          <h4 style="font-size: 14px; font-weight: 700; color: #38bdf8; margin-bottom: 10px;">Cloudflare Edge Koruma Katmanı (L3/L4/L7)</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px;">
+            Alan adınız küresel Cloudflare Anycast ağı üzerinden proxylendiği için SYN Flood, UDP Amplification ve volumetrik HTTP flood saldırıları menşe sunucunuza ulaşmadan engellenir.
+          </p>
+          <div style="display: flex; gap: 8px;">
+            <span class="badge-online">Durum: Koruma Altında</span>
+            <span class="badge-online">Origin Masking: Aktif</span>
+          </div>
+        </div>
+
+        <div class="kpi-card" style="padding: 20px;">
+          <h4 style="font-size: 14px; font-weight: 700; color: #34d399; margin-bottom: 10px;">Sunucu İçi Anti-Flood / L7 Guard (`auth-server.js`)</h4>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px;">
+            Tek bir IP adresinden dakikada 300'ün üzerinde istek gelmesi durumunda IP adresi 3 dakika boyunca otomatik olarak bloke edilir (HTTP 429 Too Many Requests).
+          </p>
+          <div style="display: flex; gap: 8px;">
+            <span class="badge-online">Limit: 300 istek / dk</span>
+            <span class="badge-online">Engelleme Süresi: 3 Dakika</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="adminToastBox" class="admin-toast-box"></div>
+
+  <script src="/admin.js?v=1.0.0"></script>
+</body>
+</html>

@@ -10,10 +10,11 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
+import java.util.ArrayDeque
 
 class AppScannerEngine(private val context: Context) {
 
-    // 1. HIZLI SİSTEM TARAMASI: Yalnızca kullanıcının sonradan yüklediği 3. taraf uygulamaları ve kritik servisleri tarar.
+    // 1. HIZLI SİSTEM TARAMASI: Yalnızca kullanıcının sonradan yüklediği 3. taraf uygulamaları seri olarak tarar.
     suspend fun performQuickScan(
         onProgress: (current: Int, total: Int, currentItem: String) -> Unit
     ): List<ScannedAppItem> = withContext(Dispatchers.IO) {
@@ -24,7 +25,6 @@ class AppScannerEngine(private val context: Context) {
             try { pm.getInstalledPackages(0) } catch (e2: Throwable) { emptyList() }
         }
 
-        // Hızlı tarama: Sadece kullanıcı uygulamaları (System app olmayanlar)
         val userPackages = allPackages.filter { pkg ->
             val isSystem = try {
                 (pkg.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM)) != 0
@@ -47,7 +47,7 @@ class AppScannerEngine(private val context: Context) {
             }
 
             val apkPath = try { pkg.applicationInfo?.sourceDir ?: "" } catch (e: Throwable) { "" }
-            val sha256 = if (apkPath.isNotBlank()) calculateApkSha256(apkPath) else ""
+            val sha256 = if (apkPath.isNotBlank()) calculateSha256(apkPath) else ""
             val icon = try { pkg.applicationInfo?.loadIcon(pm) } catch (e: Throwable) { null }
 
             val item = ScannedAppItem(
@@ -60,7 +60,6 @@ class AppScannerEngine(private val context: Context) {
                 icon = icon
             )
 
-            // Güvenlik Denetimi
             val pkgName = pkg.packageName ?: ""
             if (ThreatDatabaseLocal.isKnownMaliciousPackage(pkgName)) {
                 item.severity = ThreatSeverity.MALICIOUS
@@ -82,7 +81,7 @@ class AppScannerEngine(private val context: Context) {
         results
     }
 
-    // 2. KAPSAMLI DERİN TARAMA: Tüm uygulamalar (Kullanıcı + Sistem) + Dahili Depolama (Download, Belgeler, WhatsApp vb.) dizinlerindeki APK/Binary dosyalarını tarar.
+    // 2. KAPSAMLI DERİN TARAMA: Tüm paketler + Dahili depolamadaki en ufak dosyaya kadar BÜTÜN dosyaları tarar.
     suspend fun performDeepScan(
         onProgress: (current: Int, total: Int, currentItem: String) -> Unit
     ): List<ScannedAppItem> = withContext(Dispatchers.IO) {
@@ -93,26 +92,15 @@ class AppScannerEngine(private val context: Context) {
             try { pm.getInstalledPackages(0) } catch (e2: Throwable) { emptyList() }
         }
 
-        // Depolamadaki dosyaları topla
-        val candidateFiles = mutableListOf<File>()
-        val dirsToScan = listOfNotNull(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-            File(Environment.getExternalStorageDirectory(), "Android/media"),
-            context.getExternalFilesDir(null)
-        )
+        // Cihazdaki BÜTÜN dosyaları (tüm depolama alanını sınırsız olarak) topla
+        val allFilesOnDevice = mutableListOf<File>()
+        collectAllDeviceFilesRecursively(allFilesOnDevice)
 
-        for (dir in dirsToScan) {
-            if (dir.exists() && dir.canRead()) {
-                collectStoragePayloads(dir, candidateFiles)
-            }
-        }
-
-        val totalWork = allPackages.size + candidateFiles.size
+        val totalWork = allPackages.size + allFilesOnDevice.size
         var completed = 0
         val results = mutableListOf<ScannedAppItem>()
 
-        // Adım 1: Tüm Yüklü Paketlerin Taranması (Sistem + Kullanıcı)
+        // Aşama 1: Bütün Uygulama ve Sistem Paketlerini Tara
         for (pkg in allPackages) {
             completed++
             val appName = try {
@@ -121,15 +109,17 @@ class AppScannerEngine(private val context: Context) {
                 pkg.packageName ?: "Paket"
             }
 
-            withContext(Dispatchers.Main) {
-                onProgress(completed, totalWork, appName)
+            if (completed % 5 == 0 || completed == allPackages.size) {
+                withContext(Dispatchers.Main) {
+                    onProgress(completed, totalWork, appName)
+                }
             }
 
             val apkPath = try { pkg.applicationInfo?.sourceDir ?: "" } catch (e: Throwable) { "" }
             val isSystem = try {
                 (pkg.applicationInfo?.flags?.and(ApplicationInfo.FLAG_SYSTEM)) != 0
             } catch (e: Throwable) { false }
-            val sha256 = if (apkPath.isNotBlank()) calculateApkSha256(apkPath) else ""
+            val sha256 = if (apkPath.isNotBlank()) calculateSha256(apkPath) else ""
             val icon = try { pkg.applicationInfo?.loadIcon(pm) } catch (e: Throwable) { null }
 
             val item = ScannedAppItem(
@@ -160,35 +150,46 @@ class AppScannerEngine(private val context: Context) {
             results.add(item)
         }
 
-        // Adım 2: Depolamadaki Dosyaların Taranması
-        for (file in candidateFiles) {
+        // Aşama 2: Cihazdaki BÜTÜN Dosyaları En Ufak Dosyaya Kadar Derinlemesine İncele
+        for (file in allFilesOnDevice) {
             completed++
-            withContext(Dispatchers.Main) {
-                onProgress(completed, totalWork, file.name)
+            if (completed % 15 == 0 || completed == totalWork) {
+                withContext(Dispatchers.Main) {
+                    onProgress(completed, totalWork, file.name)
+                }
             }
 
-            val sha256 = calculateApkSha256(file.absolutePath)
             val ext = file.extension.lowercase()
-            val isExecutable = ext in listOf("apk", "dex", "sh", "exe", "js", "bat", "elf", "jar")
+            val fileSize = file.length()
+            val sizeFormatted = when {
+                fileSize < 1024 -> "$fileSize B"
+                fileSize < 1024 * 1024 -> "${fileSize / 1024} KB"
+                else -> "${fileSize / (1024 * 1024)} MB"
+            }
+
+            val isBinaryOrScript = ext in listOf("apk", "dex", "sh", "exe", "js", "bat", "elf", "jar", "bin", "so", "py", "vbs", "ps1", "zip")
+            val sha256 = if (isBinaryOrScript || fileSize < 1024 * 1024) calculateSha256(file.absolutePath) else ""
 
             val fileItem = ScannedAppItem(
                 appName = file.name,
                 packageName = file.absolutePath,
-                versionName = "${file.length() / 1024} KB",
+                versionName = sizeFormatted,
                 apkPath = file.absolutePath,
                 sha256 = sha256,
                 isSystemApp = false,
                 icon = null
             )
 
-            if (isExecutable && (file.name.contains("rat", ignoreCase = true) || file.name.contains("trojan", ignoreCase = true) || file.name.contains("stealer", ignoreCase = true))) {
+            // Sezgisel ve imza tabanlı dosya güvenlik denetimi
+            val fileNameLower = file.name.lowercase()
+            if (isBinaryOrScript && (fileNameLower.contains("rat") || fileNameLower.contains("trojan") || fileNameLower.contains("stealer") || fileNameLower.contains("spyware"))) {
                 fileItem.severity = ThreatSeverity.MALICIOUS
                 fileItem.threatName = "Trojan.Android.Payload"
-                fileItem.riskDetails = "Şüpheli yürütülebilir ikili dosya deseni."
-            } else if (isExecutable && (file.name.contains("mod", ignoreCase = true) || file.name.contains("hack", ignoreCase = true))) {
+                fileItem.riskDetails = "Zararlı dosya adı ve yürütülebilir ikili deseni."
+            } else if (ext == "apk" && (fileNameLower.contains("mod") || fileNameLower.contains("hacked") || fileNameLower.contains("crack"))) {
                 fileItem.severity = ThreatSeverity.SUSPICIOUS
-                fileItem.threatName = "Riskware.ModifiedApp"
-                fileItem.riskDetails = "Modifiye edilmiş potansiyel riskli APK/Dosya."
+                fileItem.threatName = "Riskware.ModifiedApk"
+                fileItem.riskDetails = "Modifiye edilmiş potansiyel riskli APK paketi."
             }
 
             results.add(fileItem)
@@ -197,23 +198,63 @@ class AppScannerEngine(private val context: Context) {
         results
     }
 
-    private fun collectStoragePayloads(dir: File, list: MutableList<File>, maxFiles: Int = 120) {
-        if (list.size >= maxFiles) return
-        val files = dir.listFiles() ?: return
-        for (f in files) {
-            if (list.size >= maxFiles) break
-            if (f.isDirectory && !f.name.startsWith(".")) {
-                collectStoragePayloads(f, list, maxFiles)
-            } else if (f.isFile) {
-                val ext = f.extension.lowercase()
-                if (ext in listOf("apk", "dex", "sh", "exe", "js", "bat", "elf", "zip", "jar")) {
-                    list.add(f)
-                }
+    // Cihazın dahili depolamasındaki tüm dizinleri derinlemesine ve sınırsız gezer
+    private fun collectAllDeviceFilesRecursively(fileList: MutableList<File>) {
+        val rootDirs = mutableListOf<File>()
+
+        // 1. Ana Dahili Depolama Alanı (/storage/emulated/0)
+        val externalStorage = Environment.getExternalStorageDirectory()
+        if (externalStorage != null && externalStorage.exists() && externalStorage.canRead()) {
+            rootDirs.add(externalStorage)
+        }
+
+        // 2. Standart Genel Dizinler
+        val publicDirs = listOfNotNull(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
+            context.getExternalFilesDir(null)
+        )
+        for (pd in publicDirs) {
+            if (pd.exists() && !rootDirs.contains(pd)) {
+                rootDirs.add(pd)
+            }
+        }
+
+        val queue = ArrayDeque<File>()
+        for (root in rootDirs) {
+            queue.add(root)
+        }
+
+        val visitedPaths = HashSet<String>()
+
+        while (queue.isNotEmpty()) {
+            val currentDir = queue.poll() ?: continue
+            val canonicalPath = try { currentDir.canonicalPath } catch (e: Throwable) { currentDir.absolutePath }
+            if (!visitedPaths.add(canonicalPath)) continue
+
+            val children = try { currentDir.listFiles() } catch (e: Throwable) { null } ?: continue
+
+            for (child in children) {
+                try {
+                    if (child.isDirectory) {
+                        // Sistem / korumalı gizli dizinler haricinde tüm alt dizinleri kuyruğa ekle
+                        val name = child.name
+                        if (!name.startsWith(".trash") && !name.startsWith(".thumb")) {
+                            queue.add(child)
+                        }
+                    } else if (child.isFile && child.canRead()) {
+                        fileList.add(child)
+                    }
+                } catch (e: Throwable) {}
             }
         }
     }
 
-    private fun calculateApkSha256(filePath: String): String {
+    private fun calculateSha256(filePath: String): String {
         if (filePath.isBlank()) return ""
         val file = File(filePath)
         if (!file.exists() || !file.canRead()) return ""

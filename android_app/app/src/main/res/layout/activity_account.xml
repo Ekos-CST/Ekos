@@ -9,7 +9,7 @@
     android:background="@color/bg_dark"
     android:fitsSystemWindows="true">
 
-    <!-- Top Action Bar -->
+    <!-- Top Minimalist App Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,8 +22,8 @@
 
         <ImageButton
             android:id="@+id/btnBackFromAccount"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:src="@android:drawable/ic_menu_revert"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@color/text_main"
@@ -33,9 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text="Hesap ve Lisans Yönetimi"
+            android:text="Hesap ve Lisans"
             android:textColor="@color/text_main"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -50,24 +50,24 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- 1. ACTIVE PREMIUM BADGE -->
+            <!-- Luxury Digital Membership Card (Fintech / Enterprise Style) -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardActivePremium"
+                android:id="@+id/cardDigitalMembership"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
+                android:layout_marginBottom="24dp"
                 app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/accent_amber_light"
+                app:strokeColor="@color/border_hover"
                 app:strokeWidth="1.5dp"
-                app:cardCornerRadius="16dp">
+                app:cardCornerRadius="18dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="18dp">
+                    android:padding="22dp">
 
+                    <!-- Card Header -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -75,427 +75,384 @@
                         android:gravity="center_vertical">
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="EKOS CST"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.08" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/tvMembershipTierBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="PREMIUM"
+                            android:textColor="@color/accent_emerald_light"
+                            android:background="@drawable/bg_card_glass"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05" />
+                    </LinearLayout>
+
+                    <!-- Card Center / User Identity -->
+                    <TextView
+                        android:id="@+id/tvCardUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Eren Can Uçar"
+                        android:textColor="@color/text_main"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCardUserEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="kullanici@ekoscst.com"
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp" />
+
+                    <!-- Card Footer / License Key -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="16dp"
+                        android:background="@color/bg_card_border" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="AKTİF PREMİUM ÜYELİK"
-                            android:textColor="@color/accent_amber_light"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            android:letterSpacing="0.05" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LİSANS ANAHTARI"
+                                android:textColor="@color/text_subtle"
+                                android:textSize="9sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.05" />
+
+                            <TextView
+                                android:id="@+id/tvCardLicenseKey"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="EKOS-PREM-2026-ACTIVE"
+                                android:textColor="@color/accent_cyan"
+                                android:fontFamily="monospace"
+                                android:textSize="12sp" />
+                        </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvCardSyncStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="LİSANSLI"
-                            android:textColor="@color/accent_emerald_light"
+                            android:text="EŞLENDİ"
+                            android:textColor="@color/accent_purple_light"
                             android:textSize="11sp"
-                            android:textStyle="bold"
-                            android:background="@drawable/bg_card_glass"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="4dp" />
+                            android:textStyle="bold" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvActivePremiumCode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Lisans Kodu: EKOS-PREM-XXXX-XXXX"
-                        android:textColor="@color/accent_cyan"
-                        android:fontFamily="monospace"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Tüm derin bulut taraması, web kalkanı ve öncelikli tehdit motoru sınırsız olarak etkindir."
-                        android:textColor="@color/text_muted"
-                        android:textSize="11sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 2. LOGGED IN USER PROFILE -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/layoutProfileView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/border_hover"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="HESAP BİLGİLERİ"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvProfileName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Kullanıcı Adı"
-                        android:textColor="@color/text_main"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvProfileEmail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="kullanici@ekoscst.com"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-
-                    <TextView
-                        android:id="@+id/tvProfileTierBadge"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="EKOS KURUMSAL PREMİUM"
-                        android:textColor="@color/accent_purple_light"
-                        android:background="@drawable/bg_card_glass"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="5dp"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnLogout"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:layout_marginTop="14dp"
-                        android:text="OTURUMU KAPAT"
-                        android:textColor="@color/accent_crimson_light"
-                        android:background="@drawable/bg_card_glass"
-                        android:textStyle="bold"
-                        android:textSize="12sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- 3. PREMIUM ACTIVATION SECTION -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LİSANS AKTİVASYONU"
-                android:textColor="@color/text_subtle"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.08"
-                android:layout_marginBottom="10dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/bg_card_border"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="14dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="LİSANS KODUNUZU GİRİNİZ:"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <EditText
-                        android:id="@+id/etProfileLicenseCode"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="EKOS-PREM-XXXX-XXXX"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/accent_cyan"
-                        android:fontFamily="monospace"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp" />
-
-                    <Button
-                        android:id="@+id/btnApplyProfileLicense"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="10dp"
-                        android:text="LİSANS KODUNU ETKİNLEŞTİR"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:background="@drawable/bg_button_emerald" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Premium Feature Highlights -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="@color/bg_card"
-                app:strokeColor="@color/bg_card_border"
-                app:strokeWidth="1dp"
-                app:cardCornerRadius="14dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="PREMIUM ÖZELLİKLERİ"
-                        android:textColor="@color/accent_purple_light"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="• 1.4M+ Küresel Bulut Tehdit Veritabanı ile Anlık Eşleme\n• Canlı Web ve Sahte Bankacılık Oltalama Kalkanı\n• Derin Depolama ve APK Analizi\n• Masaüstü ve Web Hesabı ile Çoklu Cihaz Senkronizasyonu"
-                        android:textColor="@color/text_muted"
-                        android:textSize="12sp"
-                        android:lineSpacingExtra="4dp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- 4. AUTH FORM VIEW -->
+            <!-- 2-Segmented Clean Switcher -->
             <LinearLayout
-                android:id="@+id/layoutAuthForm"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_card_glass"
+                android:padding="3dp"
+                android:layout_marginBottom="20dp">
+
+                <Button
+                    android:id="@+id/tabBtnLicense"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Lisans Etkinleştir"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:background="@drawable/bg_button_primary" />
+
+                <Button
+                    android:id="@+id/tabBtnAuth"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Hesap / Giriş"
+                    android:textColor="@color/text_muted"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:background="@android:color/transparent" />
+            </LinearLayout>
+
+            <!-- SECTION 1: LICENSE ACTIVATION & PERKS -->
+            <LinearLayout
+                android:id="@+id/sectionLicense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="HESAP GİRİŞİ VEYA KAYIT"
-                    android:textColor="@color/text_subtle"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.08"
-                    android:layout_marginBottom="10dp" />
-
-                <!-- Tab Toggle -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="42dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_card_glass"
-                    android:padding="3dp"
-                    android:layout_marginBottom="16dp">
-
-                    <Button
-                        android:id="@+id/tabBtnLogin"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="GİRİŞ YAP"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:background="@drawable/bg_button_primary" />
-
-                    <Button
-                        android:id="@+id/tabBtnRegister"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="KAYIT OL"
-                        android:textColor="@color/text_muted"
-                        android:textStyle="bold"
-                        android:textSize="12sp"
-                        android:background="@android:color/transparent" />
-                </LinearLayout>
-
-                <!-- Login Form -->
-                <LinearLayout
-                    android:id="@+id/formLogin"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/bg_card_border"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="E-POSTA ADRESİ"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:orientation="vertical"
+                        android:padding="18dp">
 
-                    <EditText
-                        android:id="@+id/etLoginEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="ornek@ekoscst.com"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/text_main"
-                        android:inputType="textEmailAddress"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="14dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lisans Kodu Girişi"
+                            android:textColor="@color/text_main"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ŞİFRE"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Masaüstü veya web aboneliğinize ait lisans kodunu giriniz."
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
 
-                    <EditText
-                        android:id="@+id/etLoginPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="••••••••"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/text_main"
-                        android:inputType="textPassword"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="18dp" />
+                        <EditText
+                            android:id="@+id/etProfileLicenseCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="14dp"
+                            android:background="@drawable/bg_card_glass"
+                            android:hint="EKOS-PREM-XXXX-XXXX"
+                            android:textColorHint="@color/text_subtle"
+                            android:textColor="@color/accent_cyan"
+                            android:fontFamily="monospace"
+                            android:paddingHorizontal="14dp"
+                            android:textSize="13sp" />
 
-                    <Button
-                        android:id="@+id/btnSubmitLogin"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:text="GİRİŞ YAP"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="13sp"
-                        android:background="@drawable/bg_button_primary" />
-                </LinearLayout>
+                        <Button
+                            android:id="@+id/btnApplyProfileLicense"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="12dp"
+                            android:text="Kodu Doğrula ve Etkinleştir"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:background="@drawable/bg_button_emerald" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <!-- Register Form -->
-                <LinearLayout
-                    android:id="@+id/formRegister"
+                <!-- Premium Features Card -->
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/bg_card_border"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="AD SOYAD"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:orientation="vertical"
+                        android:padding="18dp">
 
-                    <EditText
-                        android:id="@+id/etRegisterName"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Premium Kapsamı"
+                            android:textColor="@color/text_main"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="• 1.4M+ Tehdit İstihbarat Veritabanı\n• Canlı Web ve Oltalama Kalkanı\n• Sınırsız Derin Depolama Taraması\n• Cihazlar Arası Eşleme"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp"
+                            android:lineSpacingExtra="5dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- SECTION 2: AUTH / LOGIN / LOGOUT -->
+            <LinearLayout
+                android:id="@+id/sectionAuth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- 1. Logged In Panel -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layoutProfileView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/border_hover"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="16dp">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="Adınız ve Soyadınız"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/text_main"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="12dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="E-POSTA"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <EditText
-                        android:id="@+id/etRegisterEmail"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Aktif Oturum"
+                            android:textColor="@color/text_subtle"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvProfileName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Eren Can Uçar"
+                            android:textColor="@color/text_main"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvProfileEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="kullanici@ekoscst.com"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp" />
+
+                        <Button
+                            android:id="@+id/btnLogout"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:layout_marginTop="16dp"
+                            android:text="Oturumu Kapat"
+                            android:textColor="@color/accent_crimson_light"
+                            android:background="@drawable/bg_card_glass"
+                            android:textStyle="bold"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 2. Logged Out Form -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layoutAuthForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/bg_card"
+                    app:strokeColor="@color/bg_card_border"
+                    app:strokeWidth="1dp"
+                    app:cardCornerRadius="16dp">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="ornek@ekoscst.com"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/text_main"
-                        android:inputType="textEmailAddress"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="12dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ŞİFRE"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        android:orientation="vertical"
+                        android:padding="20dp">
 
-                    <EditText
-                        android:id="@+id/etRegisterPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="En az 6 karakter"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/text_main"
-                        android:inputType="textPassword"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="12dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ekos Hesabı ile Giriş"
+                            android:textColor="@color/text_main"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="GÜVENLİK SORUSU CEVABI"
-                        android:textColor="@color/text_subtle"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Bulut hesabınızı mobil uygulamanız ile senkronize edin."
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
 
-                    <EditText
-                        android:id="@+id/etRegisterSecAnswer"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_card_glass"
-                        android:hint="Güvenlik cevabınız"
-                        android:textColorHint="@color/text_subtle"
-                        android:textColor="@color/text_main"
-                        android:paddingHorizontal="14dp"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="16dp" />
+                        <EditText
+                            android:id="@+id/etLoginEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/bg_card_glass"
+                            android:hint="E-posta adresi"
+                            android:textColorHint="@color/text_subtle"
+                            android:textColor="@color/text_main"
+                            android:inputType="textEmailAddress"
+                            android:paddingHorizontal="14dp"
+                            android:textSize="13sp" />
 
-                    <Button
-                        android:id="@+id/btnSubmitRegister"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:text="HESAP OLUŞTUR"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="13sp"
-                        android:background="@drawable/bg_button_emerald" />
-                </LinearLayout>
+                        <EditText
+                            android:id="@+id/etLoginPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/bg_card_glass"
+                            android:hint="Şifre"
+                            android:textColorHint="@color/text_subtle"
+                            android:textColor="@color/text_main"
+                            android:inputType="textPassword"
+                            android:paddingHorizontal="14dp"
+                            android:textSize="13sp" />
+
+                        <Button
+                            android:id="@+id/btnSubmitLogin"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="16dp"
+                            android:text="Giriş Yap"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:background="@drawable/bg_button_primary" />
+
+                        <TextView
+                            android:id="@+id/tvToggleRegisterPrompt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="12dp"
+                            android:text="Hesabınız yok mu? Yeni Hesap Açın"
+                            android:textColor="@color/accent_purple_light"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 

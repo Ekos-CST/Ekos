@@ -95,19 +95,17 @@ class MainActivity : AppCompatActivity() {
         val token = prefs.getString("auth_token", null)
         val name = prefs.getString("user_name", null)
         val tier = prefs.getString("license_tier", null)
+        val localKey = prefs.getString("license_key", null)
 
         if (token != null && name != null) {
             val shortName = name.split(" ").firstOrNull() ?: name
             val isPrem = tier != null && (tier.contains("Prem", ignoreCase = true) || tier.contains("Kurumsal", ignoreCase = true))
-            val tierTag = if (isPrem) "👑 PREMİUM" else "★ ÜYE"
-            tvHeaderAccountStatus.text = "👤 $shortName ($tierTag)"
+            val tierTag = if (isPrem) "Premium" else "Üye"
+            tvHeaderAccountStatus.text = "$shortName ($tierTag)"
+        } else if (localKey != null) {
+            tvHeaderAccountStatus.text = "Premium Aktif"
         } else {
-            val localKey = prefs.getString("license_key", null)
-            if (localKey != null) {
-                tvHeaderAccountStatus.text = "👑 Premium Aktif"
-            } else {
-                tvHeaderAccountStatus.text = "👤 Giriş Yap"
-            }
+            tvHeaderAccountStatus.text = "Giriş Yap"
         }
     }
 

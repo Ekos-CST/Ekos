@@ -9,7 +9,7 @@
     android:background="@color/bg_dark"
     android:fitsSystemWindows="true">
 
-    <!-- Top Header Bar (Formal Corporate Style) -->
+    <!-- Top Header Bar (Ultra Clean Minimalist Style) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,28 +20,15 @@
         android:paddingBottom="14dp"
         android:background="@color/bg_sidebar">
 
-        <LinearLayout
+        <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="EKOS SECURITY"
-                android:textColor="@color/text_main"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.06" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kurumsal Mobil Tehdit Kalkanı v4.1"
-                android:textColor="@color/text_muted"
-                android:textSize="11sp" />
-        </LinearLayout>
+            android:text="Ekos CST"
+            android:textColor="@color/text_main"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02" />
 
         <!-- User Login / Profile Status Pill -->
         <LinearLayout
@@ -51,7 +38,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@drawable/bg_card_glass"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="14dp"
             android:paddingVertical="7dp"
             android:clickable="true"
             android:focusable="true">
@@ -60,7 +47,7 @@
                 android:id="@+id/tvHeaderAccountStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="👤 Giriş Yap"
+                android:text="Giriş Yap"
                 android:textColor="@color/accent_purple_light"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -78,7 +65,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Sleek Minimalist System Status Card -->
+            <!-- System Status Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,7 +91,7 @@
                             android:id="@+id/tvHeaderStatusBadge"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="● SİSTEM KORUMADA"
+                            android:text="SİSTEM KORUMADA"
                             android:textColor="@color/accent_emerald_light"
                             android:textSize="12sp"
                             android:textStyle="bold"
@@ -150,7 +137,7 @@
                         android:layout_marginVertical="16dp"
                         android:background="@color/bg_card_border" />
 
-                    <!-- Quick Enterprise Metric Row -->
+                    <!-- Metric Row -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -227,24 +214,24 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Action 1: Quick Scan (User Apps Only) -->
+            <!-- Action 1: Quick Scan (No emojis) -->
             <Button
                 android:id="@+id/btnStartQuickScan"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="⚡ HIZLI SİSTEM TARAMASI (UYGULAMALAR)"
+                android:text="HIZLI SİSTEM TARAMASI (UYGULAMALAR)"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="13sp"
                 android:background="@drawable/bg_button_primary"
                 android:layout_marginBottom="10dp" />
 
-            <!-- Action 2: Deep Scan (Apps + Storage + Binary Payloads) -->
+            <!-- Action 2: Deep Scan (No emojis) -->
             <Button
                 android:id="@+id/btnStartDeepScan"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="🛡️ KAPSAMLI DERİN TARAMA (DEPOLAMA &amp; APK)"
+                android:text="KAPSAMLI DERİN TARAMA (DEPOLAMA VE APK)"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="13sp"
@@ -262,7 +249,7 @@
                 android:letterSpacing="0.08"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Module 1: Web & Phishing Shield -->
+            <!-- Module 1: Web Shield -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardWebShield"
                 android:layout_width="match_parent"
@@ -279,8 +266,8 @@
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
                         android:src="@android:drawable/ic_menu_search"
                         app:tint="@color/accent_cyan" />
 
@@ -294,7 +281,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Canlı Web &amp; Oltalama Kalkanı"
+                            android:text="Canlı Web ve Oltalama Kalkanı"
                             android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -302,7 +289,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sahte bankacılık &amp; oltalama web bağlantı denetimi"
+                            android:text="Sahte bankacılık ve zararlı bağlantı denetimi"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -310,14 +297,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AÇ ➔"
+                        android:text="AÇ"
                         android:textColor="@color/accent_cyan"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Module 2: Account & License Management & Premium Plans -->
+            <!-- Module 2: Account & License Management -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardAccountManagement"
                 android:layout_width="match_parent"
@@ -334,8 +321,8 @@
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
                         android:src="@android:drawable/ic_menu_myplaces"
                         app:tint="@color/accent_purple_light" />
 
@@ -349,7 +336,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hesap &amp; Premium Lisans Merkezi"
+                            android:text="Hesap ve Lisans Merkezi"
                             android:textColor="@color/text_main"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -357,7 +344,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Premium paketleri incele, lisans kodu gir ve oturum aç"
+                            android:text="Lisans planlarını incele, kod gir ve oturum aç"
                             android:textColor="@color/text_muted"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -365,7 +352,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="YÖNET ➔"
+                        android:text="YÖNET"
                         android:textColor="@color/accent_purple_light"
                         android:textSize="12sp"
                         android:textStyle="bold" />

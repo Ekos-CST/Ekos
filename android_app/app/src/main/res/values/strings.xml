@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">EKOS Antivirüs</string>
+    <string name="app_name">Ekos CST</string>
     <string name="shield_protected_title">CİHAZINIZ KORUMA ALTINDA</string>
     <string name="shield_protected_sub">Gerçek zamanlı tarama motoru ve bulut tehdit kalkanı aktif.</string>
     <string name="btn_quick_scan">HIZLI SİSTEM TARAMASI BAŞLAT</string>
-    <string name="btn_web_shield">Canlı Web &amp; Oltalama Kalkanı</string>
-    <string name="btn_clipboard_shield">Pano Tehdit Koruyucu</string>
-    <string name="btn_account_sync">Masaüstü / Web QR Eşleme</string>
+    <string name="btn_web_shield">Canlı Web ve Oltalama Kalkanı</string>
 </resources>

@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text="Hesap &amp; Premium Lisans"
+            android:text="Hesap ve Lisans Yönetimi"
             android:textColor="@color/text_main"
             android:textSize="17sp"
             android:textStyle="bold" />
@@ -50,7 +50,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- 1. ACTIVE PREMIUM BADGE (Shown when user has Premium) -->
+            <!-- 1. ACTIVE PREMIUM BADGE -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardActivePremium"
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="👑 AKTİF PREMİUM ÜYELİK"
+                            android:text="AKTİF PREMİUM ÜYELİK"
                             android:textColor="@color/accent_amber_light"
                             android:textSize="15sp"
                             android:textStyle="bold"
@@ -116,7 +116,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 2. LOGGED IN USER PROFILE (Shown when logged in) -->
+            <!-- 2. LOGGED IN USER PROFILE -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/layoutProfileView"
                 android:layout_width="match_parent"
@@ -147,7 +147,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Eren Can Uçar"
+                        android:text="Kullanıcı Adı"
                         android:textColor="@color/text_main"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -165,7 +165,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="★ EKOS KURUMSAL PREMİUM"
+                        android:text="EKOS KURUMSAL PREMİUM"
                         android:textColor="@color/accent_purple_light"
                         android:background="@drawable/bg_card_glass"
                         android:paddingHorizontal="10dp"
@@ -186,11 +186,11 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 3. PREMIUM ACQUISITION & LICENSE ACTIVATION SECTION -->
+            <!-- 3. PREMIUM ACTIVATION SECTION -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LİSANS AKTİVASYONU &amp; PLANLAR"
+                android:text="LİSANS AKTİVASYONU"
                 android:textColor="@color/text_subtle"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -226,7 +226,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/bg_card_glass"
-                        android:hint="EKOS-PREM-XXXX-XXXX-XXXX"
+                        android:hint="EKOS-PREM-XXXX-XXXX"
                         android:textColorHint="@color/text_subtle"
                         android:textColor="@color/accent_cyan"
                         android:fontFamily="monospace"
@@ -265,7 +265,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EKOS PREMIUM AVANTAJLARI"
+                        android:text="PREMIUM ÖZELLİKLERİ"
                         android:textColor="@color/accent_purple_light"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -274,14 +274,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="✔ 1.4M+ Küresel Bulut Tehdit Veritabanı ile Anlık Eşleme\n✔ Canlı Web &amp; Sahte Bankacılık Oltalama Kalkanı\n✔ Derin Depolama &amp; APK Yük Analizi\n✔ Masaüstü ve Web Hesabı ile Çoklu Cihaz Senkronizasyonu"
+                        android:text="• 1.4M+ Küresel Bulut Tehdit Veritabanı ile Anlık Eşleme\n• Canlı Web ve Sahte Bankacılık Oltalama Kalkanı\n• Derin Depolama ve APK Analizi\n• Masaüstü ve Web Hesabı ile Çoklu Cihaz Senkronizasyonu"
                         android:textColor="@color/text_muted"
                         android:textSize="12sp"
                         android:lineSpacingExtra="4dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 4. AUTH FORM VIEW (Shown when logged out) -->
+            <!-- 4. AUTH FORM VIEW -->
             <LinearLayout
                 android:id="@+id/layoutAuthForm"
                 android:layout_width="match_parent"
@@ -291,14 +291,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="HESABINIZA GİRİŞ YAPIN VEYA KAYIT OLUN"
+                    android:text="HESAP GİRİŞİ VEYA KAYIT"
                     android:textColor="@color/text_subtle"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.08"
                     android:layout_marginBottom="10dp" />
 
-                <!-- Tab Toggle: Login vs Register -->
+                <!-- Tab Toggle -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="42dp"
@@ -330,7 +330,7 @@
                         android:background="@android:color/transparent" />
                 </LinearLayout>
 
-                <!-- 1. LOGIN FORM -->
+                <!-- Login Form -->
                 <LinearLayout
                     android:id="@+id/formLogin"
                     android:layout_width="match_parent"
@@ -385,14 +385,14 @@
                         android:id="@+id/btnSubmitLogin"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="GİRİŞ YAP VE SENKRONİZE ET"
+                        android:text="GİRİŞ YAP"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:textSize="13sp"
                         android:background="@drawable/bg_button_primary" />
                 </LinearLayout>
 
-                <!-- 2. REGISTER FORM -->
+                <!-- Register Form -->
                 <LinearLayout
                     android:id="@+id/formRegister"
                     android:layout_width="match_parent"
@@ -468,7 +468,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="GÜVENLİK SORUSU CEVABI (İlk Evcil Hayvanınız?)"
+                        android:text="GÜVENLİK SORUSU CEVABI"
                         android:textColor="@color/text_subtle"
                         android:textSize="11sp"
                         android:textStyle="bold"

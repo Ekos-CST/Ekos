@@ -190,7 +190,6 @@ class AccountActivity : AppCompatActivity() {
 
         val isPremium = tier.contains("Prem", ignoreCase = true) || tier.contains("Kurumsal", ignoreCase = true) || (licenseKey != null && licenseKey.contains("PREM", ignoreCase = true))
 
-        // Show/Hide Active Premium Gold Badge Card
         if (isPremium) {
             cardActivePremium.visibility = View.VISIBLE
             tvActivePremiumCode.text = "Lisans Anahtarı: ${licenseKey ?: "Kurumsal Hesap Entegre"}"
@@ -203,7 +202,7 @@ class AccountActivity : AppCompatActivity() {
             layoutAuthForm.visibility = View.GONE
             tvProfileName.text = name ?: "EKOS Kullanıcısı"
             tvProfileEmail.text = email
-            tvProfileTierBadge.text = "★ ${tier.uppercase()}"
+            tvProfileTierBadge.text = tier.uppercase()
         } else {
             layoutProfileView.visibility = View.GONE
             layoutAuthForm.visibility = View.VISIBLE
@@ -217,7 +216,7 @@ class AccountActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val res = EkosApiClient.login(email, pass)
             btnSubmitLogin.isEnabled = true
-            btnSubmitLogin.text = "GİRİŞ YAP VE SENKRONİZE ET"
+            btnSubmitLogin.text = "GİRİŞ YAP"
 
             if (res.success && res.token != null) {
                 val prefs = getSharedPreferences("EKOS_MOBILE_PREFS", Context.MODE_PRIVATE)
@@ -228,7 +227,7 @@ class AccountActivity : AppCompatActivity() {
                     .putString("license_tier", res.user?.licenseTier ?: "EKOS Standart")
                     .apply()
 
-                Toast.makeText(this@AccountActivity, "Giriş başarılı! Hoş geldiniz.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AccountActivity, "Giriş başarılı.", Toast.LENGTH_SHORT).show()
                 checkExistingSession()
             } else {
                 Toast.makeText(this@AccountActivity, "Hata: ${res.error ?: "Giriş yapılamadı."}", Toast.LENGTH_LONG).show()
@@ -246,7 +245,7 @@ class AccountActivity : AppCompatActivity() {
             btnSubmitRegister.text = "HESAP OLUŞTUR"
 
             if (res.success) {
-                Toast.makeText(this@AccountActivity, res.message ?: "Kayıt başarılı!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@AccountActivity, res.message ?: "Kayıt başarılı.", Toast.LENGTH_LONG).show()
                 tabBtnLogin.performClick()
                 etLoginEmail.setText(email)
                 etLoginPassword.setText(pass)

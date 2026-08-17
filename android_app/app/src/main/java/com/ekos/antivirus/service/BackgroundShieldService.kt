@@ -19,17 +19,23 @@ class BackgroundShieldService : Service() {
         const val NOTIFICATION_ID = 1001
 
         fun startService(context: Context) {
-            val intent = Intent(context, BackgroundShieldService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
+            try {
+                val intent = Intent(context, BackgroundShieldService::class.java)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
+            } catch (e: Throwable) {
+                // Catch ForegroundServiceStartNotAllowedException gracefully on Android 12+
             }
         }
 
         fun stopService(context: Context) {
-            val intent = Intent(context, BackgroundShieldService::class.java)
-            context.stopService(intent)
+            try {
+                val intent = Intent(context, BackgroundShieldService::class.java)
+                context.stopService(intent)
+            } catch (e: Throwable) {}
         }
     }
 
@@ -44,8 +50,16 @@ class BackgroundShieldService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = buildForegroundNotification()
-        startForeground(NOTIFICATION_ID, notification)
+        try {
+            val notification = buildForegroundNotification()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NOTIFICATION_ID, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            } else {
+                startForeground(NOTIFICATION_ID, notification)
+            }
+        } catch (e: Throwable) {
+            // Android 12+ Background execution limit guard
+        }
         return START_STICKY
     }
 

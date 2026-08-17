@@ -1,5 +1,5 @@
 {
-  "version": "4.2.0",
-  "releaseNotes": "EKOS Antivirüs v4.2.0 - Geliştirici REST API Yönetim Merkezi, Canlı Derin Web Sitesi ve Phishing Analiz Motoru, Sahte Ödeme & Kart Formu Kalkanı, Çift Uzantılı Dosya Saldırısı Koruması ve Oturum Güvenliği İyileştirmeleri.",
-  "downloadUrl": "https://ekoscst.com/download/EKOS_Antivirus_Setup_4.2.0.exe"
+  "version": "4.3.0",
+  "releaseNotes": "EKOS Antivirüs v4.3.0 - Geliştirici REST API Yönetim Merkezi, QR Kodsuz & 6 Haneli Doğrulama Kodlu Güvenli Kimlik Doğrulama, Tamamen Ücretsiz Web Kalkanı & 10s Rate Limit, Otomatik Sistem Temizliği ve Disk Analiz Motoru, %100 Emojisiz Arayüz Standartları.",
+  "downloadUrl": "https://ekoscst.com/download/EKOS_Antivirus_Setup_4.3.0.exe"
 }

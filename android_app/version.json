@@ -1,6 +1,6 @@
 {
-  "versionCode": 1,
-  "versionName": "1.0.0",
-  "changelog": "Ekos CST Mobil Güvenlik, dinamik şok dalgası patlama efektli Sistem Optimizasyonu ve otomatik güncelleme motoru devrede.",
-  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/latest/download/app-release.apk"
+  "versionCode": 2,
+  "versionName": "1.1.0",
+  "changelog": "EKOS CST Mobil Güvenlik v1.1.0 - Gelişmiş Derin Dosya ve APK Tehdit Analiz Motoru, Canlı Ağ ve Web Kalkanı, Dinamik Sistem Optimizasyonu ve Kararlılık İyileştirmeleri.",
+  "downloadUrl": "https://ekoscst.com/download/EKOS_Antivirus_Mobile_1.1.0.apk"
 }

@@ -56,41 +56,72 @@ object AppUpdateManager {
                 if (updateInfo.isUpdateAvailable) {
                     showUpdateDialog(context, updateInfo)
                 } else if (showNoUpdateToast) {
-                    Toast.makeText(context, "Uygulamanız güncel (v1.0.0). Yeni bir güncelleme bulunmuyor.", Toast.LENGTH_SHORT).show()
+                    val curName = try {
+                        context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "1.0.0"
+                    } catch (e: Exception) {
+                        "1.0.0"
+                    }
+                    Toast.makeText(context, "Uygulamanız güncel (v$curName). Yeni bir güncelleme bulunmuyor.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
     private fun fetchRemoteUpdateInfo(currentVersionCode: Int): UpdateInfo {
-        // Fallback / Remote check endpoint
-        val checkUrl = "https://raw.githubusercontent.com/Ekos-CST/Ekos/main/android_app/version.json"
-        try {
-            val request = Request.Builder().url(checkUrl).build()
-            val response = httpClient.newCall(request).execute()
-            if (response.isSuccessful) {
-                val jsonStr = response.body?.string() ?: ""
-                val json = JSONObject(jsonStr)
-                val serverVersionCode = json.optInt("versionCode", 1)
-                val serverVersionName = json.optString("versionName", "1.0.0")
-                val changelog = json.optString("changelog", "Performans ve güvenlik iyileştirmeleri.")
-                val downloadUrl = json.optString("downloadUrl", "https://github.com/Ekos-CST/Ekos/releases/latest/download/app-release.apk")
+        val checkUrls = listOf(
+            "https://ekoscst.com/mobile-version.json",
+            "https://ekoscst.com/api/v1/update/android",
+            "https://api.ekoscst.com/api/v1/update/android",
+            "https://ekoscst.com/android_app/version.json",
+            "https://raw.githubusercontent.com/Ekos-CST/Ekos/main/android_app/version.json"
+        )
 
-                return UpdateInfo(
-                    isUpdateAvailable = serverVersionCode > currentVersionCode,
-                    latestVersionCode = serverVersionCode,
-                    latestVersionName = serverVersionName,
-                    changelog = changelog,
-                    downloadUrl = downloadUrl
-                )
+        for (checkUrl in checkUrls) {
+            try {
+                val request = Request.Builder()
+                    .url(checkUrl)
+                    .header("Cache-Control", "no-cache, no-store, must-revalidate")
+                    .header("Pragma", "no-cache")
+                    .build()
+                val response = httpClient.newCall(request).execute()
+                if (response.isSuccessful) {
+                    val jsonStr = response.body?.string() ?: ""
+                    if (jsonStr.isNotBlank() && jsonStr.trim().startsWith("{")) {
+                        val json = JSONObject(jsonStr)
+                        val serverVersionCode = json.optInt("versionCode", 1)
+                        val serverVersionName = json.optString("versionName", "1.1.0")
+                        val changelog = json.optString("changelog", "Performans ve güvenlik iyileştirmeleri.")
+                        val downloadUrl = json.optString("downloadUrl", "https://ekoscst.com/download/EKOS_Antivirus_Mobile_1.1.0.apk")
+
+                        if (serverVersionCode > currentVersionCode) {
+                            return UpdateInfo(
+                                isUpdateAvailable = true,
+                                latestVersionCode = serverVersionCode,
+                                latestVersionName = serverVersionName,
+                                changelog = changelog,
+                                downloadUrl = downloadUrl
+                            )
+                        } else {
+                            return UpdateInfo(
+                                isUpdateAvailable = false,
+                                latestVersionCode = serverVersionCode,
+                                latestVersionName = serverVersionName,
+                                changelog = changelog,
+                                downloadUrl = downloadUrl
+                            )
+                        }
+                    }
+                }
+            } catch (e: Throwable) {
+                // Continue to next fallback URL
             }
-        } catch (e: Throwable) {}
+        }
 
         // Baseline metadata
         return UpdateInfo(
             isUpdateAvailable = false,
-            latestVersionCode = 1,
-            latestVersionName = "1.0.0",
+            latestVersionCode = currentVersionCode,
+            latestVersionName = "1.1.0",
             changelog = "En güncel sürüm",
             downloadUrl = ""
         )
@@ -98,7 +129,7 @@ object AppUpdateManager {
 
     fun showUpdateDialog(context: Context, updateInfo: UpdateInfo) {
         MaterialAlertDialogBuilder(context)
-            .setTitle("✨ Yeni Güncelleme Yayında (v${updateInfo.latestVersionName})")
+            .setTitle("Yeni Güncelleme Yayında (v${updateInfo.latestVersionName})")
             .setMessage("Uygulamanın yeni bir sürümü yayınlandı!\n\nYenilikler:\n${updateInfo.changelog}\n\nŞimdi indirmek ve güncellemek ister misiniz?")
             .setPositiveButton("Şimdi Güncelle") { _, _ ->
                 startDownloadAndInstall(context, updateInfo.downloadUrl)

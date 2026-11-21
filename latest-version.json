@@ -1,5 +1,9 @@
 {
-  "version": "6.1.1",
-  "releaseNotes": "EKOS Antivirüs v6.1.1 — Android sıfır yanlış pozitif tarayıcı kalibrasyonu ve Windows otomatik güncelleyici düzeltmesi.",
-  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.1.1/EKOS_Antivirus_Setup_6.1.1.exe"
+  "version": "6.1.2",
+  "electronVersion": "43.2.0",
+  "releaseNotes": "EKOS Antivirüs v6.1.2 — Sıfırdan kurulum sihirbazı olmadan anında ~2 MB hızlı delta güncelleme ve sessiz güncelleme motoru.",
+  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.1.2/EKOS_Antivirus_Setup_6.1.2.exe",
+  "asarUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.1.2/EKOS_app_6.1.2.asar",
+  "asarSha256": "61940a856b84fe1087fbbfb91c2b4685f27d7ef90f2dee7904e4b6dd72d7dd95",
+  "asarSize": 6542477
 }

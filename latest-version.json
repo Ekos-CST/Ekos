@@ -1,5 +1,5 @@
 {
-  "version": "6.0.0",
-  "releaseNotes": "EKOS Antivirüs v6.0.0 — Yenilenen Açık/Koyu tema, 0 yanlış pozitif kalibrasyonlu PE/Imphash/YARA motoru, AES-256-GCM karantina ve hızlı CDN güncelleyici.",
-  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.0.0/EKOS_Antivirus_Setup_6.0.0.exe"
+  "version": "6.1.0",
+  "releaseNotes": "EKOS Antivirüs v6.1.0 — Varsayılan beyaz tema & kontrast düzeltmeleri, sadeleştirilmiş arayüz, Android tam cihaz antivirüs kalkanı, KVKK & Kullanım Şartları.",
+  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.1.0/EKOS_Antivirus_Setup_6.1.0.exe"
 }

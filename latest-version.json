@@ -1,9 +1,9 @@
 {
-  "version": "6.1.2",
+  "version": "6.2.0",
   "electronVersion": "43.2.0",
-  "releaseNotes": "EKOS Antivirüs v6.1.2 — Sıfırdan kurulum sihirbazı olmadan anında ~2 MB hızlı delta güncelleme ve sessiz güncelleme motoru.",
-  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.1.2/EKOS_Antivirus_Setup_6.1.2.exe",
-  "asarUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.1.2/EKOS_app_6.1.2.asar",
-  "asarSha256": "61940a856b84fe1087fbbfb91c2b4685f27d7ef90f2dee7904e4b6dd72d7dd95",
-  "asarSize": 6542477
+  "releaseNotes": "EKOS Antivirüs v6.2.0 — Gelişmiş PE/YARA/Deobfuscation motoru, Windows Başlangıç & Kalıcılık Kalkanı, Paylaşılabilir Tarama Raporları (/report/:id) ve hızlı 6.2 MB delta güncelleme.",
+  "downloadUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.2.0/EKOS_Antivirus_Setup_6.2.0.exe",
+  "asarUrl": "https://github.com/Ekos-CST/Ekos/releases/download/v6.2.0/EKOS_app_6.2.0.asar",
+  "asarSha256": "f38a8f241d05ca7055bd904a26152a0fcdbd28fe4a6f02efad61cd4bea36489e",
+  "asarSize": 6595755
 }
